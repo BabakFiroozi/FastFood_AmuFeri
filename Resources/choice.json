@@ -1,0 +1,15 @@
+{
+	"fontSize": 40,
+	"fontName": "fonts/LMN_Koodak.ttf",
+
+	"tapsellCheckVideoInterval": 3600,
+	"tapsellVideoAvailableTime": 30,
+	"tapsellVideoReward": 50,
+
+	"gameplayTime": 30.0,
+
+	"rateUrl": "https://cafebazaar.ir/app/com.iust.tablemath",	
+
+	"shop_purchase_succeed": "Iµ{ kÄoi pH ·¼¹µ¶",
+	"video_ad_showed_succeed": "Iµ{ ÁI{IµU pH ·¼¹µ¶"
+}

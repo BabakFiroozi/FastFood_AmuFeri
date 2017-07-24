@@ -1,0 +1,15 @@
+cocos2d/
+proj.android/obj/
+proj.win32/
+proj.ios_mac/
+proj.android/gen/
+proj.android/bin/
+proj.android/assets/
+proj.win10/
+proj.android-studio/
+proj.tizen/
+bin/
+proj.linux/
+*.apk
+*.rar
+proj.android/libs/armeabi/
