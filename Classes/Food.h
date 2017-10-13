@@ -7,11 +7,15 @@ enum class FoodTypes
 {
 	None = -1,
 
-	Food_1,
-	Food_2,
-	Food_3,
-	Food_4,
-	Food_5,
+	Bread_Neath,
+	Bread_Top,
+	Sauce,
+	Meat,
+	Cucumber,
+	Onion,
+	Steak,
+	Lettuce,
+	CheeseGoda,
 
 	Count
 };
@@ -23,10 +27,11 @@ public:
 	Food();
 	~Food();
 
-	Food(FoodTypes type, int worth, const std::string& name, bool unlocked, const std::string& iconPath);
+	Food(FoodTypes type, int place, int worth, const std::string& name, bool unlocked, const std::string& iconPath);
 
 	FoodTypes getType() const;
 	int getWorth() const;
+	int getPlace() const;
 	std::string getName() const;
 	bool isUnlocked() const;
 	void setUnlocked();
@@ -34,14 +39,14 @@ public:
 
 private:
 	FoodTypes _type;
+	int _place;
 	int _worth;
 	std::string _name;
 	bool _unlocked;
 	std::string _iconPath;
-
 };
 
 
 
-#endif // !__FOOD_H__
+#endif // __FOOD_H__
 

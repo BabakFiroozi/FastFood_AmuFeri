@@ -1,0 +1,70 @@
+{
+  "food": [
+    {
+      "type": 0,
+      "price": 100,
+      "amount": 1
+    },
+    {
+      "type": 1,
+      "price": 200,
+      "amount": 1
+    },
+    {
+      "type": 2,
+      "price": 300,
+      "amount": 1
+    }
+  ],
+  "coin": [
+    {
+      "name": "pack 1",
+      "price": 100,
+      "amount": 100
+    },
+    {
+      "name": "pack 2",
+      "price": 200,
+      "amount": 500
+    },
+    {
+      "name": "pack 3",
+      "price": 300,
+      "amount": 1000
+    }
+  ],
+  "cook": [
+    {
+      "name": "cook 1",
+      "price": 100,
+      "amount": 1
+    },
+    {
+      "name": "cook 2",
+      "price": 200,
+      "amount": 1
+    },
+    {
+      "name": "cook 3",
+      "price": 300,
+      "amount": 1
+    }
+  ],
+  "power": [
+    {
+      "name": "power 1",
+      "price": 100,
+      "amount": 1
+    },
+    {
+      "name": "power 2",
+      "price": 200,
+      "amount": 1
+    },
+    {
+      "name": "power 3",
+      "price": 300,
+      "amount": 1
+    }
+  ]
+}

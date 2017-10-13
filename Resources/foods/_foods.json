@@ -1,0 +1,77 @@
+{
+  "foods": [
+    {
+      "type": 0,
+	  "place": -1,
+      "name": "bread_neath",
+      "worth": 10,
+      "unlocked": true,
+      "iconPath": "foods/bread_neath.png"
+    },
+    {
+      "type": 1,
+	  "place": 1,
+      "name": "bread_top",
+      "worth": 10,
+      "unlocked": true,
+      "iconPath": "foods/bread_top.png"
+    },
+    {
+      "type": 2,
+	  "place": 0,
+      "name": "sauce",
+      "worth": 10,
+      "unlocked": true,
+      "iconPath": "foods/sauceRed.png"
+    },
+    {
+      "type": 3,
+	  "place": 0,
+      "name": "meat",
+      "worth": 10,
+      "unlocked": true,
+      "iconPath": "foods/meat.png"
+    },
+    {
+      "type": 4,
+	  "place": 0,
+      "name": "cucumber",
+      "worth": 10,
+      "unlocked": true,
+      "iconPath": "foods/cucumber.png"
+    },
+    {
+      "type": 5,
+	  "place": 0,
+      "name": "onion",
+      "worth": 10,
+      "unlocked": true,
+      "iconPath": "foods/onion.png"
+    },
+    {
+      "type": 6,
+	  "place": 0,
+      "name": "steak",
+      "worth": 10,
+      "unlocked": true,
+      "iconPath": "foods/steak.png"
+    },
+    {
+      "type": 7,
+	  "place": 0,
+      "name": "lettuce",
+      "worth": 10,
+      "unlocked": true,
+      "iconPath": "foods/lettuce.png"
+    }
+	,
+    {
+      "type": 8,
+	  "place": 0,
+      "name": "cheeseGoda",
+      "worth": 10,
+      "unlocked": true,
+      "iconPath": "foods/cheeseGoda.png"
+    }
+  ]
+}

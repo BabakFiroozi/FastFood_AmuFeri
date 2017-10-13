@@ -52,9 +52,27 @@ int GameChoice::getTapsellVideoAvailableTime()
 	return n;
 }
 
-float GameChoice::getGameplayTime()
+float GameChoice::getMakeBurgerTime()
 {
-	int n = _document["gameplayTime"].GetDouble();
+	float n = _document["makeBurgerTime"].GetDouble();
+	return n;
+}
+
+float GameChoice::getRightFoodTime()
+{
+	float n = _document["rigtFoodTime"].GetDouble();
+	return n;
+}
+
+float GameChoice::getWrongFoodTime()
+{
+	float n = _document["wrongFoodTime"].GetDouble();
+	return n;
+}
+
+float GameChoice::getPackBurgerTime()
+{
+	float n = _document["packBurgerTime"].GetDouble();
 	return n;
 }
 

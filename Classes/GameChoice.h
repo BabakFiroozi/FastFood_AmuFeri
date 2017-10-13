@@ -23,7 +23,10 @@ public:
 	int getTapsellCheckVideoInterval();
 	int getTapsellVideoAvailableTime();
 
-	float getGameplayTime();
+	float getMakeBurgerTime();
+	float getRightFoodTime();
+	float getWrongFoodTime();
+	float getPackBurgerTime();
 
 	std::string getRateUrl();
 

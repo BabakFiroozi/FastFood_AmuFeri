@@ -2,6 +2,7 @@
 #include "platform/CCFileUtils.h"
 #include "json/document.h"
 
+bool FoodFactory::_initialized = false;
 
 FoodFactory::FoodFactory()
 {
@@ -38,7 +39,12 @@ void FoodFactory::unlockFood(FoodTypes type)
 
 void FoodFactory::initialize()
 {
-	std::string str = cocos2d::FileUtils::getInstance()->getStringFromFile("foods/foods.json");
+	if (_initialized)
+		return;
+
+	_initialized = true;
+
+	std::string str = cocos2d::FileUtils::getInstance()->getStringFromFile("foods/_foods.json");
 	rapidjson::Document doc;
 	doc.Parse<0>(str.c_str());
 
@@ -46,11 +52,13 @@ void FoodFactory::initialize()
 	for (auto& f : arr)
 	{
 		FoodTypes type = (FoodTypes)f["type"].GetInt();
+		int place = f["place"].GetInt();
 		std::string name = f["name"].GetString();
 		int worth = f["worth"].GetInt();
 		bool unlocked = f["unlocked"].GetBool();
 		std::string iconPath = f["iconPath"].GetString();
-		addFood(Food(type, worth, name, unlocked, iconPath));
+		Food food(type, place, worth, name, unlocked, iconPath);
+		addFood(food);
 	}
 
 }

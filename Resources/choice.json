@@ -1,12 +1,15 @@
 {
 	"fontSize": 40,
-	"fontName": "fonts/LMN_Koodak.ttf",
+	"fontName": "fonts/Far_Morvarid.ttf",
 
 	"tapsellCheckVideoInterval": 3600,
 	"tapsellVideoAvailableTime": 30,
 	"tapsellVideoReward": 50,
 
-	"gameplayTime": 30.0,
+	"makeBurgerTime": 10,
+	"packBurgerTime": 1,
+	"rigtFoodTime": 1,
+	"wrongFoodTime": 2,
 
 	"rateUrl": "https://cafebazaar.ir/app/com.iust.tablemath",	
 

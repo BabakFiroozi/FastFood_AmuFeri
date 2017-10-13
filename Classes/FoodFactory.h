@@ -20,6 +20,8 @@ public:
 
 private:
 	std::vector<Food> _foodsVec;
+
+	static bool _initialized;
 };
 
 #endif//__FOOF_FACTROY_H__

@@ -12,9 +12,10 @@ Food::Food()
 	_unlocked = false;
 }
 
-Food::Food(FoodTypes type, int worth, const std::string& name, bool unlocked, const std::string& iconPath)
+Food::Food(FoodTypes type, int place, int worth, const std::string& name, bool unlocked, const std::string& iconPath)
 {
 	_type = type;
+	_place = place;
 	_worth = worth;
 	_name = name;
 	_unlocked = unlocked;
@@ -29,6 +30,11 @@ FoodTypes Food::getType() const
 int Food::getWorth() const
 {
 	return _worth;
+}
+
+int Food::getPlace() const
+{
+	return _place;
 }
 
 std::string Food::getName() const
@@ -50,4 +56,5 @@ std::string Food::getIconPath() const
 {
 	return _iconPath;
 }
+
 
