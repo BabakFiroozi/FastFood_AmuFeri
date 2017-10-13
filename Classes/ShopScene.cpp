@@ -246,7 +246,5 @@ void ShopScene::buyButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget::Tou
 			FoodTypes foodType = (FoodTypes)shopData.itemNumber;
 			FoodFactory::getInstance().unlockFood(foodType);
 		}
-
-		int i = 0;
 	}
 }
