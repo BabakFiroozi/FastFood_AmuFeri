@@ -14,6 +14,7 @@ enum class ShopTypes
 	Count
 };
 
+
 class ShopScene : public cocos2d::Layer
 {
 public:
