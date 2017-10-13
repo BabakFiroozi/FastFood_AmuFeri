@@ -44,7 +44,6 @@ private:
 
 		ShopData()
 		{
-
 		}
 
 		ShopData(ShopTypes shopType, int itemNumber)
