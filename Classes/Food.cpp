@@ -12,7 +12,7 @@ Food::Food()
 	_unlocked = false;
 }
 
-Food::Food(FoodTypes type, int place, int worth, const std::string& name, bool unlocked, const std::string& iconPath)
+Food::Food(FoodTypes type, int place, int worth, const std::string& name, bool unlocked, const std::string& iconPath, int count, int price)
 {
 	_type = type;
 	_place = place;
@@ -20,6 +20,8 @@ Food::Food(FoodTypes type, int place, int worth, const std::string& name, bool u
 	_name = name;
 	_unlocked = unlocked;
 	_iconPath = iconPath;
+	_count = count;
+	_price = price;
 }
 
 FoodTypes Food::getType() const
@@ -57,4 +59,27 @@ std::string Food::getIconPath() const
 	return _iconPath;
 }
 
+int Food::getCount() const
+{
+	return _count;
+}
+
+int Food::getPrice() const
+{
+	return _price;
+}
+
+void Food::charge(int c)
+{
+	_count += c;
+	if (_count > Max_Count)
+		_count = Max_Count;
+}
+
+void Food::consume(int c)
+{
+	_count -= c;
+	if (_count < 0)
+		_count = 0;
+}
 

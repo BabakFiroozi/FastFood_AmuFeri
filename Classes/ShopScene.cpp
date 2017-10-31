@@ -167,8 +167,8 @@ void ShopScene::showTab(ShopTypes shopType)
 		{
 			FoodTypes foodType = (FoodTypes)shop["type"].GetInt();
 			auto food = FoodFactory::getInstance().getFood(foodType);
-			shopName = food.getName();
-			shopIconPath = food.getIconPath();
+			shopName = food->getName();
+			shopIconPath = food->getIconPath();
 			frameIconPath = "gui/shop/dishFrame.png";
 			shopIconScale = .5f;
 		}

@@ -39,6 +39,9 @@ private:
 	cocos2d::ui::Button* _exitButton;
 
 	cocos2d::ui::Button* _foodButton;
+	cocos2d::ui::Button* _entrepotButton;
+
+	cocos2d::ui::ImageView* _background;
 
 
 };

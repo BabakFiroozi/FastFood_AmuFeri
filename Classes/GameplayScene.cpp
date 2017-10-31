@@ -291,7 +291,7 @@ void GameplayScene::dishButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget
 		if (rightFood)
 		{
 			auto food = FoodFactory::getInstance().getFood(needFood);
-			auto foodSprite = Sprite::create(food.getIconPath());
+			auto foodSprite = Sprite::create(food->getIconPath());
 			Vec2 pos = Vec2::ZERO;
 			if (_burger->getChildrenCount() > 0)
 			{
@@ -386,7 +386,7 @@ void GameplayScene::createRecipeAndDishes()
 		auto dishButton = Button::create("dishes/dish_1.png");
 		FoodTypes foodType = _availableFoodsVec.at(i);
 		auto food = FoodFactory::getInstance().getFood(foodType);
-		auto foodImage = ImageView::create(food.getIconPath());
+		auto foodImage = ImageView::create(food->getIconPath());
 		dishButton->addChild(foodImage);
 		foodImage->setScale(.3);
 		foodImage->setPosition(dishButton->getContentSize() / 2);
@@ -436,7 +436,7 @@ void GameplayScene::createRecipeAndDishes()
 		auto food = FoodFactory::getInstance().getFood(f);
 		auto layout = Layout::create();
 		layout->setContentSize(Size(170, 25));
-		auto item = ImageView::create(food.getIconPath());
+		auto item = ImageView::create(food->getIconPath());
 		item->setScale(.25f);
 		item->setPosition(layout->getContentSize() / 2);
 		layout->addChild(item);
@@ -510,7 +510,7 @@ void GameplayScene::packBurger(float dt)
 		for (auto foodType : _availableFoodsVec)
 		{
 			auto food = FoodFactory::getInstance().getFood(foodType);
-			coin += food.getWorth();
+			coin += food->getWorth();
 		}
 		if (!_comboIsActive)
 			coin *= 2;

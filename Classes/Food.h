@@ -24,10 +24,12 @@ enum class FoodTypes
 class Food
 {
 public:
+	const int Max_Count = 100;
+
 	Food();
 	~Food();
 
-	Food(FoodTypes type, int place, int worth, const std::string& name, bool unlocked, const std::string& iconPath);
+	Food(FoodTypes type, int place, int worth, const std::string& name, bool unlocked, const std::string& iconPath, int count, int price);
 
 	FoodTypes getType() const;
 	int getWorth() const;
@@ -36,6 +38,10 @@ public:
 	bool isUnlocked() const;
 	void setUnlocked();
 	std::string getIconPath() const;
+	int getCount() const;
+	void consume(int c);
+	int getPrice() const;
+	void charge(int c);
 
 private:
 	FoodTypes _type;
@@ -44,6 +50,8 @@ private:
 	std::string _name;
 	bool _unlocked;
 	std::string _iconPath;
+	int _count;
+	int _price;
 };
 
 

@@ -2,6 +2,8 @@
 #include "GameplayScene.h"
 #include "GameChoice.h"
 #include "ShopScene.h"
+#include "EntrepotPopup.h"
+#include "PlayerPrefs.h"
 
 USING_NS_CC;
 using namespace cocos2d::ui;
@@ -19,37 +21,51 @@ bool MenuScene::init(ValueMap& initData)
 	if (!Layer::init())
 		return false;
 
-	FoodFactory::getInstance().initialize();
+	bool isFirsrRun = PlayerPrefs::getInstance().isFirstRun();
+	if (isFirsrRun)
+	{
+		std::string str = cocos2d::FileUtils::getInstance()->getStringFromFile("foods/_foods.json");
+		FoodFactory::getInstance().initialize(str);
+	}
+	else
+	{
+		PlayerPrefs::getInstance().loadFoods();
+	}
 
 
 	_visibleOrigin = Director::getInstance()->getVisibleOrigin();
 	_visibleSize = Director::getInstance()->getVisibleSize();
 
-	auto background = ImageView::create("gui/menu/menu_bg.png");
-	addChild(background);
-	background->setPosition(_visibleSize / 2);
+	_background = ImageView::create("gui/menu/menu_bg.png");
+	addChild(_background);
+	_background->setPosition(_visibleSize / 2);
 
 	const int fontSize = 40;
 
 	_playButton = Button::create("gui/menu/button.png");
-	background->addChild(_playButton);
+	_background->addChild(_playButton);
 	_playButton->setPosition(Vect(_visibleSize.width / 2, _visibleSize.height - 1100));
 	_playButton->addTouchEventListener(CC_CALLBACK_2(MenuScene::buttonCallback, this));
 
 	_exitButton = Button::create("gui/menu/exitButton.png");
-	background->addChild(_exitButton);
+	_background->addChild(_exitButton);
 	_exitButton->setPosition(Vect(_exitButton->getContentSize() / 2));
 	_exitButton->addTouchEventListener(CC_CALLBACK_2(MenuScene::buttonCallback, this));
 
 	_settingButton = Button::create("gui/menu/settingButton.png");
-	background->addChild(_settingButton);
+	_background->addChild(_settingButton);
 	_settingButton->setPosition(Vect(_visibleSize.width - _settingButton->getContentSize().width / 2, _settingButton->getContentSize().height / 2));
 	_settingButton->addTouchEventListener(CC_CALLBACK_2(MenuScene::buttonCallback, this));
 
 	_foodButton = Button::create("gui/menu/shopButton.png", "gui/menu/shopButton_press.png");
-	background->addChild(_foodButton);
+	_background->addChild(_foodButton);
 	_foodButton->setPosition(Vect(_visibleSize.width / 2, _visibleSize.height - _foodButton->getContentSize().height / 2));
 	_foodButton->addTouchEventListener(CC_CALLBACK_2(MenuScene::buttonCallback, this));
+
+	_entrepotButton = Button::create("gui/menu/entrepotButton.png");
+	_background->addChild(_entrepotButton);
+	_entrepotButton->setPosition(_background->getContentSize() / 2 + Size(200, 300));
+	_entrepotButton->addTouchEventListener(CC_CALLBACK_2(MenuScene::buttonCallback, this));
 
 	auto shopBadge = ImageView::create("gui/menu/shopBadge.png");
 	_foodButton->addChild(shopBadge);
@@ -88,6 +104,13 @@ void MenuScene::buttonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget::TouchE
 		if (sender == _exitButton)
 		{
 			Director::getInstance()->end();
+		}
+
+		if (sender == _entrepotButton)
+		{
+			auto popup = EntrepotPopup::create();
+			_background->addChild(popup);
+			popup->setPosition(_background->getContentSize() / 2);
 		}
 	}
 }
