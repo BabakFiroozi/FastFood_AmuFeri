@@ -37,7 +37,7 @@ std::shared_ptr<Food> FoodFactory::getFood(FoodTypes type)
 void FoodFactory::unlockFood(FoodTypes type)
 {
 	auto food = getFood(type);
-	food->setUnlocked();
+	food->unlocked();
 }
 
 void FoodFactory::initialize(const std::string& foodsStr)

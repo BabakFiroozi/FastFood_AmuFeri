@@ -1,5 +1,4 @@
-#ifndef __GENERAL_H__
-#define __GENERAL_H__
+#pragma once
 
 #include "cocos2d.h"
 #include "ui/CocosGUI.h"
@@ -47,5 +46,3 @@ public:
 		return cocos2d::StringUtils::format("%02d : %02d : %02d", hour, min, sec);
 	}
 };
-
-#endif //__GENERAL_H__

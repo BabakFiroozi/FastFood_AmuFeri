@@ -39,7 +39,7 @@ bool ShopScene::init(ValueMap& initData)
 
 	auto shopBackg = ImageView::create("gui/shop/shopBackg.png");
 	background->addChild(shopBackg);
-	shopBackg->setPosition(Vect(_visibleSize.width / 2, _visibleSize.height - 770));
+	shopBackg->setPosition(Vect(_visibleSize.width / 2, _visibleSize.height - 690));
 
 	auto tabButtonGroup = RadioButtonGroup::create();
 	shopBackg->addChild(tabButtonGroup);
@@ -47,7 +47,7 @@ bool ShopScene::init(ValueMap& initData)
 	{
 		auto tabButton = RadioButton::create("gui/shop/tabButton.png", "gui/shop/tabButtonSel.png");
 		tabButtonGroup->addRadioButton(tabButton);
-		tabButton->setPosition(Vect(125 + i * 164, _visibleSize.height - 150));
+		tabButton->setPosition(Vect(125 + i * 164, shopBackg->getContentSize().height + tabButton->getContentSize().height / 2));
 		shopBackg->addChild(tabButton);
 
 		auto ShopIcon = ImageView::create(StringUtils::format("gui/shop/shop__%d.png", i + 1));
@@ -66,7 +66,7 @@ bool ShopScene::init(ValueMap& initData)
 
 	_shopListView = ListView::create();
 	_shopListView->setAnchorPoint(Point(.5f, .5f));
-	_shopListView->setContentSize(Size(716, 1158));
+	_shopListView->setContentSize(Size(700, 998));
 	shopBackg->addChild(_shopListView);
 	//_shopListView->setBackGroundColorType(Layout::BackGroundColorType::SOLID);
 	//_shopListView->setBackGroundColor(Color3B::RED);
@@ -75,9 +75,9 @@ bool ShopScene::init(ValueMap& initData)
 
 	_shopListView->setItemsMargin(10);
 
-	auto shopFrameOver = ImageView::create("gui/shop/shopFrame2.png");
+	/*auto shopFrameOver = ImageView::create("gui/shop/shopFrame2.png");
 	shopBackg->addChild(shopFrameOver);
-	shopFrameOver->setPosition(shopBackg->getContentSize() / 2);
+	shopFrameOver->setPosition(shopBackg->getContentSize() / 2);*/
 
 	return true;
 }
@@ -150,87 +150,155 @@ void ShopScene::showTab(ShopTypes shopType)
 		itemNumber++;
 
 		auto shopLayout = Layout::create();
-		shopLayout->setContentSize(Size(660, 960));
+		shopLayout->setContentSize(Size(560, 960));
 		_shopListView->pushBackCustomItem(shopLayout);
 
 		auto itemFrame = ImageView::create("gui/shop/shopFrame.png");
 		shopLayout->addChild(itemFrame);
-		itemFrame->setPosition(shopLayout->getContentSize() / 2 + Size(0, -80));
+		itemFrame->setPosition(shopLayout->getContentSize() / 2 + Size(0, 0));
+		itemFrame->setOpacity(100);
 
-		std::string shopName = "";
-		std::string shopIconPath = "";
-		std::string frameIconPath = "";
-		float shopIconScale = 1.0f;
-		int shopAmount = shop["amount"].GetInt();
+		bool unlockedFood = false;
 
 		if (shopType == ShopTypes::Food)
 		{
 			FoodTypes foodType = (FoodTypes)shop["type"].GetInt();
 			auto food = FoodFactory::getInstance().getFood(foodType);
-			shopName = food->getName();
-			shopIconPath = food->getIconPath();
-			frameIconPath = "gui/shop/dishFrame.png";
-			shopIconScale = .5f;
+			unlockedFood = food->isUnlocked();
 		}
 
-		if (shopType == ShopTypes::Coin)
+		if (unlockedFood)
 		{
-			shopName = shop["name"].GetString();
-			shopIconPath = StringUtils::format("gui/shop/coins/pack_%d.png", itemNumber);
-			frameIconPath = "gui/shop/coins/frame.png";
-			shopIconScale = 1;
-		}
+			const int maxCount = 100;
 
-		if (shopType == ShopTypes::Cook)
+			FoodTypes foodType = (FoodTypes)shop["type"].GetInt();
+			auto food = FoodFactory::getInstance().getFood(foodType);
+
+			auto name = Text::create(food->getName(), fontName, fontSize);
+			itemFrame->addChild(name);
+			name->setPosition(itemFrame->getContentSize() / 2 + Size(0, -440));
+
+			auto icon = ImageView::create(food->getIconPath());
+			itemFrame->addChild(icon);
+			icon->setPosition(name->getPosition() + Vect(0, 120));
+			icon->setScale(.55f);
+
+			auto bar = LoadingBar::create("gui/menu/entrepot_bar.png");
+			itemFrame->addChild(bar);
+			bar->setPosition(itemFrame->getContentSize() / 2 + Size(0, 0));
+
+			auto frame = ImageView::create("gui/menu/entrepot_frame.png");
+			bar->addChild(frame);
+			frame->setPosition(bar->getContentSize() / 2);
+			bar->setRotation(-90);
+			int foodCount = food->getCount();
+			int percent = foodCount * 100 / maxCount;
+			bar->setPercent(percent);
+
+			auto count = Text::create(StringUtils::format("%d/%d", foodCount, maxCount), fontName, fontSize - 10);
+			bar->addChild(count);
+			count->setPosition(bar->getContentSize() / 2);
+			count->setRotation(90);
+
+			auto button = Button::create("gui/menu/entrepot_add.png", "gui/menu/entrepot_add__press.png");
+			itemFrame->addChild(button);
+			button->setPosition(bar->getPosition() + Size(0, 300));
+			button->addTouchEventListener(CC_CALLBACK_2(ShopScene::addButtonCallback, this));
+			button->setName("charge");
+			button->setTag((int)food->getType());
+
+			auto add = Text::create("+5", fontName, fontSize);
+			button->addChild(add);
+			add->setPosition(button->getContentSize() / 2);
+
+			auto coin = ImageView::create("gui/coin.png");
+			itemFrame->addChild(coin);
+			coin->setPosition(button->getPosition() + Size(50, 100));
+
+			auto price = Text::create(StringUtils::toString(food->getPrice()), fontName, fontSize);
+			coin->addChild(price);
+			price->setPosition(coin->getContentSize() / 2 - Size(50, 0));
+			price->setTextHorizontalAlignment(TextHAlignment::RIGHT);
+			price->setAnchorPoint(Point::ANCHOR_MIDDLE_RIGHT);
+		}
+		else
 		{
-			shopName = shop["name"].GetString();
-			shopIconPath = StringUtils::format("gui/shop/cooks/cook_%d.png", itemNumber);
-			frameIconPath = "gui/shop/cooks/frame.png";
-			shopIconScale = 1;
+			std::string shopName = "";
+			std::string shopIconPath = "";
+			std::string frameIconPath = "";
+			float shopIconScale = 1.0f;
+			int shopAmount = shop["amount"].GetInt();
+
+			bool unlockedFood = false;
+
+			if (shopType == ShopTypes::Food)
+			{
+				FoodTypes foodType = (FoodTypes)shop["type"].GetInt();
+				auto food = FoodFactory::getInstance().getFood(foodType);
+				shopName = food->getName();
+				shopIconPath = food->getIconPath();
+				frameIconPath = "gui/shop/dishFrame.png";
+				shopIconScale = .5f;
+			}
+
+			if (shopType == ShopTypes::Coin)
+			{
+				shopName = shop["name"].GetString();
+				shopIconPath = StringUtils::format("gui/shop/coins/pack_%d.png", itemNumber);
+				frameIconPath = "gui/shop/coins/frame.png";
+				shopIconScale = 1;
+			}
+
+			if (shopType == ShopTypes::Cook)
+			{
+				shopName = shop["name"].GetString();
+				shopIconPath = StringUtils::format("gui/shop/cooks/cook_%d.png", itemNumber);
+				frameIconPath = "gui/shop/cooks/frame.png";
+				shopIconScale = 1;
+			}
+
+			if (shopType == ShopTypes::Power)
+			{
+				shopName = shop["name"].GetString();
+				shopIconPath = StringUtils::format("gui/shop/powers/power_%d.png", itemNumber);
+				frameIconPath = "gui/shop/powers/frame.png";
+				shopIconScale = 1;
+			}
+
+			auto nameText = Text::create(shopName, fontName, fontSize);
+			itemFrame->addChild(nameText);
+			nameText->setPosition(itemFrame->getContentSize() / 2 + Size(0, 420));			
+
+			auto frameIcon = ImageView::create(frameIconPath);
+			itemFrame->addChild(frameIcon);
+			frameIcon->setPosition(itemFrame->getContentSize() / 2 + Size(0, 200));
+
+			auto shopImage = ImageView::create(shopIconPath);
+			frameIcon->addChild(shopImage);
+			shopImage->setPosition(frameIcon->getContentSize() / 2 + Size(0, 10));
+			shopImage->setScale(shopIconScale);
+
+			int shopPrice = shop["price"].GetInt();
+			auto priceText = Text::create(StringUtils::toString(shopPrice), fontName, fontSize);
+			itemFrame->addChild(priceText);
+			priceText->setPosition(itemFrame->getContentSize() / 2 + Size(0, -10));
+			priceText->setTextHorizontalAlignment(TextHAlignment::RIGHT);
+			priceText->setAnchorPoint(Point(1, .5f));
+			priceText->setTextAreaSize(Size(140, 70));
+
+			auto coinIcon = ImageView::create("gui/coin.png");
+			priceText->addChild(coinIcon);
+			coinIcon->setPosition(priceText->getTextAreaSize() / 2 + Size(120, 0));
+
+			auto buyButton = Button::create("gui/shop/shopButton.png");
+			itemFrame->addChild(buyButton);
+			buyButton->setScale(.9f);
+			buyButton->setPosition(itemFrame->getContentSize() / 2 + Size(0, -180));
+
+			_shopDataMap[buyButton] = ShopData(shopType, itemNumber - 1);
+
+			buyButton->addTouchEventListener(CC_CALLBACK_2(ShopScene::buyButtonCallback, this));
 		}
-
-		if (shopType == ShopTypes::Power)
-		{
-			shopName = shop["name"].GetString();
-			shopIconPath = StringUtils::format("gui/shop/powers/power_%d.png", itemNumber);
-			frameIconPath = "gui/shop/powers/frame.png";
-			shopIconScale = 1;
-		}
-
-		auto nameText = Text::create(shopName, fontName, fontSize);
-		itemFrame->addChild(nameText);
-		nameText->setPosition(itemFrame->getContentSize() / 2 + Size(0, 420));
-		itemFrame->setOpacity(50);
-
-		auto frameIcon = ImageView::create(frameIconPath);
-		itemFrame->addChild(frameIcon);
-		frameIcon->setPosition(itemFrame->getContentSize() / 2 + Size(0, 200));
-
-		auto shopImage = ImageView::create(shopIconPath);
-		frameIcon->addChild(shopImage);
-		shopImage->setPosition(frameIcon->getContentSize() / 2 + Size(0, 10));
-		shopImage->setScale(shopIconScale);
-
-		int shopPrice = shop["price"].GetInt();
-		auto priceText = Text::create(StringUtils::toString(shopPrice), fontName, fontSize);
-		itemFrame->addChild(priceText);
-		priceText->setPosition(itemFrame->getContentSize() / 2 + Size(0, -10));
-		priceText->setTextHorizontalAlignment(TextHAlignment::RIGHT);
-		priceText->setAnchorPoint(Point(1, .5f));
-		priceText->setTextAreaSize(Size(140, 70));
-
-		auto coinIcon = ImageView::create("gui/coin.png");
-		priceText->addChild(coinIcon);
-		coinIcon->setPosition(priceText->getTextAreaSize() / 2 + Size(120, 0));
-
-		auto buyButton = Button::create("gui/shop/shopButton.png");
-		itemFrame->addChild(buyButton);
-		buyButton->setScale(.9f);
-		buyButton->setPosition(itemFrame->getContentSize() / 2 + Size(0, -180));
-
-		_shopDataMap[buyButton] = ShopData(shopType, itemNumber - 1);
-
-		buyButton->addTouchEventListener(CC_CALLBACK_2(ShopScene::buyButtonCallback, this));
 	}
 }
 
@@ -245,6 +313,22 @@ void ShopScene::buyButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget::Tou
 		{
 			FoodTypes foodType = (FoodTypes)shopData.itemNumber;
 			FoodFactory::getInstance().unlockFood(foodType);
+			showTab(ShopTypes::Food);
+		}
+	}
+}
+
+void ShopScene::addButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget::TouchEventType eventType)
+{
+	if (eventType == Widget::TouchEventType::ENDED)
+	{
+		auto button = static_cast<Button*>(sender);
+		std::string buttonName = button->getName();
+		if (buttonName == "charge")
+		{
+			FoodTypes foodType = (FoodTypes)button->getTag();
+			FoodFactory::getInstance().chargeFood(foodType, 5);
+			showTab(ShopTypes::Food);
 		}
 	}
 }

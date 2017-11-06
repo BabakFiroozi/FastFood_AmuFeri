@@ -49,7 +49,7 @@ bool Food::isUnlocked() const
 	return _unlocked;
 }
 
-void Food::setUnlocked()
+void Food::unlocked()
 {
 	_unlocked = true;
 }

@@ -55,7 +55,7 @@
 	  "place": 0,
       "name": "onion",
       "worth": 10,
-      "unlocked": true,
+      "unlocked": false,
       "iconPath": "foods/onion.png",
 	  "count": 100,
 	  "price": 500

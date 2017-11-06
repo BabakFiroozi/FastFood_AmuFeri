@@ -36,7 +36,7 @@ public:
 	int getPlace() const;
 	std::string getName() const;
 	bool isUnlocked() const;
-	void setUnlocked();
+	void unlocked();
 	std::string getIconPath() const;
 	int getCount() const;
 	void consume(int c);

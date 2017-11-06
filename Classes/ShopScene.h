@@ -57,6 +57,7 @@ private:
 	void buttonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget::TouchEventType eventType);
 	void buyButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget::TouchEventType eventType);
 	void tabButtonCallback(cocos2d::ui::RadioButton* sender, cocos2d::ui::RadioButton::EventType eventType);
+	void addButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget::TouchEventType eventType);
 
 	void showTab(ShopTypes shopType);
 

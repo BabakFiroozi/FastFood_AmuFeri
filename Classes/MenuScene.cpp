@@ -2,7 +2,6 @@
 #include "GameplayScene.h"
 #include "GameChoice.h"
 #include "ShopScene.h"
-#include "EntrepotPopup.h"
 #include "PlayerPrefs.h"
 
 USING_NS_CC;
@@ -62,11 +61,6 @@ bool MenuScene::init(ValueMap& initData)
 	_foodButton->setPosition(Vect(_visibleSize.width / 2, _visibleSize.height - _foodButton->getContentSize().height / 2));
 	_foodButton->addTouchEventListener(CC_CALLBACK_2(MenuScene::buttonCallback, this));
 
-	_entrepotButton = Button::create("gui/menu/entrepotButton.png");
-	_background->addChild(_entrepotButton);
-	_entrepotButton->setPosition(_background->getContentSize() / 2 + Size(200, 300));
-	_entrepotButton->addTouchEventListener(CC_CALLBACK_2(MenuScene::buttonCallback, this));
-
 	auto shopBadge = ImageView::create("gui/menu/shopBadge.png");
 	_foodButton->addChild(shopBadge);
 	shopBadge->setPosition(_foodButton->getContentSize() / 2 + Size(0, 10));
@@ -104,13 +98,6 @@ void MenuScene::buttonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget::TouchE
 		if (sender == _exitButton)
 		{
 			Director::getInstance()->end();
-		}
-
-		if (sender == _entrepotButton)
-		{
-			auto popup = EntrepotPopup::create();
-			_background->addChild(popup);
-			popup->setPosition(_background->getContentSize() / 2);
 		}
 	}
 }

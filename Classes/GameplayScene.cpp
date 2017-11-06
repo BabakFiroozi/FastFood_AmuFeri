@@ -288,9 +288,15 @@ void GameplayScene::dishButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget
 		bool rightFood = selFood == needFood;
 
 
+		auto food = FoodFactory::getInstance().getFood(needFood);
+		if (food->getCount() <= 0)
+		{
+
+			return;
+		}
+
 		if (rightFood)
 		{
-			auto food = FoodFactory::getInstance().getFood(needFood);
 			auto foodSprite = Sprite::create(food->getIconPath());
 			Vec2 pos = Vec2::ZERO;
 			if (_burger->getChildrenCount() > 0)
@@ -330,6 +336,7 @@ void GameplayScene::dishButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget
 			lineImage->setVisible(true);
 			lineImage->setColor(Color3B::GREEN);
 			//play right sound
+			FoodFactory::getInstance().consumeFood(food->getType());
 
 			_recipeFoodIndex++;
 		}
