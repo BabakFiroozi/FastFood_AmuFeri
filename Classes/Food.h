@@ -34,10 +34,10 @@ public:
 	FoodTypes getType() const;
 	int getWorth() const;
 	int getPlace() const;
-	std::string getName() const;
+	const std::string& getName() const;
 	bool isUnlocked() const;
 	void unlocked();
-	std::string getIconPath() const;
+	const std::string& getIconPath() const;
 	int getCount() const;
 	void consume(int c);
 	int getPrice() const;

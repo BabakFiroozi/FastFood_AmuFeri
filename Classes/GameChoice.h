@@ -15,8 +15,8 @@ public:
 
 	void initialize();
 
-	std::string getFontName();
-	std::string getString(const std::string& key);
+	std::string getFontName() const;
+	std::string getString(const std::string& key) const;
 
 	int getTapsellVideoReward();
 
@@ -28,9 +28,9 @@ public:
 	float getWrongFoodTime();
 	float getPackBurgerTime();
 
-	std::string getRateUrl();
+	std::string getRateUrl() const;
 
-	std::string getTutorialText(int num);
+	std::string getTutorialText(int num) const;
 
 private:
 	rapidjson::Document _document;

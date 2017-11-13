@@ -48,24 +48,24 @@
       "amount": 1000
     }
   ],
-  "cook": [
+  "kitchen": [
     {
-      "name": "cook 1",
+      "name": "kitchen 1",
       "price": 100,
       "amount": 1
     },
     {
-      "name": "cook 2",
+      "name": "kitchen 2",
       "price": 200,
       "amount": 1
     },
     {
-      "name": "cook 3",
+      "name": "kitchen 3",
       "price": 300,
       "amount": 1
     }
   ],
-  "power": [
+  "powerup": [
     {
       "name": "power 1",
       "price": 100,

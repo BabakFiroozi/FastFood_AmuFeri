@@ -39,7 +39,7 @@ int Food::getPlace() const
 	return _place;
 }
 
-std::string Food::getName() const
+const std::string& Food::getName() const
 {
 	return _name;
 }
@@ -54,7 +54,7 @@ void Food::unlocked()
 	_unlocked = true;
 }
 
-std::string Food::getIconPath() const
+const std::string& Food::getIconPath() const
 {
 	return _iconPath;
 }

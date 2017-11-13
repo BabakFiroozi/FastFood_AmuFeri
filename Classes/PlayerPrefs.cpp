@@ -41,7 +41,7 @@ bool PlayerPrefs::isFirstRun() const
 void PlayerPrefs::doneFirstRun() const
 {
 	const char* key = "isFirstRun";
-	UserDefault::getInstance()->setBoolForKey(key, true);
+	UserDefault::getInstance()->setBoolForKey(key, false);
 }
 
 void PlayerPrefs::loadCoin() const
@@ -54,4 +54,32 @@ void PlayerPrefs::saveCoin() const
 {
 	const char* key = "coinsCount";
 	UserDefault::getInstance()->setIntegerForKey(key, GameUser::getInstance().getCoin());
+}
+
+void PlayerPrefs::loadCurrentKitchen() const
+{
+	const char* key = "currentKitchen";
+	KitchenTypes kitchen = (KitchenTypes)UserDefault::getInstance()->getIntegerForKey(key, -1);
+	GameUser::getInstance().setCurrentKitchen(kitchen);
+}
+
+void PlayerPrefs::saveCurrentKitchen() const
+{
+	const char* key = "currentKitchen";
+	int kitchen = (int)GameUser::getInstance().getCurrentKitchen();
+	UserDefault::getInstance()->setIntegerForKey(key, kitchen);
+}
+
+void PlayerPrefs::loadUnlockedKitchens() const
+{
+	const char* key = "unclokedKitchens";
+	std::string kitchensStr = UserDefault::getInstance()->getStringForKey(key);
+	Inventories::getInstance().initializeUnlockedKitchens(kitchensStr);
+}
+
+void PlayerPrefs::saveUnlockedKitchens() const
+{
+	const char* key = "unclokedKitchens";
+	std::string kitchensStr = Inventories::getInstance().serializeUnlockedKitchens();
+	UserDefault::getInstance()->setStringForKey(key, kitchensStr);
 }

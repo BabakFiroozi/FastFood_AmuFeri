@@ -22,13 +22,13 @@ void GameChoice::initialize()
 	_document.Parse<0>(str.c_str());
 }
 
-std::string GameChoice::getString(const std::string& key)
+std::string GameChoice::getString(const std::string& key) const
 {
 	std::string str = _document[key.c_str()].GetString();
 	return str;
 }
 
-std::string GameChoice::getFontName()
+std::string GameChoice::getFontName() const
 {
 	std::string name = _document["fontName"].GetString();
 	return name;
@@ -76,13 +76,13 @@ float GameChoice::getPackBurgerTime()
 	return n;
 }
 
-std::string GameChoice::getRateUrl()
+std::string GameChoice::getRateUrl() const
 {
 	std::string url = _document["rateUrl"].GetString();
 	return url;
 }
 
-std::string GameChoice::getTutorialText(int num)
+std::string GameChoice::getTutorialText(int num) const
 {
 	auto& arr = _document["tutorial_paths"];
 	if (num > arr.Size() - 1)

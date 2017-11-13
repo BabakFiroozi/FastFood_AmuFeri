@@ -3,6 +3,9 @@
 #include "MenuScene.h"
 #include "FoodFactory.h"
 #include "json/document.h"
+#include "Inventories.h"
+#include "GameUser.h"
+#include "PlayerPrefs.h"
 
 
 USING_NS_CC;
@@ -112,8 +115,8 @@ void ShopScene::tabButtonCallback(cocos2d::ui::RadioButton* sender, cocos2d::ui:
 	{
 		ShopTypes shopType = ShopTypes::None;
 		if (sender->getName() == "food") shopType = ShopTypes::Food;
-		if (sender->getName() == "power") shopType = ShopTypes::Power;
-		if (sender->getName() == "cook") shopType = ShopTypes::Cook;
+		if (sender->getName() == "power") shopType = ShopTypes::Powerup;
+		if (sender->getName() == "cook") shopType = ShopTypes::Kitchen;
 		if (sender->getName() == "coin") shopType = ShopTypes::Coin;
 		showTab(shopType);
 	}
@@ -124,7 +127,7 @@ void ShopScene::showTab(ShopTypes shopType)
 	std::string fontName = GameChoice::getInstance().getFontName();
 	const float fontSize = 68;
 
-	std::string filePath = "gui/shop/_shop.json";
+	std::string filePath = "shop.json";
 	//if (!FileUtils::getInstance()->isFileExist(filePath))
 	//	return;
 
@@ -135,10 +138,10 @@ void ShopScene::showTab(ShopTypes shopType)
 	auto shopsArr = doc["food"].GetArray();
 	if (shopType == ShopTypes::Coin)
 		shopsArr = doc["coin"].GetArray();
-	if (shopType == ShopTypes::Cook)
-		shopsArr = doc["cook"].GetArray();
-	if (shopType == ShopTypes::Power)
-		shopsArr = doc["power"].GetArray();
+	if (shopType == ShopTypes::Kitchen)
+		shopsArr = doc["kitchen"].GetArray();
+	if (shopType == ShopTypes::Powerup)
+		shopsArr = doc["powerup"].GetArray();
 
 	_shopListView->removeAllItems();
 
@@ -249,15 +252,15 @@ void ShopScene::showTab(ShopTypes shopType)
 				shopIconScale = 1;
 			}
 
-			if (shopType == ShopTypes::Cook)
+			if (shopType == ShopTypes::Kitchen)
 			{
 				shopName = shop["name"].GetString();
-				shopIconPath = StringUtils::format("gui/shop/cooks/cook_%d.png", itemNumber);
-				frameIconPath = "gui/shop/cooks/frame.png";
+				shopIconPath = StringUtils::format("gui/shop/kitchens/kitchen_%d.png", itemNumber);
+				frameIconPath = "gui/shop/kitchens/frame.png";
 				shopIconScale = 1;
 			}
 
-			if (shopType == ShopTypes::Power)
+			if (shopType == ShopTypes::Powerup)
 			{
 				shopName = shop["name"].GetString();
 				shopIconPath = StringUtils::format("gui/shop/powers/power_%d.png", itemNumber);
@@ -271,7 +274,7 @@ void ShopScene::showTab(ShopTypes shopType)
 
 			auto frameIcon = ImageView::create(frameIconPath);
 			itemFrame->addChild(frameIcon);
-			frameIcon->setPosition(itemFrame->getContentSize() / 2 + Size(0, 200));
+			frameIcon->setPosition(itemFrame->getContentSize() / 2 + Size(0, 170));
 
 			auto shopImage = ImageView::create(shopIconPath);
 			frameIcon->addChild(shopImage);
@@ -281,7 +284,7 @@ void ShopScene::showTab(ShopTypes shopType)
 			int shopPrice = shop["price"].GetInt();
 			auto priceText = Text::create(StringUtils::toString(shopPrice), fontName, fontSize);
 			itemFrame->addChild(priceText);
-			priceText->setPosition(itemFrame->getContentSize() / 2 + Size(0, -10));
+			priceText->setPosition(itemFrame->getContentSize() / 2 + Size(0, -140));
 			priceText->setTextHorizontalAlignment(TextHAlignment::RIGHT);
 			priceText->setAnchorPoint(Point(1, .5f));
 			priceText->setTextAreaSize(Size(140, 70));
@@ -293,7 +296,21 @@ void ShopScene::showTab(ShopTypes shopType)
 			auto buyButton = Button::create("gui/shop/shopButton.png");
 			itemFrame->addChild(buyButton);
 			buyButton->setScale(.9f);
-			buyButton->setPosition(itemFrame->getContentSize() / 2 + Size(0, -180));
+			buyButton->setPosition(itemFrame->getContentSize() / 2 + Size(0, -260));
+			auto buyText = Text::create("Buy", fontName, fontSize);
+			buyButton->addChild(buyText);
+			buyText->setPosition(buyButton->getContentSize() / 2);
+			if (shopType == ShopTypes::Kitchen)
+			{
+				KitchenTypes kitchenType = (KitchenTypes)(itemNumber - 1);
+				if (Inventories::getInstance().kitchenUnlocked(kitchenType))
+				{
+					if (GameUser::getInstance().getCurrentKitchen() == kitchenType)
+						buyText->setString("Selected");
+					else
+						buyText->setString("Select");
+				}
+			}
 
 			_shopDataMap[buyButton] = ShopData(shopType, itemNumber - 1);
 
@@ -314,6 +331,17 @@ void ShopScene::buyButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget::Tou
 			FoodTypes foodType = (FoodTypes)shopData.itemNumber;
 			FoodFactory::getInstance().unlockFood(foodType);
 			showTab(ShopTypes::Food);
+			PlayerPrefs::getInstance().saveFoods();
+		}
+
+		if (shopData.shopType == ShopTypes::Kitchen)
+		{
+			KitchenTypes kitchenType = (KitchenTypes)shopData.itemNumber;
+			Inventories::getInstance().unlockKitchen(kitchenType);
+			PlayerPrefs::getInstance().saveUnlockedKitchens();
+			GameUser::getInstance().setCurrentKitchen(kitchenType);
+			PlayerPrefs::getInstance().saveCurrentKitchen();
+			showTab(ShopTypes::Kitchen);
 		}
 	}
 }

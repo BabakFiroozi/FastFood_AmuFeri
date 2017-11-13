@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-//#include <vector>
+
 
 class GameUser
 {
@@ -36,7 +36,7 @@ public:
 			_coin = Max_Coin;
 	}
 
-	std::string getName()
+	const std::string& getName() const
 	{
 		return _name;
 	}
@@ -45,10 +45,21 @@ public:
 		_name = name;
 	}
 
+	KitchenTypes getCurrentKitchen() const
+	{
+		return _currentKitchen;
+	}
+
+	void setCurrentKitchen(KitchenTypes kitchenType)
+	{
+		_currentKitchen = kitchenType;
+	}
+
 protected:
 
 private:
 	int _coin;
 	std::string _name;
+	KitchenTypes _currentKitchen;
 
 };

@@ -8,8 +8,8 @@ enum class ShopTypes
 {
 	None = -1,
 	Food,
-	Power,
-	Cook,
+	Powerup,
+	Kitchen,
 	Coin,
 	Count
 };

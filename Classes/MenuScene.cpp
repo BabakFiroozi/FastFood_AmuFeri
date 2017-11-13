@@ -3,9 +3,13 @@
 #include "GameChoice.h"
 #include "ShopScene.h"
 #include "PlayerPrefs.h"
+#include "Inventories.h"
+#include "GameUser.h"
 
 USING_NS_CC;
 using namespace cocos2d::ui;
+
+bool MenuScene::_inited = false;
 
 MenuScene::MenuScene()
 {
@@ -20,15 +24,33 @@ bool MenuScene::init(ValueMap& initData)
 	if (!Layer::init())
 		return false;
 
+	std::string inventoriesStr = cocos2d::FileUtils::getInstance()->getStringFromFile("inventories.json");
+	Inventories::getInstance().initialize(inventoriesStr);
+
 	bool isFirsrRun = PlayerPrefs::getInstance().isFirstRun();
 	if (isFirsrRun)
 	{
-		std::string str = cocos2d::FileUtils::getInstance()->getStringFromFile("foods/_foods.json");
-		FoodFactory::getInstance().initialize(str);
+		std::string foodsStr = cocos2d::FileUtils::getInstance()->getStringFromFile("foods.json");
+		FoodFactory::getInstance().initialize(foodsStr);
+		PlayerPrefs::getInstance().saveFoods();
+
+		Inventories::getInstance().unlockKitchen(KitchenTypes::Kitchen_1);
+		PlayerPrefs::getInstance().saveUnlockedKitchens();
+		GameUser::getInstance().setCurrentKitchen(KitchenTypes::Kitchen_1);
+		PlayerPrefs::getInstance().saveCurrentKitchen();
+
+		PlayerPrefs::getInstance().doneFirstRun();
 	}
 	else
 	{
-		PlayerPrefs::getInstance().loadFoods();
+		if (!_inited)
+		{
+			PlayerPrefs::getInstance().loadCoin();
+			PlayerPrefs::getInstance().loadFoods();
+			PlayerPrefs::getInstance().loadCurrentKitchen();
+			PlayerPrefs::getInstance().loadUnlockedKitchens();
+			_inited = true;
+		}
 	}
 
 

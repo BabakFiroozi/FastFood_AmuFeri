@@ -78,10 +78,10 @@ std::string FoodFactory::serialize()
 		rapidjson::Value food(rapidjson::kObjectType);
 		food.AddMember("type", (int)f->getType(), allocator);
 		food.AddMember("place", f->getPlace(), allocator);
-		food.AddMember("name", rapidjson::StringRef(f->getName().c_str()), allocator);
+		food.AddMember("name", rapidjson::StringRef(f->getName().c_str(), f->getName().length()), allocator);
 		food.AddMember("worth", f->getWorth(), allocator);
 		food.AddMember("unlocked", f->isUnlocked(), allocator);
-		food.AddMember("iconPath", rapidjson::StringRef(f->getIconPath().c_str()), allocator);
+		food.AddMember("iconPath", rapidjson::StringRef(f->getIconPath().c_str(), f->getIconPath().length()), allocator);
 		food.AddMember("count", f->getCount(), allocator);
 		food.AddMember("price", f->getPrice(), allocator);
 		foodsArray.PushBack(food, allocator);

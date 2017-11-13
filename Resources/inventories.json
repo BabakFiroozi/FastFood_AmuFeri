@@ -1,0 +1,36 @@
+{
+  "kitchens": [
+    {
+      "type": 0,
+      "name": "Kitchen 1",
+      "value": 1
+    },
+    {
+      "type": 1,
+      "name": "Kitchen 2",
+      "value": 2
+    },
+    {
+      "type": 2,
+      "name": "Kitchen 3",
+      "value": 3
+    }
+  ],
+  "powerups": [
+    {
+      "type": 0,
+      "name": "powerup 1",
+      "value": 1
+    },
+    {
+      "type": 0,
+      "name": "powerup 2",
+      "value": 2
+    },
+    {
+      "type": 0,
+      "name": "powerup 3",
+      "value": 3
+    }
+  ]
+}

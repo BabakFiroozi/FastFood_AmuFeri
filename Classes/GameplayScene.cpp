@@ -2,6 +2,9 @@
 #include "GameChoice.h"
 #include "MenuScene.h"
 #include "ShopScene.h"
+#include "PlayerPrefs.h"
+#include "GameUser.h"
+
 
 USING_NS_CC;
 using namespace cocos2d::ui;
@@ -34,15 +37,17 @@ bool GameplayScene::init(cocos2d::ValueMap& initData)
 	listener->onKeyReleased = CC_CALLBACK_2(GameplayScene::onKeyReleasedCallback, this);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 
-	auto shelf = Sprite::create("kitchens/shelf_1.png");
+	int kitchenNumber = (int)GameUser::getInstance().getCurrentKitchen() + 1;
+
+	auto shelf = Sprite::create(StringUtils::format("kitchens/kitchen_%d/shelf.png", kitchenNumber));
 	addChild(shelf);
 	shelf->setPosition(Vect(_visibleSize.width / 2, _visibleSize.height - shelf->getContentSize().height / 2));
 
-	auto cook = Sprite::create("cooks/cook_1.png");
+	auto cook = Sprite::create(StringUtils::format("kitchens/kitchen_%d/cook.png", kitchenNumber));
 	addChild(cook);
 	cook->setPosition(Vec2(_visibleSize.width / 2, _visibleSize.height - 300));
 
-	auto table = Sprite::create("kitchens/table_1.png");
+	auto table = Sprite::create(StringUtils::format("kitchens/kitchen_%d/table.png", kitchenNumber));
 	addChild(table);
 	table->setPosition(Vec2(_visibleSize.width / 2, _visibleSize.height - 850));
 
@@ -175,11 +180,11 @@ void GameplayScene::createHud()
 	_hudLayout->setAnchorPoint(Point(.5f, .5f));
 	_hudLayout->setPosition(_visibleSize / 2);
 
-	auto recipeBack = ImageView::create("cooks/recipeBack.png");
+	auto recipeBack = ImageView::create("kitchens/recipeBack.png");
 	_hudLayout->addChild(recipeBack);
 	recipeBack->setName("recipeBack");
 	recipeBack->setPosition(Vect(_visibleSize.width / 2 - 270, _visibleSize.height - recipeBack->getContentSize().height / 2 + 30));
-	auto recipeBack2 = ImageView::create("cooks/recipeBack_2.png");
+	auto recipeBack2 = ImageView::create("kitchens/recipeBack_2.png");
 	recipeBack->addChild(recipeBack2);
 	recipeBack2->setPosition(recipeBack->getContentSize() / 2);
 	recipeBack2->setOpacity(200);
@@ -521,6 +526,11 @@ void GameplayScene::packBurger(float dt)
 		}
 		if (!_comboIsActive)
 			coin *= 2;
+
+		KitchenTypes currentKitchen = GameUser::getInstance().getCurrentKitchen();
+		int cookCoinCoef = Inventories::getInstance().getKitchenByType(currentKitchen)->getValue();
+		coin *= cookCoinCoef;
+
 		_coinsCount += _recipeFoodsVec.size() * coin;
 	});
 

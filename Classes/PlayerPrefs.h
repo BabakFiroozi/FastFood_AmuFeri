@@ -1,6 +1,7 @@
 #pragma once
 
 #include "FoodFactory.h"
+#include "Inventories.h"
 
 class PlayerPrefs
 {
@@ -19,8 +20,12 @@ public:
 	void loadCoin() const;
 	void saveCoin() const;
 
+	void loadCurrentKitchen() const;
+	void saveCurrentKitchen() const;
+
+	void loadUnlockedKitchens() const;
+	void saveUnlockedKitchens() const;
+
 private:
-
-
 };
 

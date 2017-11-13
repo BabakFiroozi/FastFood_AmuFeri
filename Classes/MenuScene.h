@@ -27,6 +27,7 @@ protected:
 	void update(float dt) override;
 
 private:
+	static bool _inited;
 
 	void buttonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget::TouchEventType eventType);
 
