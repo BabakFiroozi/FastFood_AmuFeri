@@ -85,7 +85,7 @@ bool MenuScene::init(ValueMap& initData)
 
 	auto shopBadge = ImageView::create("gui/menu/shopBadge.png");
 	_foodButton->addChild(shopBadge);
-	shopBadge->setPosition(_foodButton->getContentSize() / 2 + Size(0, 10));
+	shopBadge->setPosition(_foodButton->getContentSize() / 2 + Size(0, 5));
 
 	auto seq = Sequence::createWithTwoActions(ScaleTo::create(.25f, 1.1f), ScaleTo::create(.25f, 1));
 	shopBadge->runAction(RepeatForever::create(seq));

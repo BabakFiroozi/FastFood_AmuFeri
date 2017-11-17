@@ -16,6 +16,8 @@ enum class FoodTypes
 	Steak,
 	Lettuce,
 	CheeseGoda,
+	FishFillet,
+	Tomato,
 
 	Count
 };
@@ -24,12 +26,12 @@ enum class FoodTypes
 class Food
 {
 public:
-	const int Max_Count = 100;
+	static const int Max_Count;
 
 	Food();
 	~Food();
 
-	Food(FoodTypes type, int place, int worth, const std::string& name, bool unlocked, const std::string& iconPath, int count, int price);
+	Food(FoodTypes type, int place, int worth, const std::string& name, bool unlocked, const std::string& iconPath, int count, int price, int height);
 
 	FoodTypes getType() const;
 	int getWorth() const;
@@ -41,6 +43,7 @@ public:
 	int getCount() const;
 	void consume(int c);
 	int getPrice() const;
+	int getHeight() const;
 	void charge(int c);
 
 private:
@@ -52,6 +55,7 @@ private:
 	std::string _iconPath;
 	int _count;
 	int _price;
+	int _height;
 };
 
 

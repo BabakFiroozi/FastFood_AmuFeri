@@ -26,11 +26,8 @@ class Kitchen
 public:
 	Kitchen() {};
 	~Kitchen() {};
-	Kitchen(KitchenTypes type, const std::string& name, int value)
+	Kitchen(KitchenTypes type, const std::string& name, int value): _type(type), _name(name), _value(value)
 	{
-		_type = type;
-		_name = name;
-		_value = value;
 	}
 
 	KitchenTypes getType() const
@@ -59,11 +56,8 @@ class Powerup
 public:
 	Powerup() {};
 	~Powerup() {};
-	Powerup(PowerupTypes type, const std::string& name, int value)
+	Powerup(PowerupTypes type, const std::string& name, int value): _type(type), _name(name), _value(value)
 	{
-		_type = type;
-		_name = name;
-		_value = value;
 	}
 
 	PowerupTypes getType() const

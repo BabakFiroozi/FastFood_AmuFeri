@@ -61,7 +61,8 @@ void FoodFactory::initialize(const std::string& foodsStr)
 		std::string iconPath = f["iconPath"].GetString();
 		int count = f["count"].GetInt();
 		int price = f["price"].GetInt();
-		Food food(type, place, worth, name, unlocked, iconPath, count, price);
+		int height = f["height"].GetInt();
+		Food food(type, place, worth, name, unlocked, iconPath, count, price, height);
 		addFood(std::make_shared<Food>(food));
 	}
 }
@@ -84,6 +85,7 @@ std::string FoodFactory::serialize()
 		food.AddMember("iconPath", rapidjson::StringRef(f->getIconPath().c_str(), f->getIconPath().length()), allocator);
 		food.AddMember("count", f->getCount(), allocator);
 		food.AddMember("price", f->getPrice(), allocator);
+		food.AddMember("height", f->getHeight(), allocator);
 		foodsArray.PushBack(food, allocator);
 	}
 	doc.AddMember("foods", foodsArray, allocator);

@@ -1,27 +1,19 @@
 #include "Food.h"
 
+const int Food::Max_Count = 100;
+
 Food::~Food()
 {
 }
 
-Food::Food()
+Food::Food() : _type(FoodTypes::None)
 {
-	_type = FoodTypes::None;
-	_name = "";
-	_worth = -1;
-	_unlocked = false;
 }
 
-Food::Food(FoodTypes type, int place, int worth, const std::string& name, bool unlocked, const std::string& iconPath, int count, int price)
+Food::Food(FoodTypes type, int place, int worth, const std::string& name, bool unlocked, const std::string& iconPath, int count, int price, int height)
+	:_type(type), _place(place), _worth(worth), _name(name), _unlocked(unlocked),
+	_iconPath(iconPath), _count(count), _price(price), _height(height)
 {
-	_type = type;
-	_place = place;
-	_worth = worth;
-	_name = name;
-	_unlocked = unlocked;
-	_iconPath = iconPath;
-	_count = count;
-	_price = price;
 }
 
 FoodTypes Food::getType() const
@@ -67,6 +59,11 @@ int Food::getCount() const
 int Food::getPrice() const
 {
 	return _price;
+}
+
+int Food::getHeight() const
+{
+	return _height;
 }
 
 void Food::charge(int c)

@@ -378,13 +378,22 @@ void GameplayScene::createRecipeAndDishes()
 
 	_availableFoodsVec.clear();
 
+	std::vector<FoodTypes> unlockedFoodsVec;
+	for (int c = (int)(FoodTypes::Bread_Top) + 1; c < (int)FoodTypes::Count; ++c)
+	{
+		FoodTypes foodType = (FoodTypes)c;
+		if (FoodFactory::getInstance().getFood(foodType)->isUnlocked())
+			unlockedFoodsVec.push_back(foodType);
+	}
+
 	//foods on dishes
 	_availableFoodsVec.push_back(FoodTypes::Bread_Top);
 	FoodTypes foodType = FoodTypes::None;
 	bool exist = false;
-	do 
+	do
 	{
-		foodType = (FoodTypes)random((int)FoodTypes::Sauce, (int)FoodTypes::Count - 1);
+		int randomFood = random(0, (int)unlockedFoodsVec.size() - 1);
+		foodType = (FoodTypes)unlockedFoodsVec.at(randomFood);
 		exist = std::find(_availableFoodsVec.begin(), _availableFoodsVec.end(), foodType) != _availableFoodsVec.end();
 		if(!exist)
 			_availableFoodsVec.push_back(foodType);

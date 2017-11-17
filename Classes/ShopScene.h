@@ -31,13 +31,6 @@ public:
 		return createScene(initData);
 	}
 
-protected:
-	virtual bool init(cocos2d::ValueMap& initData);
-	void onEnter() override;
-	void update(float dt) override;
-
-private:
-
 	struct ShopData
 	{
 		ShopTypes shopType;
@@ -53,6 +46,14 @@ private:
 			this->itemNumber = itemNumber;
 		}
 	};
+
+protected:
+	virtual bool init(cocos2d::ValueMap& initData);
+	void onEnter() override;
+	void update(float dt) override;
+	void onExit() override;
+
+private:
 
 	void buttonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget::TouchEventType eventType);
 	void buyButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget::TouchEventType eventType);
@@ -70,6 +71,9 @@ private:
 	cocos2d::ui::ListView* _shopListView;
 
 	std::map<cocos2d::ui::Button*, ShopData> _shopDataMap;
+
+	void updateListScrollPos();
+
 };
 
 #endif //__SHOP_SCENE_H__
