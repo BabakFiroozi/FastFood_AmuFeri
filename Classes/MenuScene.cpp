@@ -57,11 +57,40 @@ bool MenuScene::init(ValueMap& initData)
 	_visibleOrigin = Director::getInstance()->getVisibleOrigin();
 	_visibleSize = Director::getInstance()->getVisibleSize();
 
+	auto inside = ImageView::create("gui/menu/menu_inside.png");
+	addChild(inside);
+	inside->setPosition(_visibleSize / 2);
+
+	const int moveOffset = 700;
+	const float moveTime = .5f;
+	const float stopTime = 3;
+
+	auto sandiwtches = Node::create();
+	inside->addChild(sandiwtches);
+	sandiwtches->setPosition(inside->getContentSize() / 2 + Size(moveOffset, 160));
+	for (int i = 0; i < 4; ++i)
+	{
+		auto sand = Sprite::create(StringUtils::format("gui/menu/sandwitches/e%d.png", i + 1));
+		sand->setScale(1.4f);
+		sandiwtches->addChild(sand);
+		sand->setPosition(Vect(i * moveOffset, 0));
+	}
+
+	auto resetLeft = CallFunc::create([=]() { sandiwtches->setPosition(inside->getContentSize() / 2 + Size(moveOffset, 160)); });
+	auto moveSeq = Sequence::create(
+		EaseSineOut::create(MoveBy::create(moveTime, Vect(-moveOffset, 0))),
+		DelayTime::create(stopTime), EaseSineOut::create(MoveBy::create(moveTime, Vect(-moveOffset, 0))),
+		DelayTime::create(stopTime), EaseSineOut::create(MoveBy::create(moveTime, Vect(-moveOffset, 0))),
+		DelayTime::create(stopTime), EaseSineOut::create(MoveBy::create(moveTime, Vect(-moveOffset, 0))),
+		DelayTime::create(stopTime), EaseSineOut::create(MoveBy::create(moveTime, Vect(-moveOffset, 0))),
+		resetLeft, nullptr);
+	sandiwtches->runAction(RepeatForever::create(moveSeq));
+
 	_background = ImageView::create("gui/menu/menu_bg.png");
 	addChild(_background);
 	_background->setPosition(_visibleSize / 2);
 
-	const int fontSize = 40;
+	const int fontSize = 44;
 
 	_playButton = Button::create("gui/menu/button.png");
 	_background->addChild(_playButton);

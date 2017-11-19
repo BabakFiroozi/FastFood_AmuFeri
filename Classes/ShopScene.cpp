@@ -33,8 +33,6 @@ bool ShopScene::init(ValueMap& initData)
 	addChild(background);
 	background->setPosition(_visibleSize / 2);
 
-	const int fontSize = 40;
-
 	_backButton = Button::create("gui/shop/backButton.png");
 	background->addChild(_backButton);
 	_backButton->addTouchEventListener(CC_CALLBACK_2(ShopScene::buttonCallback, this));
@@ -43,6 +41,15 @@ bool ShopScene::init(ValueMap& initData)
 	auto shopBackg = ImageView::create("gui/shop/shopBackg.png");
 	background->addChild(shopBackg);
 	shopBackg->setPosition(Vect(_visibleSize.width / 2, _visibleSize.height - 690));
+
+	auto shopHeader = ImageView::create("gui/shop/shop_header.png");
+	shopBackg->addChild(shopHeader);
+	shopHeader->setPosition(Vect(_visibleSize.width / 2, _visibleSize.height - 220));
+
+	_headerText = Text::create(GameChoice::getInstance().getString("TEXT_FOODS"), GameChoice::getInstance().getFontName(), 68);
+	shopHeader->addChild(_headerText);
+	_headerText->setPosition(shopHeader->getContentSize() / 2);
+	_headerText->enableGlow(Color4B::GREEN);
 
 	auto tabButtonGroup = RadioButtonGroup::create();
 	shopBackg->addChild(tabButtonGroup);
@@ -125,7 +132,7 @@ void ShopScene::tabButtonCallback(cocos2d::ui::RadioButton* sender, cocos2d::ui:
 void ShopScene::showTab(ShopTypes shopType)
 {
 	std::string fontName = GameChoice::getInstance().getFontName();
-	const float fontSize = 68;
+	const float fontSize = 84;
 
 	std::string filePath = "shop.json";
 	//if (!FileUtils::getInstance()->isFileExist(filePath))
@@ -142,6 +149,15 @@ void ShopScene::showTab(ShopTypes shopType)
 		shopsArr = doc["kitchen"].GetArray();
 	if (shopType == ShopTypes::Powerup)
 		shopsArr = doc["powerup"].GetArray();
+
+	if (shopType == ShopTypes::Food)
+		_headerText->setString(GameChoice::getInstance().getString("TEXT_FOODS"));
+	if (shopType == ShopTypes::Powerup)
+		_headerText->setString(GameChoice::getInstance().getString("TEXT_POWERUPS"));
+	if (shopType == ShopTypes::Kitchen)
+		_headerText->setString(GameChoice::getInstance().getString("TEXT_KITCHENS"));
+	if (shopType == ShopTypes::Coin)
+		_headerText->setString(GameChoice::getInstance().getString("TEXT_COINS"));
 
 	_shopListView->removeAllItems();
 
@@ -179,14 +195,15 @@ void ShopScene::showTab(ShopTypes shopType)
 			FoodTypes foodType = (FoodTypes)shop["type"].GetInt();
 			auto food = FoodFactory::getInstance().getFood(foodType);
 
-			auto name = Text::create(food->getName(), fontName, fontSize);
+			auto name = Text::create(food->getName(), fontName, fontSize - 12);
 			itemFrame->addChild(name);
-			name->setPosition(itemFrame->getContentSize() / 2 + Size(0, -440));
+			name->setPosition(itemFrame->getContentSize() / 2 + Size(0, -410));
+			name->setTextColor(Color4B(160, 100, 10, 255));
 
 			auto icon = ImageView::create(food->getIconPath());
 			itemFrame->addChild(icon);
-			icon->setPosition(name->getPosition() + Vect(0, 120));
-			icon->setScale(.5f);			
+			icon->setPosition(name->getPosition() + Vect(0, 90));
+			icon->setScale(.45f);			
 
 			auto frame = ImageView::create("gui/shop/entrepot_frame.png");
 			itemFrame->addChild(frame);
@@ -222,16 +239,19 @@ void ShopScene::showTab(ShopTypes shopType)
 			auto add = Text::create(StringUtils::format("+%d", shopAmount), fontName, fontSize);
 			button->addChild(add);
 			add->setPosition(button->getContentSize() / 2);
+			add->enableOutline(Color4B::GRAY, 3);
 
 			auto coin = ImageView::create("gui/coin.png");
 			itemFrame->addChild(coin);
-			coin->setPosition(button->getPosition() + Size(50, 100));
+			coin->setPosition(button->getPosition() + Size(60, 90));
 
 			auto price = Text::create(StringUtils::toString(food->getPrice()), fontName, fontSize);
 			coin->addChild(price);
-			price->setPosition(coin->getContentSize() / 2 - Size(50, 0));
+			price->setPosition(coin->getContentSize() / 2 + Size(-50, 15));
 			price->setTextHorizontalAlignment(TextHAlignment::RIGHT);
 			price->setAnchorPoint(Point::ANCHOR_MIDDLE_RIGHT);
+			price->enableOutline(Color4B::GRAY, 3);
+			price->setTextAreaSize(Size(200, 100));
 		}
 		else
 		{
@@ -257,7 +277,7 @@ void ShopScene::showTab(ShopTypes shopType)
 				shopName = shop["name"].GetString();
 				shopIconPath = StringUtils::format("gui/shop/coins/pack_%d.png", itemNumber);
 				frameIconPath = "gui/shop/coins/frame.png";
-				shopIconScale = 1;
+				shopIconScale = .9f;
 			}
 
 			if (shopType == ShopTypes::Kitchen)
@@ -265,7 +285,7 @@ void ShopScene::showTab(ShopTypes shopType)
 				shopName = shop["name"].GetString();
 				shopIconPath = StringUtils::format("gui/shop/kitchens/kitchen_%d.png", itemNumber);
 				frameIconPath = "gui/shop/kitchens/frame.png";
-				shopIconScale = 1;
+				shopIconScale = 1.1f;
 			}
 
 			if (shopType == ShopTypes::Powerup)
@@ -276,9 +296,10 @@ void ShopScene::showTab(ShopTypes shopType)
 				shopIconScale = 1;
 			}
 
-			auto nameText = Text::create(shopName, fontName, fontSize);
+			auto nameText = Text::create(shopName, fontName, fontSize - 10);
 			itemFrame->addChild(nameText);
-			nameText->setPosition(itemFrame->getContentSize() / 2 + Size(0, 420));			
+			nameText->setPosition(itemFrame->getContentSize() / 2 + Size(0, 430));
+			nameText->setTextColor(Color4B(160, 100, 10, 255));
 
 			auto frameIcon = ImageView::create(frameIconPath);
 			itemFrame->addChild(frameIcon);
@@ -298,35 +319,45 @@ void ShopScene::showTab(ShopTypes shopType)
 			itemFrame->addChild(buyButton);
 			buyButton->setScale(.9f);
 			buyButton->setPosition(itemFrame->getContentSize() / 2 + Size(0, -300));
-			auto buyText = Text::create("Buy", fontName, fontSize);
+			auto buyText = Text::create(GameChoice::getInstance().getString("TEXT_BUY"), fontName, fontSize);
 			buyButton->addChild(buyText);
-			buyText->setPosition(buyButton->getContentSize() / 2 + Size(0, -15));
+			buyText->setPosition(buyButton->getContentSize() / 2 + Size(0, -10));
+			buyText->enableOutline(Color4B::GRAY, 3);
 			if (shopType == ShopTypes::Kitchen)
 			{
 				KitchenTypes kitchenType = (KitchenTypes)(itemNumber - 1);
 				if (Inventories::getInstance().kitchenUnlocked(kitchenType))
 				{
 					if (GameUser::getInstance().getCurrentKitchen() == kitchenType)
-						buyText->setString("Selected");
+						buyText->setString(GameChoice::getInstance().getString("TEXT_ACTIVE"));
 					else
-						buyText->setString("Select");
+						buyText->setString(GameChoice::getInstance().getString("TEXT_SELECT"));
 				}
 			}
 
 			int shopPrice = shop["price"].GetInt();
 			auto priceText = Text::create(StringUtils::toString(shopPrice), fontName, fontSize);
 			itemFrame->addChild(priceText);
-			priceText->setPosition(itemFrame->getContentSize() / 2 + Size(0, -210));
+			priceText->setPosition(itemFrame->getContentSize() / 2 + Size(30, -200));
 			priceText->setTextHorizontalAlignment(TextHAlignment::RIGHT);
-			priceText->setAnchorPoint(Point(1, .5f));
-			priceText->setTextAreaSize(Size(140, 70));
+			priceText->setAnchorPoint(Point::ANCHOR_MIDDLE_RIGHT);
+			priceText->setTextAreaSize(Size(300, 120));
+			priceText->enableOutline(Color4B::GRAY, 3);
 
-			auto coinIcon = ImageView::create("gui/coin.png");
-			priceText->addChild(coinIcon);
-			coinIcon->setPosition(priceText->getTextAreaSize() / 2 + Size(120, 0));
+			if (shopType == ShopTypes::Coin)
+			{
+				std::string tomanStr = GameChoice::getInstance().getString("TEXT_TOUMAN") + " " + priceText->getString();
+				priceText->setString(tomanStr);
+				priceText->setPositionX(priceText->getPositionX() + 100);
+			}
+			else
+			{
+				auto coinIcon = ImageView::create("gui/coin.png");
+				priceText->addChild(coinIcon);
+				coinIcon->setPosition(priceText->getTextAreaSize() / 2 + Size(200, -10));
+			}
 
 			_shopDataMap[buyButton] = ShopData(shopType, itemNumber - 1);
-
 			buyButton->addTouchEventListener(CC_CALLBACK_2(ShopScene::buyButtonCallback, this));
 		}
 	}

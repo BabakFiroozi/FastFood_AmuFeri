@@ -3,123 +3,112 @@
     {
       "type": 0,
 	  "place": -1,
-      "name": "bread_neath",
+      "name": "·¼º",
       "worth": 10,
       "unlocked": true,
-      "iconPath": "foods/bread_neath.png",
+      "iconPath": "foods/bread.png",
 	  "count": 40,
 	  "price": 300,
-	  "height": 0
+	  "height": 30
     },
     {
       "type": 1,
-	  "place": 1,
-      "name": "bread_top",
-      "worth": 10,
-      "unlocked": true,
-      "iconPath": "foods/bread_top.png",
-	  "count": 40,
-	  "price": 150,
-	  "height": 0
-    },
-    {
-      "type": 2,
 	  "place": 0,
-      "name": "sauce",
+      "name": "q¶o¤#uw",
       "worth": 10,
       "unlocked": true,
       "iconPath": "foods/sauceRed.png",
 	  "count": 40,
 	  "price": 250,
-	  "height": 0
+	  "height": 30
     },
     {
-      "type": 3,
+      "type": 2,
 	  "place": 0,
-      "name": "meat",
+      "name": "¾²Iw¼¬#S{¼¬",
       "worth": 10,
       "unlocked": true,
       "iconPath": "foods/meat.png",
 	  "count": 30,
 	  "price": 50,
-	  "height": 0
+	  "height": 30
     },
     {
-      "type": 4,
+      "type": 3,
 	  "place": 0,
-      "name": "cucumber",
+      "name": "n¼{nIÃi",
       "worth": 10,
       "unlocked": true,
       "iconPath": "foods/cucumber.png",
 	  "count": 45,
 	  "price": 200,
-	  "height": 0
+	  "height": 30
     },
     {
-      "type": 5,
+      "type": 4,
 	  "place": 0,
-      "name": "onion",
+      "name": "pIÃQ",
       "worth": 10,
       "unlocked": true,
       "iconPath": "foods/onion.png",
 	  "count": 35,
 	  "price": 500,
-	  "height": 0
+	  "height": 30
     },
     {
-      "type": 6,
+      "type": 5,
 	  "place": 0,
-      "name": "steak",
+      "name": "¦ÃTwH",
       "worth": 10,
       "unlocked": false,
       "iconPath": "foods/steak.png",
 	  "count": 20,
 	  "price": 50,
-	  "height": 0
+	  "height": 30
     },
     {
-      "type": 7,
+      "type": 6,
 	  "place": 0,
-      "name": "lettuce",
+      "name": "¼ÀI¨",
       "worth": 10,
       "unlocked": false,
       "iconPath": "foods/lettuce.png",
 	  "count": 15,
 	  "price": 50,
-	  "height": 0
+	  "height": 30
     },
     {
-      "type": 8,
+      "type": 7,
 	  "place": 0,
-      "name": "cheeseGoda",
+      "name": "Hj¼¬#oÃ¹Q",
       "worth": 10,
       "unlocked": false,
       "iconPath": "foods/cheeseGoda.png",
 	  "count": 65,
 	  "price": 100,
-	  "height": 0
+	  "height": 30
     },
     {
-      "type": 9,
+      "type": 8,
 	  "place": 0,
-      "name": "fishFillet",
+      "name": "ÂÀI¶#¾±ÃÎ",
       "worth": 30,
       "unlocked": false,
       "iconPath": "foods/fishFillet.png",
 	  "count": 65,
 	  "price": 100,
-	  "height": 0
+	  "height": 30
     },
     {
-      "type": 10,
+      "type": 9,
 	  "place": 0,
-      "name": "tomato",
+      "name": "Â«ºoÎ#¾]¼¬",
       "worth": 5,
       "unlocked": false,
       "iconPath": "foods/tomato.png",
 	  "count": 65,
 	  "price": 100,
-	  "height": 0
+	  "height": 30
     }
   ]
 }

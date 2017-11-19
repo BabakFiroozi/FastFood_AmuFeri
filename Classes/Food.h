@@ -7,8 +7,7 @@ enum class FoodTypes
 {
 	None = -1,
 
-	Bread_Neath,
-	Bread_Top,
+	Bread,
 	Sauce,
 	Meat,
 	Cucumber,

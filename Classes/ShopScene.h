@@ -72,6 +72,8 @@ private:
 
 	std::map<cocos2d::ui::Button*, ShopData> _shopDataMap;
 
+	cocos2d::ui::Text* _headerText;
+
 	void updateListScrollPos();
 
 };

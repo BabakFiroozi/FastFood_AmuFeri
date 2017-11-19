@@ -287,8 +287,8 @@ void GameplayScene::dishButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget
 		FoodTypes selFood = *(FoodTypes*)button->getUserData();
 		FoodTypes needFood = _recipeFoodsVec.at(_recipeFoodIndex);
 
-		if (selFood == FoodTypes::Bread_Top && needFood == FoodTypes::Bread_Neath)
-			selFood = needFood;
+		//if (selFood == FoodTypes::Bread_Top && needFood == FoodTypes::Bread_Neath)
+		//	selFood = needFood;
 
 		bool rightFood = selFood == needFood;
 
@@ -302,13 +302,13 @@ void GameplayScene::dishButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget
 
 		if (rightFood)
 		{
-			auto foodSprite = Sprite::create(food->getIconPath());
+			auto foodSprite = Sprite::create(makeIconPath(food->getType(), food->getIconPath(), _burger->getChildrenCount() == 0));
 			Vec2 pos = Vec2::ZERO;
 			if (_burger->getChildrenCount() > 0)
 			{
 				auto lastFoodSprite = _burger->getChildren().at(_burger->getChildrenCount() - 1);
 				pos = lastFoodSprite->getPosition();
-				pos.y += 30;
+				pos.y += food->getHeight();
 			}
 			_burger->addChild(foodSprite);
 			foodSprite->setPosition(pos);
@@ -379,7 +379,7 @@ void GameplayScene::createRecipeAndDishes()
 	_availableFoodsVec.clear();
 
 	std::vector<FoodTypes> unlockedFoodsVec;
-	for (int c = (int)(FoodTypes::Bread_Top) + 1; c < (int)FoodTypes::Count; ++c)
+	for (int c = (int)(FoodTypes::Bread) + 1; c < (int)FoodTypes::Count; ++c)
 	{
 		FoodTypes foodType = (FoodTypes)c;
 		if (FoodFactory::getInstance().getFood(foodType)->isUnlocked())
@@ -387,7 +387,7 @@ void GameplayScene::createRecipeAndDishes()
 	}
 
 	//foods on dishes
-	_availableFoodsVec.push_back(FoodTypes::Bread_Top);
+	_availableFoodsVec.push_back(FoodTypes::Bread);
 	FoodTypes foodType = FoodTypes::None;
 	bool exist = false;
 	do
@@ -436,7 +436,7 @@ void GameplayScene::createRecipeAndDishes()
 
 	_recipeFoodsVec.clear();
 
-	_recipeFoodsVec.push_back(FoodTypes::Bread_Neath);
+	_recipeFoodsVec.push_back(FoodTypes::Bread);
 
 	int foodsCount = cocos2d::random(3, 6);
 	for (int f = 0; f < foodsCount; ++f)
@@ -445,7 +445,7 @@ void GameplayScene::createRecipeAndDishes()
 		_recipeFoodsVec.push_back(foodType);
 	}
 
-	_recipeFoodsVec.push_back(FoodTypes::Bread_Top);
+	_recipeFoodsVec.push_back(FoodTypes::Bread);
 
 	auto recipeList = _hudLayout->getChildByName("recipeBack")->getChildByName("recipe");
 
@@ -453,11 +453,10 @@ void GameplayScene::createRecipeAndDishes()
 
 	for (int i = 0; i < _recipeFoodsVec.size(); ++i)
 	{
-		auto f = _recipeFoodsVec.at(i);
-		auto food = FoodFactory::getInstance().getFood(f);
+		auto food = FoodFactory::getInstance().getFood(_recipeFoodsVec.at(i));
 		auto layout = Layout::create();
 		layout->setContentSize(Size(170, 25));
-		auto item = ImageView::create(food->getIconPath());
+		auto item = ImageView::create(makeIconPath(food->getType(), food->getIconPath(), i == 0));
 		item->setScale(.25f);
 		item->setPosition(layout->getContentSize() / 2);
 		layout->addChild(item);
@@ -627,5 +626,19 @@ void GameplayScene::showPausePage(bool show, bool gameOver)
 		Director::getInstance()->pause();
 	else
 		Director::getInstance()->resume();
+}
+
+std::string GameplayScene::makeIconPath(const FoodTypes foodType, const std::string& iconPath, bool cond)
+{
+	std::string finalPath = "";
+	if (foodType == FoodTypes::Bread)
+	{
+		std::string path = iconPath;
+		path.insert(path.find('.'), (cond ? "_neath" : "_top"));
+		finalPath = path;
+	}
+	else
+		finalPath = iconPath;
+	return finalPath;
 }
 

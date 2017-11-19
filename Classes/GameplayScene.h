@@ -39,6 +39,7 @@ private:
 	void gameOver();
 	void packBurger(float dt);
 	void showPausePage(bool show, bool gameOver);
+	std::string makeIconPath(const FoodTypes foodType, const std::string& iconPath, bool cond);
 
 	cocos2d::Size _visibleSize;
 	cocos2d::Vect _origin;
