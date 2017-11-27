@@ -43,9 +43,14 @@ bool GameplayScene::init(cocos2d::ValueMap& initData)
 	addChild(shelf);
 	shelf->setPosition(Vect(_visibleSize.width / 2, _visibleSize.height - shelf->getContentSize().height / 2));
 
-	auto cook = Sprite::create(StringUtils::format("kitchens/kitchen_%d/cook.png", kitchenNumber));
-	addChild(cook);
-	cook->setPosition(Vec2(_visibleSize.width / 2, _visibleSize.height - 300));
+	std::string animationName = "idle";
+	_animationsMap[animationName] = createCookAnimation(animationName, 40, .05f);
+
+	animationName = "loss";
+	_animationsMap[animationName] = createCookAnimation(animationName, 40, .05f);
+
+	animationName = "ok";
+	_animationsMap[animationName] = createCookAnimation(animationName, 40, .05f);
 
 	auto table = Sprite::create(StringUtils::format("kitchens/kitchen_%d/table.png", kitchenNumber));
 	addChild(table);
@@ -320,6 +325,7 @@ void GameplayScene::dishButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget
 
 			if (_recipeFoodIndex == _recipeFoodsVec.size() - 1)
 			{
+				playCookAnimation("ok", false);
 				scheduleOnce(CC_SCHEDULE_SELECTOR(GameplayScene::packBurger), .3f);
 			}
 
@@ -347,6 +353,8 @@ void GameplayScene::dishButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget
 		}
 		else
 		{
+			playCookAnimation("loss", false);
+
 			if (!_comboIsActive)
 			{
 				_clockTimer -= _wrongFoodTime;
@@ -438,7 +446,7 @@ void GameplayScene::createRecipeAndDishes()
 
 	_recipeFoodsVec.push_back(FoodTypes::Bread);
 
-	int foodsCount = cocos2d::random(3, 6);
+	int foodsCount = cocos2d::random(3, 8);
 	for (int f = 0; f < foodsCount; ++f)
 	{
 		FoodTypes foodType = _availableFoodsVec.at(random(1, (int)_availableFoodsVec.size() - 1));
@@ -461,7 +469,7 @@ void GameplayScene::createRecipeAndDishes()
 		item->setPosition(layout->getContentSize() / 2);
 		layout->addChild(item);
 		recipeList->addChild(layout);
-		layout->setPosition(Vec2(0, (i + 1) * layout->getContentSize().height * .85f));
+		layout->setPosition(Vec2(0, (i + 1) * layout->getContentSize().height * 1.2f));
 
 		auto line = ImageView::create("gui/line.png");
 		line->setName("line");
@@ -479,6 +487,7 @@ void GameplayScene::startGame()
 	_burgerTime = GameChoice::getInstance().getMakeBurgerTime();
 	_clockTimer = _burgerTime;
 	_gameStarted = true;
+	playCookAnimation("idle", true);
 }
 
 void GameplayScene::update(float delta)
@@ -641,4 +650,58 @@ std::string GameplayScene::makeIconPath(const FoodTypes foodType, const std::str
 		finalPath = iconPath;
 	return finalPath;
 }
+
+cocos2d::Sprite* GameplayScene::createCookAnimation(const std::string& animationName, const int framesCount, float delay /*= 0.0f*/, unsigned int loops /*= 1U*/)
+{
+	int kitchenNumber = (int)GameUser::getInstance().getCurrentKitchen() + 1;
+
+	auto cookSpriteBatch = SpriteBatchNode::create(StringUtils::format("kitchens/kitchen_%d/cook.png", kitchenNumber));
+	addChild(cookSpriteBatch);
+	cookSpriteBatch->setPosition(Vec2(_visibleSize.width / 2, _visibleSize.height - 300));
+	auto spriteFrameChache = SpriteFrameCache::getInstance();
+	spriteFrameChache->addSpriteFramesWithFile(StringUtils::format("kitchens/kitchen_%d/cook.plist", kitchenNumber));
+
+	cookSpriteBatch->setScale(1.5f);
+
+	auto firstSprite = Sprite::createWithSpriteFrameName(StringUtils::format("Cook%d_%s__001.png", kitchenNumber, animationName.c_str()));
+	cookSpriteBatch->addChild(firstSprite);
+
+	Vector<SpriteFrame*> spriteFramesVec;
+	for (int i = 1; i <= framesCount; ++i)
+	{
+		std::string frameName = StringUtils::format("Cook%d_%s__%03d.png", kitchenNumber, animationName.c_str(), i);
+		auto sprFrame = spriteFrameChache->getSpriteFrameByName(frameName);
+		if (sprFrame != nullptr)
+			spriteFramesVec.pushBack(sprFrame);
+	}
+	auto animation = Animation::createWithSpriteFrames(spriteFramesVec, delay, loops);
+	firstSprite->setUserData(animation);
+	animation->retain();
+
+	return firstSprite;
+}
+
+void GameplayScene::playCookAnimation(const std::string& animationName, bool loop)
+{
+	for (auto& m : _animationsMap)
+	{
+		auto sprite = m.second;
+		sprite->setVisible(m.first == animationName);
+	}
+
+	auto spr = _animationsMap[animationName];
+	auto animation = static_cast<Animation*>(spr->getUserData());
+
+	auto animate = Animate::create(animation);
+	spr->runAction(animate);
+
+	if (animationName == "loss" || animationName == "ok")
+	{
+		float duration = animate->getDuration();
+		scheduleOnce([=](float dt) {
+			playCookAnimation("idle", true);
+		}, duration, "Idle_After_Loss_Ok");
+	}
+}
+
 

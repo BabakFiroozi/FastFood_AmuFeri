@@ -76,6 +76,11 @@ private:
 
 	std::vector<FoodTypes*> _userDataVec;
 
+	std::map<std::string, cocos2d::Sprite*> _animationsMap;
+
+	cocos2d::Sprite* createCookAnimation(const std::string& animationName, const int framesCount, float delay = 0.0f, unsigned int loops = 1U);
+	void playCookAnimation(const std::string& animationName, bool loop);
+
 	int _sceneNumber;
 
 };
