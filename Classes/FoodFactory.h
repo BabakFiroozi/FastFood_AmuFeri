@@ -6,6 +6,8 @@
 #include "Food.h"
 #include <memory>
 
+typedef std::shared_ptr<Food> FoodPtr;
+
 class FoodFactory
 {
 public:
@@ -14,18 +16,18 @@ public:
 
 	static FoodFactory& getInstance();
 
-	void addFood(std::shared_ptr<Food> food);
-	std::shared_ptr<Food> getFood(FoodTypes type);
+	void addFood(FoodPtr food);
+	FoodPtr getFood(FoodTypes type);
 	void unlockFood(FoodTypes type);
 	void initialize(const std::string& foodsStr);
 	void consumeFood(FoodTypes type, int count = 1);
 	void chargeFood(FoodTypes type, int count);
 	std::string serialize();
 
-	std::vector<std::shared_ptr<Food>> getAllFoods();
+	std::vector<FoodPtr> getAllFoods();
 
 private:
-	std::vector<std::shared_ptr<Food>> _foodsVec;
+	std::vector<FoodPtr> _foodsVec;
 
 	static bool _initialized;
 };

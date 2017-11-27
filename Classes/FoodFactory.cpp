@@ -20,13 +20,13 @@ FoodFactory& FoodFactory::getInstance()
 	return instance;
 }
 
-void FoodFactory::addFood(std::shared_ptr<Food> food)
+void FoodFactory::addFood(FoodPtr food)
 {
 	_foodsVec.push_back(food);
 }
 
 
-std::shared_ptr<Food> FoodFactory::getFood(FoodTypes type)
+FoodPtr FoodFactory::getFood(FoodTypes type)
 {
 	for (auto f : _foodsVec)
 		if (f->getType() == type)
@@ -109,7 +109,7 @@ void FoodFactory::chargeFood(FoodTypes type, int count)
 	food->charge(count);
 }
 
-std::vector<std::shared_ptr<Food>> FoodFactory::getAllFoods()
+std::vector<FoodPtr> FoodFactory::getAllFoods()
 {
 	return _foodsVec;
 }

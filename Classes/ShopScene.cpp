@@ -132,7 +132,7 @@ void ShopScene::tabButtonCallback(cocos2d::ui::RadioButton* sender, cocos2d::ui:
 void ShopScene::showTab(ShopTypes shopType)
 {
 	std::string fontName = GameChoice::getInstance().getFontName();
-	const float fontSize = 84;
+	const float fontSize = 74;
 
 	std::string filePath = "shop.json";
 	//if (!FileUtils::getInstance()->isFileExist(filePath))
@@ -338,23 +338,23 @@ void ShopScene::showTab(ShopTypes shopType)
 			int shopPrice = shop["price"].GetInt();
 			auto priceText = Text::create(StringUtils::toString(shopPrice), fontName, fontSize);
 			itemFrame->addChild(priceText);
-			priceText->setPosition(itemFrame->getContentSize() / 2 + Size(30, -200));
+			priceText->setPosition(itemFrame->getContentSize() / 2 + Size(30, -220));
 			priceText->setTextHorizontalAlignment(TextHAlignment::RIGHT);
 			priceText->setAnchorPoint(Point::ANCHOR_MIDDLE_RIGHT);
-			priceText->setTextAreaSize(Size(300, 120));
+			priceText->setTextAreaSize(Size(340, 140));
 			priceText->enableOutline(Color4B::GRAY, 3);
 
 			if (shopType == ShopTypes::Coin)
 			{
 				std::string tomanStr = GameChoice::getInstance().getString("TEXT_TOUMAN") + " " + priceText->getString();
 				priceText->setString(tomanStr);
-				priceText->setPositionX(priceText->getPositionX() + 100);
+				priceText->setPositionX(priceText->getPositionX() + 120);
 			}
 			else
 			{
 				auto coinIcon = ImageView::create("gui/coin.png");
 				priceText->addChild(coinIcon);
-				coinIcon->setPosition(priceText->getTextAreaSize() / 2 + Size(200, -10));
+				coinIcon->setPosition(priceText->getTextAreaSize() / 2 + Size(220, 10));
 			}
 
 			_shopDataMap[buyButton] = ShopData(shopType, itemNumber - 1);

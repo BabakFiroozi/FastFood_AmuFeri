@@ -1,6 +1,6 @@
 {
 	"fontSize": 42,
-	"fontName": "fonts/LMN Gohar.ttf",
+	"fontName": "fonts/LMN Aban.ttf",
 
 	"tapsellCheckVideoInterval": 3600,
 	"tapsellVideoAvailableTime": 30,
@@ -13,11 +13,13 @@
 
 	"rateUrl": "https://cafebazaar.ir/app/com.iust.tablemath",	
 
-	
+	"TEXT_GAME_PAUSE": "ÁpIM#œ¤¼U",
+	"TEXT_CUSTOMER_WATING": "!ohM#½oÊT¹¶#ÁoTz¶",
 	"TEXT_FOODS": "ÂÄHmš#jH¼¶",
 	"TEXT_POWERUPS": "IÀ#Rnk¤",
 	"TEXT_KITCHENS": "IÀ#½pI™¶",
 	"TEXT_COINS": "Ï¼Q#ÁIÀ#¾TvM",
+	"TEXT_FOOD_FINISHED": "½k{#³IµU",
 	
 	"TEXT_TOUMAN": "·I¶¼U",
 	"TEXT_BUY": "kÄoi",

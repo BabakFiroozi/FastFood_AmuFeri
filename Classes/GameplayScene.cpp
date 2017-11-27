@@ -89,6 +89,12 @@ bool GameplayScene::init(cocos2d::ValueMap& initData)
 	const float buttonsPosY = -220;
 	const float buttonsScale = 1.3f;
 
+	auto pauseText = Text::create(GameChoice::getInstance().getString("TEXT_GAME_PAUSE"), GameChoice::getInstance().getFontName(), 100);
+	pauseText->setName("pauseText");
+	pauseBackg->addChild(pauseText);
+	pauseText->setPosition(pauseBackg->getContentSize() / 2 + Size(0, 50));
+	pauseText->enableOutline(Color4B::GRAY, 4);
+
 	auto resumeButton = Button::create("gui/resumeButton.png");
 	resumeButton->setName("resume");
 	pauseBackg->addChild(resumeButton);
@@ -130,31 +136,34 @@ bool GameplayScene::init(cocos2d::ValueMap& initData)
 	clockFrame->setName("clock");
 	statsLayout->addChild(clockFrame);
 	clockFrame->setPosition(statsLayout->getContentSize() / 2 + Size(0, 100));
-	auto clockText = Text::create("12:12", GameChoice::getInstance().getFontName(), 40);
+	auto clockText = Text::create("12:12", GameChoice::getInstance().getFontName(), 60);
 	clockFrame->addChild(clockText);
 	clockText->setPosition(clockFrame->getContentSize() / 2 + Size(60, 0));
 	clockText->setTextHorizontalAlignment(TextHAlignment::CENTER);
 	//clockText->setAnchorPoint(Point(0, .5f));
+	clockText->enableOutline(Color4B::GRAY, 2);
 
 	auto moneyFrame = ImageView::create("gui/money.png");
 	moneyFrame->setName("money");
 	statsLayout->addChild(moneyFrame);
 	moneyFrame->setPosition(statsLayout->getContentSize() / 2 + Size(0, 0));
-	auto moneyText = Text::create("150000", GameChoice::getInstance().getFontName(), 40);
+	auto moneyText = Text::create("150000", GameChoice::getInstance().getFontName(), 60);
 	moneyFrame->addChild(moneyText);
-	moneyText->setPosition(moneyFrame->getContentSize() / 2 + Size(0, 0));
+	moneyText->setPosition(moneyFrame->getContentSize() / 2 + Size(-20, 0));
 	moneyText->setTextHorizontalAlignment(TextHAlignment::RIGHT);
 	//moneyText->setAnchorPoint(Point(0, .5f));
+	moneyText->enableOutline(Color4B::GRAY, 2);
 
 	auto bonusFrame = ImageView::create("gui/bonus.png");
 	bonusFrame->setName("money");
 	statsLayout->addChild(bonusFrame);
 	bonusFrame->setPosition(statsLayout->getContentSize() / 2 + Size(0, -100));
-	auto bonusText = Text::create("150000", GameChoice::getInstance().getFontName(), 40);
+	auto bonusText = Text::create("150000", GameChoice::getInstance().getFontName(), 60);
 	bonusFrame->addChild(bonusText);
-	bonusText->setPosition(bonusFrame->getContentSize() / 2 + Size(0, 0));
+	bonusText->setPosition(bonusFrame->getContentSize() / 2 + Size(-20, 0));
 	bonusText->setTextHorizontalAlignment(TextHAlignment::RIGHT);
 	//bonusText->setAnchorPoint(Point(0, .5f));
+	bonusText->enableOutline(Color4B::GRAY, 2);
 
 	_pauseLayout->setVisible(false);
 	//
@@ -223,7 +232,7 @@ void GameplayScene::createHud()
 	_hudLayout->addChild(pauseButton);
 	pauseButton->setName("pause");
 	pauseButton->setPosition(Vect(pauseButton->getContentSize().width / 2, _visibleSize.height - pauseButton->getContentSize().height / 2));
-	pauseButton->addTouchEventListener(CC_CALLBACK_2(GameplayScene::pauseButtonCallback, this));	
+	pauseButton->addTouchEventListener(CC_CALLBACK_2(GameplayScene::pauseButtonCallback, this));
 
 
 	auto clockBack = ImageView::create("dishes/clockBack.png");
@@ -289,7 +298,7 @@ void GameplayScene::dishButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget
 			return;
 
 		auto button = static_cast<Button*>(sender);
-		FoodTypes selFood = *(FoodTypes*)button->getUserData();
+		FoodTypes selFood = (FoodTypes)button->getTag();
 		FoodTypes needFood = _recipeFoodsVec.at(_recipeFoodIndex);
 
 		//if (selFood == FoodTypes::Bread_Top && needFood == FoodTypes::Bread_Neath)
@@ -301,7 +310,7 @@ void GameplayScene::dishButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget
 		auto food = FoodFactory::getInstance().getFood(needFood);
 		if (food->getCount() <= 0)
 		{
-
+			onFoodFinished(needFood);
 			return;
 		}
 
@@ -343,13 +352,23 @@ void GameplayScene::dishButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget
 
 			auto recipeList = static_cast<Layout*>(_hudLayout->getChildByName("recipeBack")->getChildByName("recipe"));
 			auto foodLayout = recipeList->getChildren().at(_recipeFoodIndex);
-			auto lineImage = foodLayout->getChildByName("line");
-			lineImage->setVisible(true);
-			lineImage->setColor(Color3B::GREEN);
+
+			auto trueSign = foodLayout->getChildByName("trueSign");
+			auto falseSign = foodLayout->getChildByName("falseSign");
+			trueSign->setVisible(true);
+			falseSign->setVisible(false);
+
 			//play right sound
+			//TODO
+
 			FoodFactory::getInstance().consumeFood(food->getType());
 
 			_recipeFoodIndex++;
+
+			auto foodCountLabel = static_cast<Label*>(button->getChildByName("FoodsCount"));
+			foodCountLabel->setString(StringUtils::toString(food->getCount()));
+			if (food->getCount() == 0)
+				foodCountLabel->setTextColor(Color4B::RED);
 		}
 		else
 		{
@@ -368,10 +387,14 @@ void GameplayScene::dishButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget
 
 			auto recipeList = static_cast<Layout*>(_hudLayout->getChildByName("recipeBack")->getChildByName("recipe"));
 			auto foodLayout = recipeList->getChildren().at(_recipeFoodIndex);
-			auto lineImage = foodLayout->getChildByName("line");
-			lineImage->setVisible(true);
-			lineImage->setColor(Color3B::RED);
+
+			auto trueSign = foodLayout->getChildByName("trueSign");
+			auto falseSign = foodLayout->getChildByName("falseSign");
+			trueSign->setVisible(false);
+			falseSign->setVisible(true);
+
 			//play wrong sound
+			//TODO
 		}
 	}
 }
@@ -403,7 +426,7 @@ void GameplayScene::createRecipeAndDishes()
 		int randomFood = random(0, (int)unlockedFoodsVec.size() - 1);
 		foodType = (FoodTypes)unlockedFoodsVec.at(randomFood);
 		exist = std::find(_availableFoodsVec.begin(), _availableFoodsVec.end(), foodType) != _availableFoodsVec.end();
-		if(!exist)
+		if (!exist)
 			_availableFoodsVec.push_back(foodType);
 	} while (_availableFoodsVec.size() < Dishes_Count);
 
@@ -420,14 +443,20 @@ void GameplayScene::createRecipeAndDishes()
 		foodImage->setScale(.3);
 		foodImage->setPosition(dishButton->getContentSize() / 2);
 
-		auto typePtr = new FoodTypes(foodType);
-		dishButton->setUserData(typePtr);
-		_userDataVec.push_back(typePtr);
+		dishButton->setTag((int)foodType);
 
 		dishButton->setName(StringUtils::format("dish__%d", i));
 
 		_hudLayout->addChild(dishButton);
 		dishButton->setPosition(dishOffset);
+
+		auto foodCountLabel = Label::create(StringUtils::toString(food->getCount()), GameChoice::getInstance().getFontName(), 50);
+		foodCountLabel->setName("FoodsCount");
+		dishButton->addChild(foodCountLabel);
+		foodCountLabel->setPosition(dishButton->getContentSize() / 2 + Size(0, 80));
+		foodCountLabel->setTextColor(Color4B(100, 100, 100, 255));
+		if (food->getCount() == 0)
+			foodCountLabel->setTextColor(Color4B::RED);
 
 		Size size = dishButton->getContentSize();
 
@@ -439,6 +468,7 @@ void GameplayScene::createRecipeAndDishes()
 		}
 
 		dishButton->addTouchEventListener(CC_CALLBACK_2(GameplayScene::dishButtonCallback, this));
+		_dishesVec.pushBack(dishButton);
 	}
 	//dishes
 
@@ -471,12 +501,19 @@ void GameplayScene::createRecipeAndDishes()
 		recipeList->addChild(layout);
 		layout->setPosition(Vec2(0, (i + 1) * layout->getContentSize().height * 1.2f));
 
-		auto line = ImageView::create("gui/line.png");
-		line->setName("line");
-		layout->addChild(line);
-		line->setPosition(layout->getContentSize() / 2 + Size(0, -8));
-		line->setScaleX(40);
-		line->setVisible(false);
+		auto trueSign = ImageView::create("gui/trueSign.png");
+		trueSign->setName("trueSign");
+		layout->addChild(trueSign);
+		trueSign->setPosition(layout->getContentSize() / 2 + Size(100, 0));
+		trueSign->setScale(.4f);
+		trueSign->setVisible(false);
+
+		auto falseSign = ImageView::create("gui/falseSign.png");
+		falseSign->setName("falseSign");
+		layout->addChild(falseSign);
+		falseSign->setPosition(layout->getContentSize() / 2 + Size(100, 0));
+		falseSign->setScale(.4f);
+		falseSign->setVisible(false);
 	}
 
 	_recipeFoodIndex = 0;
@@ -494,7 +531,7 @@ void GameplayScene::update(float delta)
 {
 	Layer::update(delta);
 
-	if (_gameStarted && !_isGameOver)
+	if (_gameStarted && !_isGameOver && _foodFinishedLayout == nullptr)
 	{
 		_clockTimer -= delta;
 
@@ -506,7 +543,7 @@ void GameplayScene::update(float delta)
 			if (_clockTimer <= _makeBurgerTime)
 			{
 				_clockTimer = _makeBurgerTime - _comboDecTime;
-				_comboIsActive = false;	
+				_comboIsActive = false;
 				_comboBar->getParent()->setVisible(false);
 			}
 		}
@@ -567,7 +604,7 @@ void GameplayScene::packBurger(float dt)
 	recipeBack->runAction(seq);
 
 	if (!_comboIsActive)
-		_clockTimer += GameChoice::getInstance().getPackBurgerTime();	
+		_clockTimer += GameChoice::getInstance().getPackBurgerTime();
 
 	return;
 }
@@ -575,9 +612,7 @@ void GameplayScene::packBurger(float dt)
 void GameplayScene::onExit()
 {
 	Layer::onExit();
-
-	for (auto p : _userDataVec)
-		delete p;
+	PlayerPrefs::getInstance().saveFoods();
 }
 
 void GameplayScene::pauseButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget::TouchEventType eventType)
@@ -629,6 +664,7 @@ void GameplayScene::showPausePage(bool show, bool gameOver)
 	pauseBackg->getChildByName("stats")->setVisible(gameOver);
 	pauseBackg->getChildByName("pauseHeader")->setVisible(!gameOver);
 	pauseBackg->getChildByName("gameOverHeader")->setVisible(gameOver);
+	pauseBackg->getChildByName("pauseText")->setVisible(!gameOver);
 	_pauseLayout->setVisible(show);
 
 	if (show)
@@ -704,4 +740,104 @@ void GameplayScene::playCookAnimation(const std::string& animationName, bool loo
 	}
 }
 
+void GameplayScene::onFoodFinished(FoodTypes foodType)
+{
+	auto food = FoodFactory::getInstance().getFood(foodType);
+
+	_foodFinishedLayout = Layout::create();
+	_foodFinishedLayout->setContentSize(_visibleSize);
+	_foodFinishedLayout->setTouchEnabled(true);
+	_foodFinishedLayout->setSwallowTouches(true);
+	addChild(_foodFinishedLayout);
+
+	_foodFinishedLayout->setBackGroundColorType(Layout::BackGroundColorType::SOLID);
+	_foodFinishedLayout->setBackGroundColor(Color3B::BLACK);
+	_foodFinishedLayout->setBackGroundColorOpacity(150);
+
+
+	auto popupBackg = ImageView::create("gui/gameover/finishedBackg.png");
+	_foodFinishedLayout->addChild(popupBackg);
+	popupBackg->setPosition(_foodFinishedLayout->getContentSize() / 2 + Size(0, 200));
+
+	auto warning = ImageView::create("gui/gameover/warning.png");
+	popupBackg->addChild(warning);
+	Size backgSize = popupBackg->getContentSize();
+	warning->setPosition(Size(backgSize.width / 2, backgSize.height + 80));
+	warning->runAction(RepeatForever::create(Sequence::createWithTwoActions(ScaleTo::create(.2f, 1.1f), ScaleTo::create(.2f, 1.0f))));
+
+	auto foodImage = ImageView::create(food->getIconPath());
+	popupBackg->addChild(foodImage);
+	foodImage->setPosition(backgSize / 2 + Size(0, 190));
+	foodImage->setScale(.5f);
+
+	std::string fontName = GameChoice::getInstance().getFontName();
+
+	std::string textStr = GameChoice::getInstance().getString("TEXT_FOOD_FINISHED") + " " + food->getName();
+	auto text = Text::create(textStr, fontName, 60);
+	popupBackg->addChild(text);
+	text->setPosition(backgSize / 2 + Size(0, 70));
+	text->setTextColor(Color4B::RED);
+	text->enableOutline(Color4B::YELLOW, 2);
+
+	auto message = Text::create(GameChoice::getInstance().getString("TEXT_CUSTOMER_WATING"), fontName, 45);
+	popupBackg->addChild(message);
+	message->setPosition(backgSize / 2 + Size(0, -20));
+	message->enableOutline(Color4B::GRAY, 2);
+
+
+	auto button = Button::create("gui/shop/entrepot_add.png");
+	button->setScale(1.2f);
+	popupBackg->addChild(button);
+	button->setPosition(backgSize / 2 + Size(0, -205));
+	button->addTouchEventListener([=](Ref* sender, Widget::TouchEventType eventType) {
+		if (eventType == Widget::TouchEventType::ENDED)
+		{
+			FoodFactory::getInstance().chargeFood(food->getType(), 5);
+			for (auto dish : _dishesVec)
+			{
+				if ((FoodTypes)dish->getTag() == foodType)
+				{
+					auto foodCountLabel = static_cast<Label*>(dish->getChildByName("FoodsCount"));
+					foodCountLabel->setString(StringUtils::toString(food->getCount()));
+					foodCountLabel->setTextColor(Color4B(100, 100, 100, 255));
+				}
+			}
+		}
+	});
+
+	auto pointer = ImageView::create("gui/hand_pointer.png");
+	popupBackg->addChild(pointer);
+	pointer->setPosition(button->getPosition() + Size(-200, 0));
+	pointer->runAction(RepeatForever::create(Sequence::createWithTwoActions(MoveBy::create(.3f, Vect(30, 0)), MoveBy::create(.3f, Vect(-30, 0)))));
+
+	int fontSize = 78;
+
+	auto add = Text::create(StringUtils::format("+%d", 5), fontName, fontSize);
+	button->addChild(add);
+	add->setPosition(button->getContentSize() / 2);
+	add->enableOutline(Color4B::GRAY, 3);
+
+	auto coin = ImageView::create("gui/coin.png");
+	popupBackg->addChild(coin);
+	coin->setPosition(button->getPosition() + Size(60, 95));
+
+	auto price = Text::create(StringUtils::toString(food->getPrice()), fontName, fontSize);
+	coin->addChild(price);
+	price->setPosition(coin->getContentSize() / 2 + Size(-50, 15));
+	price->setTextHorizontalAlignment(TextHAlignment::RIGHT);
+	price->setAnchorPoint(Point::ANCHOR_MIDDLE_RIGHT);
+	price->enableOutline(Color4B::GRAY, 3);
+	price->setTextAreaSize(Size(200, 100));
+
+	auto close = Button::create("gui/menu/closeButton.png");
+	popupBackg->addChild(close);
+	close->setPosition(backgSize);
+	close->addTouchEventListener([=](Ref* sender, Widget::TouchEventType eventType) {
+		if (eventType == Widget::TouchEventType::ENDED)
+		{
+			_foodFinishedLayout->removeFromParent();
+			_foodFinishedLayout = nullptr;
+		}
+	});
+}
 

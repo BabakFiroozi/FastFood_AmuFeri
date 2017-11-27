@@ -41,6 +41,12 @@ private:
 	void showPausePage(bool show, bool gameOver);
 	std::string makeIconPath(const FoodTypes foodType, const std::string& iconPath, bool cond);
 
+
+	cocos2d::Sprite* createCookAnimation(const std::string& animationName, const int framesCount, float delay = 0.0f, unsigned int loops = 1U);
+	void playCookAnimation(const std::string& animationName, bool loop);
+
+	void onFoodFinished(FoodTypes foodType);
+
 	cocos2d::Size _visibleSize;
 	cocos2d::Vect _origin;
 
@@ -74,14 +80,10 @@ private:
 	float _comboIncTime;
 	float _comboDecTime;
 
-	std::vector<FoodTypes*> _userDataVec;
-
 	std::map<std::string, cocos2d::Sprite*> _animationsMap;
-
-	cocos2d::Sprite* createCookAnimation(const std::string& animationName, const int framesCount, float delay = 0.0f, unsigned int loops = 1U);
-	void playCookAnimation(const std::string& animationName, bool loop);
-
 	int _sceneNumber;
+
+	cocos2d::ui::Layout* _foodFinishedLayout = nullptr;
 
 };
 
