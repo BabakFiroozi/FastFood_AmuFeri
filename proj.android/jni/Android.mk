@@ -12,7 +12,7 @@ LOCAL_MODULE := MyGame_shared
 LOCAL_MODULE_FILENAME := libMyGame
 
 LOCAL_SRC_FILES := hellocpp/main.cpp \
-				   ../../Classes/AppDelegate.cpp \
+                   ../../Classes/AppDelegate.cpp \
                    ../../Classes/Food.cpp \
                    ../../Classes/FoodFactory.cpp \
 				   ../../Classes/GameChoice.cpp \
