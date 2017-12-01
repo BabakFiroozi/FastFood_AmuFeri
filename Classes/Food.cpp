@@ -1,6 +1,6 @@
 #include "Food.h"
 
-const int Food::Max_Count = 100;
+const int Food::Max_Count = 200;
 
 Food::~Food()
 {

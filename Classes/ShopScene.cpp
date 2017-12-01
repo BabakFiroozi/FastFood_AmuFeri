@@ -135,12 +135,17 @@ void ShopScene::showTab(ShopTypes shopType)
 	const float fontSize = 74;
 
 	std::string filePath = "shop.json";
-	//if (!FileUtils::getInstance()->isFileExist(filePath))
-	//	return;
+	if (!FileUtils::getInstance()->isFileExist(filePath))
+	{
+		CCLOG("Json file not found.");
+		return;
+	}
 
 	std::string str = FileUtils::getInstance()->getStringFromFile(filePath);
 	rapidjson::Document doc;
 	doc.Parse<0>(str.c_str());
+
+	_foodAddAmount = doc["foodAddAmount"].GetInt();
 
 	auto shopsArr = doc["food"].GetArray();
 	if (shopType == ShopTypes::Coin)
@@ -176,8 +181,6 @@ void ShopScene::showTab(ShopTypes shopType)
 		shopLayout->addChild(itemFrame);
 		itemFrame->setPosition(shopLayout->getContentSize() / 2 + Size(0, 0));
 		//itemFrame->setOpacity(100);
-
-		int shopAmount = shop["amount"].GetInt();
 
 		bool unlockedFood = false;
 
@@ -236,7 +239,7 @@ void ShopScene::showTab(ShopTypes shopType)
 			button->setName("charge");
 			button->setTag((int)food->getType());
 
-			auto add = Text::create(StringUtils::format("+%d", shopAmount), fontName, fontSize);
+			auto add = Text::create(StringUtils::format("+%d", _foodAddAmount), fontName, fontSize);
 			button->addChild(add);
 			add->setPosition(button->getContentSize() / 2);
 			add->enableOutline(Color4B::GRAY, 3);
@@ -245,7 +248,8 @@ void ShopScene::showTab(ShopTypes shopType)
 			itemFrame->addChild(coin);
 			coin->setPosition(button->getPosition() + Size(60, 90));
 
-			auto price = Text::create(StringUtils::toString(food->getPrice()), fontName, fontSize);
+			int addPrice = food->getPrice() / food->getCount() * _foodAddAmount;
+			auto price = Text::create(StringUtils::toString(addPrice), fontName, fontSize);
 			coin->addChild(price);
 			price->setPosition(coin->getContentSize() / 2 + Size(-50, 15));
 			price->setTextHorizontalAlignment(TextHAlignment::RIGHT);
@@ -253,7 +257,7 @@ void ShopScene::showTab(ShopTypes shopType)
 			price->enableOutline(Color4B::GRAY, 3);
 			price->setTextAreaSize(Size(200, 100));
 		}
-		else
+		else// not unlocked food
 		{
 			std::string shopName = "";
 			std::string shopIconPath = "";
@@ -262,6 +266,7 @@ void ShopScene::showTab(ShopTypes shopType)
 
 			bool unlockedFood = false;
 
+			int foodPrice = 0;
 			if (shopType == ShopTypes::Food)
 			{
 				FoodTypes foodType = (FoodTypes)shop["type"].GetInt();
@@ -270,6 +275,7 @@ void ShopScene::showTab(ShopTypes shopType)
 				shopIconPath = food->getIconPath();
 				frameIconPath = "gui/shop/dishFrame.png";
 				shopIconScale = .5f;
+				foodPrice = food->getPrice();
 			}
 
 			if (shopType == ShopTypes::Coin)
@@ -336,6 +342,8 @@ void ShopScene::showTab(ShopTypes shopType)
 			}
 
 			int shopPrice = shop["price"].GetInt();
+			if (shopPrice == -1)
+				shopPrice = foodPrice;
 			auto priceText = Text::create(StringUtils::toString(shopPrice), fontName, fontSize);
 			itemFrame->addChild(priceText);
 			priceText->setPosition(itemFrame->getContentSize() / 2 + Size(30, -220));
@@ -399,6 +407,8 @@ void ShopScene::addButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget::Tou
 		{
 			FoodTypes foodType = (FoodTypes)button->getTag();
 			FoodFactory::getInstance().chargeFood(foodType, 5);
+			auto food = FoodFactory::getInstance().getFood(foodType);
+			int addPrice = food->getPrice() / food->getCount() * _foodAddAmount;
 			updateListScrollPos();
 			showTab(ShopTypes::Food);
 		}

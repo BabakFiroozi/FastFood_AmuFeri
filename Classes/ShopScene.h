@@ -61,6 +61,7 @@ private:
 	void addButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget::TouchEventType eventType);
 
 	void showTab(ShopTypes shopType);
+	void updateListScrollPos();
 
 	ShopTypes _defaultShopType;
 
@@ -74,8 +75,7 @@ private:
 
 	cocos2d::ui::Text* _headerText;
 
-	void updateListScrollPos();
-
+	int _foodAddAmount = 0;
 };
 
 #endif //__SHOP_SCENE_H__

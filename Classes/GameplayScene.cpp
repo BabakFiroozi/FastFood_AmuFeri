@@ -450,7 +450,7 @@ void GameplayScene::createRecipeAndDishes()
 		_hudLayout->addChild(dishButton);
 		dishButton->setPosition(dishOffset);
 
-		auto foodCountLabel = Label::create(StringUtils::toString(food->getCount()), GameChoice::getInstance().getFontName(), 50);
+		auto foodCountLabel = Label::createWithTTF(StringUtils::toString(food->getCount()), GameChoice::getInstance().getFontName(), 50);
 		foodCountLabel->setName("FoodsCount");
 		dishButton->addChild(foodCountLabel);
 		foodCountLabel->setPosition(dishButton->getContentSize() / 2 + Size(0, 80));
