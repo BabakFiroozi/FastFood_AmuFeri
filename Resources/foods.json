@@ -95,7 +95,7 @@
       "worth": 30,
       "unlocked": false,
       "iconPath": "foods/fishFillet.png",
-	  "count": 100,
+	  "count": 50,
 	  "price": 12000,
 	  "height": 22
     },

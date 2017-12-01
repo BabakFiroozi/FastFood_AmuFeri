@@ -196,17 +196,17 @@ void ShopScene::showTab(ShopTypes shopType)
 			const int maxCount = Food::Max_Count;
 
 			FoodTypes foodType = (FoodTypes)shop["type"].GetInt();
-			auto food = FoodFactory::getInstance().getFood(foodType);
-
-			auto name = Text::create(food->getName(), fontName, fontSize - 12);
-			itemFrame->addChild(name);
-			name->setPosition(itemFrame->getContentSize() / 2 + Size(0, -410));
-			name->setTextColor(Color4B(160, 100, 10, 255));
+			auto food = FoodFactory::getInstance().getFood(foodType);			
 
 			auto icon = ImageView::create(food->getIconPath());
 			itemFrame->addChild(icon);
-			icon->setPosition(name->getPosition() + Vect(0, 90));
-			icon->setScale(.45f);			
+			icon->setPosition(itemFrame->getContentSize() / 2 + Size(0, -310));
+			icon->setScale(.45f);
+
+			auto name = Text::create(food->getName(), fontName, fontSize - 12);
+			itemFrame->addChild(name);
+			name->setPosition(icon->getPosition() + Vect(0, -90));
+			name->setTextColor(Color4B(160, 100, 10, 255));
 
 			auto frame = ImageView::create("gui/shop/entrepot_frame.png");
 			itemFrame->addChild(frame);
@@ -227,7 +227,7 @@ void ShopScene::showTab(ShopTypes shopType)
 			else
 				bar->setColor(Color3B::RED);
 
-			auto count = Text::create(StringUtils::format("%d%%", percent), fontName, fontSize - 15);
+			auto count = Text::create(StringUtils::toString(food->getCount()), fontName, fontSize - 10);
 			bar->addChild(count);
 			count->setPosition(bar->getContentSize() / 2);
 			count->setRotation(90);
@@ -267,6 +267,7 @@ void ShopScene::showTab(ShopTypes shopType)
 			bool unlockedFood = false;
 
 			int foodPrice = 0;
+			int foodsCount = 0;
 			if (shopType == ShopTypes::Food)
 			{
 				FoodTypes foodType = (FoodTypes)shop["type"].GetInt();
@@ -276,6 +277,7 @@ void ShopScene::showTab(ShopTypes shopType)
 				frameIconPath = "gui/shop/dishFrame.png";
 				shopIconScale = .5f;
 				foodPrice = food->getPrice();
+				foodsCount = food->getCount();
 			}
 
 			if (shopType == ShopTypes::Coin)
@@ -339,6 +341,21 @@ void ShopScene::showTab(ShopTypes shopType)
 					else
 						buyText->setString(GameChoice::getInstance().getString("TEXT_SELECT"));
 				}
+			}
+
+			int shopAmount = shop["amount"].GetInt();
+			if (shopAmount > 1)
+			{
+				auto amountText = Text::create(StringUtils::toString(shopAmount), fontName, fontSize + 20);
+				itemFrame->addChild(amountText);
+				amountText->enableOutline(Color4B::GRAY, 2);
+				if (shopType == ShopTypes::Food)
+				{
+					amountText->setString(StringUtils::toString(foodsCount));
+					amountText->setPosition(itemFrame->getContentSize() / 2 + Size(0, 360));
+				}
+				if (shopType == ShopTypes::Coin)
+					amountText->setPosition(itemFrame->getContentSize() / 2 + Size(0, 420));
 			}
 
 			int shopPrice = shop["price"].GetInt();

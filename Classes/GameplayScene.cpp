@@ -76,12 +76,12 @@ bool GameplayScene::init(cocos2d::ValueMap& initData)
 	_pauseLayout->addChild(pauseBackg);
 	pauseBackg->setPosition(Size(_pauseLayout->getContentSize().width / 2, _pauseLayout->getContentSize().height - 500));
 
-	auto pauseHeader = ImageView::create("gui/pauseHeader.png");
+	auto pauseHeader = ImageView::create("gui/pauseGameOver.png");
 	pauseHeader->setName("pauseHeader");
 	pauseBackg->addChild(pauseHeader);
 	pauseHeader->setPosition(Vect(pauseBackg->getContentSize().width / 2, pauseBackg->getContentSize().height - pauseHeader->getContentSize().height / 2));
 
-	auto gameOverHeader = ImageView::create("gui/pauseGameOver.png");
+	auto gameOverHeader = ImageView::create("gui/pauseHeader.png");
 	gameOverHeader->setName("gameOverHeader");
 	pauseBackg->addChild(gameOverHeader);
 	gameOverHeader->setPosition(pauseHeader->getPosition());
@@ -155,7 +155,7 @@ bool GameplayScene::init(cocos2d::ValueMap& initData)
 	moneyText->enableOutline(Color4B::GRAY, 2);
 
 	auto bonusFrame = ImageView::create("gui/bonus.png");
-	bonusFrame->setName("money");
+	bonusFrame->setName("bonus");
 	statsLayout->addChild(bonusFrame);
 	bonusFrame->setPosition(statsLayout->getContentSize() / 2 + Size(0, -100));
 	auto bonusText = Text::create("150000", GameChoice::getInstance().getFontName(), 60);
@@ -476,7 +476,13 @@ void GameplayScene::createRecipeAndDishes()
 
 	_recipeFoodsVec.push_back(FoodTypes::Bread);
 
-	int foodsCount = cocos2d::random(3, 8);
+	int minFoodsCount = 2;
+	int maxFoodsCount = minFoodsCount  + _burgersCount / 5;
+	if (maxFoodsCount > 8)
+		maxFoodsCount = 8;
+
+	int foodsCount = cocos2d::random(minFoodsCount, maxFoodsCount);
+
 	for (int f = 0; f < foodsCount; ++f)
 	{
 		FoodTypes foodType = _availableFoodsVec.at(random(1, (int)_availableFoodsVec.size() - 1));
@@ -557,6 +563,8 @@ void GameplayScene::update(float delta)
 		{
 			gameOver();
 		}
+
+		_playDuration += delta;
 	}
 }
 
@@ -586,6 +594,8 @@ void GameplayScene::packBurger(float dt)
 		coin *= cookCoinCoef;
 
 		_coinsCount += _recipeFoodsVec.size() * coin;
+
+		_burgersCount++;
 	});
 
 	auto move1 = MoveTo::create(.3f, burgerPos + Vect(500, 0));
@@ -666,6 +676,21 @@ void GameplayScene::showPausePage(bool show, bool gameOver)
 	pauseBackg->getChildByName("gameOverHeader")->setVisible(gameOver);
 	pauseBackg->getChildByName("pauseText")->setVisible(!gameOver);
 	_pauseLayout->setVisible(show);
+
+	auto stats = pauseBackg->getChildByName("stats");
+
+	int duration = _playDuration;
+	int hou = duration / 3600;
+	int min = duration / 60 % 60;
+	int sec = duration % 60;
+	auto clockText = static_cast<Text*>(stats->getChildByName("clock")->getChildren().at(0));
+	clockText->setString(StringUtils::toString(StringUtils::format("%02d:%02d:%02d", hou, min, sec)));
+
+	auto moneyText = static_cast<Text*>(stats->getChildByName("money")->getChildren().at(0));
+	moneyText->setString(StringUtils::toString(_coinsCount));
+
+	auto bonusText = static_cast<Text*>(stats->getChildByName("bonus")->getChildren().at(0));
+	bonusText->setString(StringUtils::toString(_burgersCount));
 
 	if (show)
 		Director::getInstance()->pause();

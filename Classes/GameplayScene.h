@@ -63,6 +63,9 @@ private:
 
 	cocos2d::ui::Text* _coinText;
 	int _coinsCount = 0;;
+	int _burgersCount = 0;
+
+	float _playDuration = 0;
 
 	int _recipeFoodIndex;
 
@@ -84,7 +87,6 @@ private:
 	int _sceneNumber;
 
 	cocos2d::ui::Layout* _foodFinishedLayout = nullptr;
-
 };
 
 #endif //__GAMEPLAY_SCENE_H__
