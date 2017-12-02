@@ -29,9 +29,15 @@ bool ShopScene::init(ValueMap& initData)
 	_visibleOrigin = Director::getInstance()->getVisibleOrigin();
 	_visibleSize = Director::getInstance()->getVisibleSize();
 
-	auto background = ImageView::create("gui/shop/backg.png");
+	auto background = Layout::create();
 	addChild(background);
-	background->setPosition(_visibleSize / 2);
+	background->setContentSize(_visibleSize);
+	background->setAnchorPoint(Point::ANCHOR_MIDDLE);
+	background->setPosition(_visibleOrigin + _visibleSize / 2);
+
+	auto backgImage = ImageView::create("gui/shop/backg.png");
+	background->addChild(backgImage);
+	backgImage->setPosition(background->getContentSize() / 2);
 
 	_backButton = Button::create("gui/shop/backButton.png");
 	background->addChild(_backButton);

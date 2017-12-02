@@ -60,7 +60,7 @@ void SplashScene::onEnter()
 {
 	Layer::onEnter();
 
-	scheduleOnce(CC_SCHEDULE_SELECTOR(SplashScene::goMenu, this), 1);
+	scheduleOnce(CC_SCHEDULE_SELECTOR(SplashScene::goMenu), 1);
 }
 
 void SplashScene::goMenu(float dt)

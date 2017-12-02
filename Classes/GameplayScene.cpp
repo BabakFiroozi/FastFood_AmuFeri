@@ -33,7 +33,7 @@ bool GameplayScene::init(cocos2d::ValueMap& initData)
 	_coinsCount = GameUser::getInstance().getCoin();
 
 	_visibleSize = Director::getInstance()->getVisibleSize();
-	_origin = Director::getInstance()->getVisibleOrigin();
+	_visibleOrigin = Director::getInstance()->getVisibleOrigin();
 
 	auto listener = EventListenerKeyboard::create();
 	listener->onKeyReleased = CC_CALLBACK_2(GameplayScene::onKeyReleasedCallback, this);
@@ -193,8 +193,8 @@ void GameplayScene::createHud()
 	_hudLayout = Layout::create();
 	addChild(_hudLayout);
 	_hudLayout->setContentSize(_visibleSize);
-	_hudLayout->setAnchorPoint(Point(.5f, .5f));
-	_hudLayout->setPosition(_visibleSize / 2);
+	_hudLayout->setAnchorPoint(Point::ANCHOR_MIDDLE);
+	_hudLayout->setPosition(_visibleOrigin + _visibleSize / 2);
 
 	auto recipeBack = ImageView::create("kitchens/recipeBack.png");
 	_hudLayout->addChild(recipeBack);
@@ -234,7 +234,7 @@ void GameplayScene::createHud()
 	auto pauseButton = Button::create("gui/pauseButton.png");
 	_hudLayout->addChild(pauseButton);
 	pauseButton->setName("pause");
-	pauseButton->setPosition(Vect(pauseButton->getContentSize().width / 2, _visibleSize.height - pauseButton->getContentSize().height / 2));
+	pauseButton->setPosition(Vect(pauseButton->getContentSize().width / 2, _hudLayout->getContentSize().height - pauseButton->getContentSize().height / 2));
 	pauseButton->addTouchEventListener(CC_CALLBACK_2(GameplayScene::pauseButtonCallback, this));
 
 

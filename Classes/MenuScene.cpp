@@ -54,15 +54,23 @@ bool MenuScene::init(ValueMap& initData)
 		resetLeft, nullptr);
 	sandiwtches->runAction(RepeatForever::create(moveSeq));
 
-	_background = ImageView::create("gui/menu/menu_bg.png");
+	_background = Layout::create();
 	addChild(_background);
-	_background->setPosition(_visibleSize / 2);
+	_background->setContentSize(_visibleSize);
+	_background->setAnchorPoint(Point::ANCHOR_MIDDLE);
+	_background->setPosition(_visibleOrigin + _visibleSize / 2);
+
+	auto backgImage = ImageView::create("gui/menu/menu_bg.png");
+	_background->addChild(backgImage);
+	backgImage->setPosition(_background->getContentSize() / 2);
 
 	const int fontSize = 44;
 
+	Size backgSize = _background->getContentSize();
+
 	_playButton = Button::create("gui/menu/button.png");
 	_background->addChild(_playButton);
-	_playButton->setPosition(Vect(_visibleSize.width / 2, _visibleSize.height - 1100));
+	_playButton->setPosition(Vect(backgSize.width / 2, backgSize.height - 900));
 	_playButton->addTouchEventListener(CC_CALLBACK_2(MenuScene::buttonCallback, this));
 
 	_exitButton = Button::create("gui/menu/exitButton.png");
@@ -72,12 +80,12 @@ bool MenuScene::init(ValueMap& initData)
 
 	_settingButton = Button::create("gui/menu/settingButton.png");
 	_background->addChild(_settingButton);
-	_settingButton->setPosition(Vect(_visibleSize.width - _settingButton->getContentSize().width / 2, _settingButton->getContentSize().height / 2));
+	_settingButton->setPosition(Vect(backgSize.width - _settingButton->getContentSize().width / 2, _settingButton->getContentSize().height / 2));
 	_settingButton->addTouchEventListener(CC_CALLBACK_2(MenuScene::buttonCallback, this));
 
 	_foodButton = Button::create("gui/menu/shopButton.png", "gui/menu/shopButton_press.png");
 	_background->addChild(_foodButton);
-	_foodButton->setPosition(Vect(_visibleSize.width / 2, _visibleSize.height - _foodButton->getContentSize().height / 2));
+	_foodButton->setPosition(Vect(backgSize.width / 2, backgSize.height - _foodButton->getContentSize().height / 2));
 	_foodButton->addTouchEventListener(CC_CALLBACK_2(MenuScene::buttonCallback, this));
 
 	auto shopBadge = ImageView::create("gui/menu/shopBadge.png");

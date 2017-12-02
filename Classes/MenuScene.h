@@ -38,7 +38,7 @@ private:
 
 	cocos2d::ui::Button* _foodButton;
 
-	cocos2d::ui::ImageView* _background;
+	cocos2d::ui::Layout* _background;
 
 
 };

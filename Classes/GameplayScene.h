@@ -48,7 +48,7 @@ private:
 	void onFoodFinished(FoodTypes foodType);
 
 	cocos2d::Size _visibleSize;
-	cocos2d::Vect _origin;
+	cocos2d::Vect _visibleOrigin;
 
 	cocos2d::ui::Layout* _hudLayout = nullptr;
 	cocos2d::Vector<cocos2d::ui::Button*> _dishesVec;
