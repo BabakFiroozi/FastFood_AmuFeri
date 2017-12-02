@@ -15,7 +15,7 @@ public:
 
 	void initialize();
 
-	std::string getFontName() const;
+	std::string getFontName(bool eng = false) const;
 	std::string getString(const std::string& key) const;
 
 	int getTapsellVideoReward();

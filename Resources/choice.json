@@ -1,6 +1,7 @@
 {
 	"fontSize": 42,
 	"fontName": "fonts/LMN Aban.ttf",
+	"fontNameEng": "fonts/Marker Felt.ttf",
 
 	"tapsellCheckVideoInterval": 3600,
 	"tapsellVideoAvailableTime": 30,

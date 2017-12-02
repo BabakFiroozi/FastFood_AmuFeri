@@ -35,15 +35,17 @@ public:
 	{
 		ShopTypes shopType;
 		int itemNumber;
+		int price;
 
 		ShopData()
 		{
 		}
 
-		ShopData(ShopTypes shopType, int itemNumber)
+		ShopData(ShopTypes shopType, int itemNumber, int price)
 		{
 			this->shopType = shopType;
 			this->itemNumber = itemNumber;
+			this->price = price;				
 		}
 	};
 
@@ -63,6 +65,8 @@ private:
 	void showTab(ShopTypes shopType);
 	void updateListScrollPos();
 
+	void updateCoinsText();
+
 	ShopTypes _defaultShopType;
 
 	cocos2d::Vect _visibleOrigin;
@@ -76,6 +80,8 @@ private:
 	cocos2d::ui::Text* _headerText;
 
 	int _foodAddAmount = 0;
+
+	cocos2d::ui::Text* _coinsText;
 };
 
 #endif //__SHOP_SCENE_H__

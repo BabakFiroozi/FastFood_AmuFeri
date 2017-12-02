@@ -28,9 +28,9 @@ std::string GameChoice::getString(const std::string& key) const
 	return str;
 }
 
-std::string GameChoice::getFontName() const
+std::string GameChoice::getFontName(bool eng /*= false*/) const
 {
-	std::string name = _document["fontName"].GetString();
+	std::string name = !eng ? _document["fontName"].GetString() : _document["fontNameEng"].GetString();
 	return name;
 }
 

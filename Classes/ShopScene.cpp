@@ -44,12 +44,13 @@ bool ShopScene::init(ValueMap& initData)
 
 	auto shopHeader = ImageView::create("gui/shop/shop_header.png");
 	shopBackg->addChild(shopHeader);
-	shopHeader->setPosition(Vect(_visibleSize.width / 2, _visibleSize.height - 220));
+	shopHeader->setPosition(Vect(_visibleSize.width / 2 - 100, _visibleSize.height - 220));
 
 	_headerText = Text::create(GameChoice::getInstance().getString("TEXT_FOODS"), GameChoice::getInstance().getFontName(), 68);
 	shopHeader->addChild(_headerText);
 	_headerText->setPosition(shopHeader->getContentSize() / 2);
 	_headerText->enableGlow(Color4B::GREEN);
+	shopHeader->setScale(.8f);
 
 	auto tabButtonGroup = RadioButtonGroup::create();
 	shopBackg->addChild(tabButtonGroup);
@@ -88,6 +89,18 @@ bool ShopScene::init(ValueMap& initData)
 	/*auto shopFrameOver = ImageView::create("gui/shop/shopFrame2.png");
 	shopBackg->addChild(shopFrameOver);
 	shopFrameOver->setPosition(shopBackg->getContentSize() / 2);*/
+
+	auto coinImage = ImageView::create("gui/coin.png");
+	background->addChild(coinImage);
+	coinImage->setPosition(_visibleSize - coinImage->getContentSize() / 2);
+
+	auto coinsText = Text::create(StringUtils::format("%d x", GameUser::getInstance().getCoin()), GameChoice::getInstance().getFontName(true), 50);
+	coinImage->addChild(coinsText);
+	coinsText->setPosition(coinImage->getContentSize() / 2 + Size(-55, 0));
+	coinsText->setTextHorizontalAlignment(TextHAlignment::RIGHT);
+	coinsText->setAnchorPoint(Point::ANCHOR_MIDDLE_RIGHT);
+	coinsText->enableOutline(Color4B::GRAY, 2);
+	_coinsText = coinsText;
 
 	return true;
 }
@@ -382,7 +395,7 @@ void ShopScene::showTab(ShopTypes shopType)
 				coinIcon->setPosition(priceText->getTextAreaSize() / 2 + Size(220, 10));
 			}
 
-			_shopDataMap[buyButton] = ShopData(shopType, itemNumber - 1);
+			_shopDataMap[buyButton] = ShopData(shopType, itemNumber - 1, shopPrice);
 			buyButton->addTouchEventListener(CC_CALLBACK_2(ShopScene::buyButtonCallback, this));
 		}
 	}
@@ -398,19 +411,39 @@ void ShopScene::buyButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget::Tou
 		if (shopData.shopType == ShopTypes::Food)
 		{
 			FoodTypes foodType = (FoodTypes)shopData.itemNumber;
-			FoodFactory::getInstance().unlockFood(foodType);
-			updateListScrollPos();
-			showTab(ShopTypes::Food);
+			int price = shopData.price;
+			if (price <= GameUser::getInstance().getCoin())
+			{
+				FoodFactory::getInstance().unlockFood(foodType);
+				updateListScrollPos();
+				showTab(ShopTypes::Food);
+				GameUser::getInstance().addCoin(-price);
+			}
+			else
+			{
+				//show some message
+			}
 		}
 
 		if (shopData.shopType == ShopTypes::Kitchen)
 		{
 			KitchenTypes kitchenType = (KitchenTypes)shopData.itemNumber;
-			Inventories::getInstance().unlockKitchen(kitchenType);
-			GameUser::getInstance().setCurrentKitchen(kitchenType);
-			updateListScrollPos();
-			showTab(ShopTypes::Kitchen);
+			int price = shopData.price;
+			if (price <= GameUser::getInstance().getCoin())
+			{
+				Inventories::getInstance().unlockKitchen(kitchenType);
+				GameUser::getInstance().setCurrentKitchen(kitchenType);
+				updateListScrollPos();
+				showTab(ShopTypes::Kitchen);
+				GameUser::getInstance().addCoin(-price);
+			}
+			else
+			{
+				//show some message
+			}
 		}
+
+		updateCoinsText();
 	}
 }
 
@@ -423,11 +456,22 @@ void ShopScene::addButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget::Tou
 		if (buttonName == "charge")
 		{
 			FoodTypes foodType = (FoodTypes)button->getTag();
-			FoodFactory::getInstance().chargeFood(foodType, 5);
 			auto food = FoodFactory::getInstance().getFood(foodType);
 			int addPrice = food->getPrice() / food->getCount() * _foodAddAmount;
-			updateListScrollPos();
-			showTab(ShopTypes::Food);
+
+			if (addPrice <= GameUser::getInstance().getCoin())
+			{
+				FoodFactory::getInstance().chargeFood(foodType, 5);
+				updateListScrollPos();
+				showTab(ShopTypes::Food);
+
+				GameUser::getInstance().addCoin(-addPrice);
+				updateCoinsText();
+			}
+			else
+			{
+				//show some message
+			}			
 		}
 	}
 }
@@ -444,4 +488,11 @@ void ShopScene::onExit()
 	PlayerPrefs::getInstance().saveUnlockedKitchens();
 	PlayerPrefs::getInstance().saveCurrentKitchen();
 	PlayerPrefs::getInstance().saveFoods();
+}
+
+void ShopScene::updateCoinsText()
+{
+	int coins = GameUser::getInstance().getCoin();
+	_coinsText->setString(StringUtils::toString(coins));
+	PlayerPrefs::getInstance().saveCoin();
 }

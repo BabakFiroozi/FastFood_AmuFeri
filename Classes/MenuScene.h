@@ -1,7 +1,6 @@
 #ifndef __MENU_SCENE_H__
 #define __MENU_SCENE_H__
 
-#include "cocos2d.h"
 #include "General.h"
 
 class MenuScene : public cocos2d::Layer
@@ -27,8 +26,6 @@ protected:
 	void update(float dt) override;
 
 private:
-	static bool _inited;
-
 	void buttonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget::TouchEventType eventType);
 
 	cocos2d::Vect _visibleOrigin;

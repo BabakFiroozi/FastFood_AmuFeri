@@ -30,6 +30,8 @@ bool GameplayScene::init(cocos2d::ValueMap& initData)
 	_comboIncTime = 12;
 	_comboDecTime = 4;
 
+	_coinsCount = GameUser::getInstance().getCoin();
+
 	_visibleSize = Director::getInstance()->getVisibleSize();
 	_origin = Director::getInstance()->getVisibleOrigin();
 
@@ -222,11 +224,12 @@ void GameplayScene::createHud()
 	_hudLayout->addChild(coinImage);
 	coinImage->setPosition(_visibleSize - coinImage->getContentSize() / 2);
 
-	_coinText = Text::create(StringUtils::format("%d %s", _coinsCount, "x"), "fonts/Marker Felt.ttf", 50);
+	_coinText = Text::create(StringUtils::format("%d x", _coinsCount), GameChoice::getInstance().getFontName(true), 50);
 	coinImage->addChild(_coinText);
 	_coinText->setPosition(coinImage->getContentSize() / 2 + Size(-55, 0));
 	_coinText->setTextHorizontalAlignment(TextHAlignment::RIGHT);
-	_coinText->setAnchorPoint(Point(1, .5f));
+	_coinText->setAnchorPoint(Point::ANCHOR_MIDDLE_RIGHT);
+	_coinText->enableOutline(Color4B::GRAY, 2);
 
 	auto pauseButton = Button::create("gui/pauseButton.png");
 	_hudLayout->addChild(pauseButton);
@@ -440,7 +443,7 @@ void GameplayScene::createRecipeAndDishes()
 		auto food = FoodFactory::getInstance().getFood(foodType);
 		auto foodImage = ImageView::create(food->getIconPath());
 		dishButton->addChild(foodImage);
-		foodImage->setScale(.3);
+		foodImage->setScale(.3f);
 		foodImage->setPosition(dishButton->getContentSize() / 2);
 
 		dishButton->setTag((int)foodType);
@@ -557,7 +560,7 @@ void GameplayScene::update(float delta)
 		float barPercent = _clockTimer / _burgerTime * 100;
 		_clockBar->setPercent(barPercent);
 
-		_coinText->setString(StringUtils::format("%d %s", _coinsCount, "x"));
+		_coinText->setString(StringUtils::format("%d x", _coinsCount));
 
 		if (_clockTimer <= 0)
 		{
@@ -594,6 +597,9 @@ void GameplayScene::packBurger(float dt)
 		coin *= cookCoinCoef;
 
 		_coinsCount += _recipeFoodsVec.size() * coin;
+
+		GameUser::getInstance().setCoin(_coinsCount);
+		PlayerPrefs::getInstance().saveCoin();
 
 		_burgersCount++;
 	});
