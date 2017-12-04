@@ -83,3 +83,16 @@ void PlayerPrefs::saveUnlockedKitchens() const
 	std::string kitchensStr = Inventories::getInstance().serializeUnlockedKitchens();
 	UserDefault::getInstance()->setStringForKey(key, kitchensStr);
 }
+
+void PlayerPrefs::setVolume(bool on) const
+{
+	const char* key = "gameVolume";
+	UserDefault::getInstance()->setBoolForKey(key, on);
+}
+
+bool PlayerPrefs::getVolume() const
+{
+	const char* key = "gameVolume";
+	bool on = UserDefault::getInstance()->getBoolForKey(key, true);
+	return on;
+}

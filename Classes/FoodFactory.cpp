@@ -60,9 +60,10 @@ void FoodFactory::initialize(const std::string& foodsStr)
 		bool unlocked = f["unlocked"].GetBool();
 		std::string iconPath = f["iconPath"].GetString();
 		int count = f["count"].GetInt();
+		int initCount = f.HasMember("initCount") ? f["initCount"].GetInt() : count;
 		int price = f["price"].GetInt();
 		int height = f["height"].GetInt();
-		Food food(type, place, worth, name, unlocked, iconPath, count, price, height);
+		Food food(type, place, worth, name, unlocked, iconPath, count, initCount, price, height);
 		addFood(std::make_shared<Food>(food));
 	}
 }
@@ -84,6 +85,7 @@ std::string FoodFactory::serialize()
 		food.AddMember("unlocked", f->isUnlocked(), allocator);
 		food.AddMember("iconPath", rapidjson::StringRef(f->getIconPath().c_str(), f->getIconPath().length()), allocator);
 		food.AddMember("count", f->getCount(), allocator);
+		food.AddMember("initCount", f->getInitCount(), allocator);
 		food.AddMember("price", f->getPrice(), allocator);
 		food.AddMember("height", f->getHeight(), allocator);
 		foodsArray.PushBack(food, allocator);

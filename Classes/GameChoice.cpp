@@ -72,7 +72,19 @@ float GameChoice::getWrongFoodTime()
 
 float GameChoice::getPackBurgerTime()
 {
-	float n = _document["packBurgerTime"].GetDouble();
+	float n = _document["musicVolume"].GetDouble();
+	return n;
+}
+
+float GameChoice::getMusicVolume() const
+{
+	float n = _document["rigtFoodTime"].GetDouble();
+	return n;
+}
+
+float GameChoice::getEffectVolume() const
+{
+	float n = _document["effectVolume"].GetDouble();
 	return n;
 }
 
@@ -84,9 +96,19 @@ std::string GameChoice::getRateUrl() const
 
 std::string GameChoice::getTutorialText(int num) const
 {
-	auto& arr = _document["tutorial_paths"];
+	auto arr = _document["tutorial_paths"].GetArray();
 	if (num > arr.Size() - 1)
 		return "";
 	std::string text = arr[num].GetString();
 	return text;
+}
+
+std::vector<std::string> GameChoice::getCredits() const
+{
+	std::vector<std::string> vec;
+	auto arr = _document["credtisList"].GetArray();
+	for (int i = 0; i < arr.Size(); ++i)
+		vec.push_back(arr[i].GetString());
+	return vec;
+
 }

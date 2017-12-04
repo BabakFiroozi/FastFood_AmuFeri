@@ -30,7 +30,7 @@ public:
 	Food();
 	~Food();
 
-	Food(FoodTypes type, int place, int worth, const std::string& name, bool unlocked, const std::string& iconPath, int count, int price, int height);
+	Food(FoodTypes type, int place, int worth, const std::string& name, bool unlocked, const std::string& iconPath, int count, int initCount, int price, int height);
 
 	FoodTypes getType() const;
 	int getWorth() const;
@@ -40,6 +40,7 @@ public:
 	void unlocked();
 	const std::string& getIconPath() const;
 	int getCount() const;
+	int getInitCount() const;
 	void consume(int c);
 	int getPrice() const;
 	int getHeight() const;
@@ -53,6 +54,7 @@ private:
 	bool _unlocked;
 	std::string _iconPath;
 	int _count;
+	int _initCount;
 	int _price;
 	int _height;
 };

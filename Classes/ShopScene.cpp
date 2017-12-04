@@ -102,7 +102,7 @@ bool ShopScene::init(ValueMap& initData)
 
 	auto coinsText = Text::create(StringUtils::format("%d x", GameUser::getInstance().getCoin()), GameChoice::getInstance().getFontName(true), 50);
 	coinImage->addChild(coinsText);
-	coinsText->setPosition(coinImage->getContentSize() / 2 + Size(-55, 0));
+	coinsText->setPosition(coinImage->getContentSize() / 2 + Size(-50, 0));
 	coinsText->setTextHorizontalAlignment(TextHAlignment::RIGHT);
 	coinsText->setAnchorPoint(Point::ANCHOR_MIDDLE_RIGHT);
 	coinsText->enableOutline(Color4B::GRAY, 2);
@@ -246,7 +246,7 @@ void ShopScene::showTab(ShopTypes shopType)
 			else
 				bar->setColor(Color3B::RED);
 
-			auto count = Text::create(StringUtils::toString(food->getCount()), fontName, fontSize - 10);
+			auto count = Text::create(StringUtils::toString(foodCount), fontName, fontSize - 10);
 			bar->addChild(count);
 			count->setPosition(bar->getContentSize() / 2);
 			count->setRotation(90);
@@ -267,7 +267,7 @@ void ShopScene::showTab(ShopTypes shopType)
 			itemFrame->addChild(coin);
 			coin->setPosition(button->getPosition() + Size(60, 90));
 
-			int addPrice = food->getPrice() / food->getCount() * _foodAddAmount;
+			int addPrice = food->getPrice() / food->getInitCount() * _foodAddAmount;
 			auto price = Text::create(StringUtils::toString(addPrice), fontName, fontSize);
 			coin->addChild(price);
 			price->setPosition(coin->getContentSize() / 2 + Size(-50, 15));
@@ -428,6 +428,7 @@ void ShopScene::buyButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget::Tou
 			else
 			{
 				//show some message
+				showMessage(GameChoice::getInstance().getString("TEXT_NOT_ENOUGH_MONEY"));
 			}
 		}
 
@@ -446,6 +447,26 @@ void ShopScene::buyButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget::Tou
 			else
 			{
 				//show some message
+				showMessage(GameChoice::getInstance().getString("TEXT_NOT_ENOUGH_MONEY"));
+			}
+		}
+
+		if (shopData.shopType == ShopTypes::Powerup)
+		{
+			PowerupTypes powerupType = (PowerupTypes)shopData.itemNumber;
+			int price = shopData.price;
+			if (price <= GameUser::getInstance().getCoin())
+			{
+				Inventories::getInstance().addPowerup(powerupType);
+				//GameUser::getInstance().setCurrentKitchen(powerupType);
+				updateListScrollPos();
+				showTab(ShopTypes::Powerup);
+				GameUser::getInstance().addCoin(-price);
+			}
+			else
+			{
+				//show some message
+				showMessage(GameChoice::getInstance().getString("TEXT_NOT_ENOUGH_MONEY"));
 			}
 		}
 
@@ -477,6 +498,7 @@ void ShopScene::addButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget::Tou
 			else
 			{
 				//show some message
+				showMessage(GameChoice::getInstance().getString("TEXT_NOT_ENOUGH_MONEY"));
 			}			
 		}
 	}
@@ -501,4 +523,9 @@ void ShopScene::updateCoinsText()
 	int coins = GameUser::getInstance().getCoin();
 	_coinsText->setString(StringUtils::toString(coins));
 	PlayerPrefs::getInstance().saveCoin();
+}
+
+void ShopScene::showMessage(const std::string& msg)
+{
+
 }

@@ -2,18 +2,23 @@
 	"fontSize": 42,
 	"fontName": "fonts/LMN Aban.ttf",
 	"fontNameEng": "fonts/Marker Felt.ttf",
+	"musicVolume": 1.0,
+	"effectVolume": 1.0,
 
 	"tapsellCheckVideoInterval": 3600,
 	"tapsellVideoAvailableTime": 30,
 	"tapsellVideoReward": 50,
 
-	"makeBurgerTime": 10,
+	"makeBurgerTime": 5,
 	"packBurgerTime": 1,
-	"rigtFoodTime": 1,
-	"wrongFoodTime": 2,
+	"rigtFoodTime": 0.5,
+	"wrongFoodTime": 1.5,
 
-	"rateUrl": "https://cafebazaar.ir/app/com.iust.tablemath",	
+	"rateUrl": "https://cafebazaar.ir/app/com.iust.tablemath",
+	
+	"credtisList":["ÁkMI–#·I§{H#:ÁpIM#bHoŠ", "Áp»oÃÎ#¦MIM#:uÄ¼º#¾¶IºoM", "ÁkÃ¶H#³Iw#:SvÃUnA"],
 
+	"TEXT_NOT_ENOUGH_MONEY": "ÁpIM#œ¤¼U",
 	"TEXT_GAME_PAUSE": "ÁpIM#œ¤¼U",
 	"TEXT_CUSTOMER_WATING": "!ohM#½oÊT¹¶#ÁoTz¶",
 	"TEXT_FOODS": "ÂÄHmš#jH¼¶",
@@ -21,6 +26,8 @@
 	"TEXT_KITCHENS": "IÀ#½pI™¶",
 	"TEXT_COINS": "Ï¼Q#ÁIÀ#¾TvM",
 	"TEXT_FOOD_FINISHED": "½k{#³IµU",
+	
+	"TEXT_CREDITS": "·I¬kºpIw",
 	
 	"TEXT_TOUMAN": "·I¶¼U",
 	"TEXT_BUY": "kÄoi",

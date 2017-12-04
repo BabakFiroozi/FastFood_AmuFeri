@@ -28,9 +28,14 @@ public:
 	float getWrongFoodTime();
 	float getPackBurgerTime();
 
+	float getMusicVolume() const;
+	float getEffectVolume() const;
+
 	std::string getRateUrl() const;
 
 	std::string getTutorialText(int num) const;
+
+	std::vector<std::string> getCredits() const;
 
 private:
 	rapidjson::Document _document;

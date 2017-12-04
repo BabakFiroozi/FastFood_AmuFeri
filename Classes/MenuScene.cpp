@@ -5,6 +5,7 @@
 #include "PlayerPrefs.h"
 #include "Inventories.h"
 #include "GameUser.h"
+#include "SimpleAudioEngine.h"
 
 USING_NS_CC;
 using namespace cocos2d::ui;
@@ -70,7 +71,7 @@ bool MenuScene::init(ValueMap& initData)
 
 	_playButton = Button::create("gui/menu/button.png");
 	_background->addChild(_playButton);
-	_playButton->setPosition(Vect(backgSize.width / 2, backgSize.height - 900));
+	_playButton->setPosition(Vect(backgSize.width / 2, backgSize.height - 950));
 	_playButton->addTouchEventListener(CC_CALLBACK_2(MenuScene::buttonCallback, this));
 
 	_exitButton = Button::create("gui/menu/exitButton.png");
@@ -79,7 +80,7 @@ bool MenuScene::init(ValueMap& initData)
 	_exitButton->addTouchEventListener(CC_CALLBACK_2(MenuScene::buttonCallback, this));
 
 	_settingButton = Button::create("gui/menu/settingButton.png");
-	_background->addChild(_settingButton);
+	_background->addChild(_settingButton, 2);
 	_settingButton->setPosition(Vect(backgSize.width - _settingButton->getContentSize().width / 2, _settingButton->getContentSize().height / 2));
 	_settingButton->addTouchEventListener(CC_CALLBACK_2(MenuScene::buttonCallback, this));
 
@@ -95,12 +96,83 @@ bool MenuScene::init(ValueMap& initData)
 	auto seq = Sequence::createWithTwoActions(ScaleTo::create(.25f, 1.1f), ScaleTo::create(.25f, 1));
 	shopBadge->runAction(RepeatForever::create(seq));
 
+	_settingLayout = Layout::create();
+	_settingLayout->setContentSize(Size(110, 330));
+	_background->addChild(_settingLayout);
+	_settingLayout->setPosition(_settingButton->getPosition() + Vect(0, 70));
+	_settingLayout->setAnchorPoint(Point::ANCHOR_MIDDLE_BOTTOM);
+
+	auto settingBackg = ImageView::create("gui/setting/frame.png");
+	_settingLayout->addChild(settingBackg);
+	settingBackg->setPosition(_settingLayout->getContentSize() / 2);
+
+	auto volumeButton = Button::create(PlayerPrefs::getInstance().getVolume() ? "gui/setting/volume_on.png" : "gui/setting/volume_off.png");
+	volumeButton->setName("volume");
+	_settingLayout->addChild(volumeButton);
+	volumeButton->setPosition(_settingLayout->getContentSize() / 2 + Size(0, 100));
+	volumeButton->addTouchEventListener(CC_CALLBACK_2(MenuScene::buttonCallback, this));
+
+	auto infoButton = Button::create("gui/setting/info.png");
+	infoButton->setName("Info");
+	_settingLayout->addChild(infoButton);
+	infoButton->setPosition(_settingLayout->getContentSize() / 2 + Size(0, 0));
+	infoButton->addTouchEventListener(CC_CALLBACK_2(MenuScene::buttonCallback, this));
+
+	auto creditsButton = Button::create("gui/setting/credits.png");
+	creditsButton->setName("credits");
+	_settingLayout->addChild(creditsButton);
+	creditsButton->setPosition(_settingLayout->getContentSize() / 2 + Size(0, -100));
+	creditsButton->addTouchEventListener(CC_CALLBACK_2(MenuScene::buttonCallback, this));
+
+	_settingLayout->setPositionY(_settingLayout->getPositionY() - 600);
+	_settingLayout->setVisible(false);
+
+	//Credits popup
+	_creditsPopup = Layout::create();
+	_creditsPopup->setName("CreditsPopup");
+	_creditsPopup->setContentSize(_visibleSize);
+	_background->addChild(_creditsPopup, 4);
+	_creditsPopup->setTouchEnabled(true);
+	_creditsPopup->setBackGroundColorType(Layout::BackGroundColorType::SOLID);
+	_creditsPopup->setBackGroundColor(Color3B::BLACK);
+	_creditsPopup->setBackGroundColorOpacity(150);
+
+	auto creditsBackg = ImageView::create("gui/gameover/finishedBackg.png");
+	_creditsPopup->addChild(creditsBackg);
+	creditsBackg->setPosition(_creditsPopup->getContentSize() / 2);
+	creditsBackg->setScaleY(1.2f);
+
+	auto creditsHeader = Text::create(GameChoice::getInstance().getString("TEXT_CREDITS"), GameChoice::getInstance().getFontName(), 80);
+	_creditsPopup->addChild(creditsHeader);
+	creditsHeader->setPosition(creditsBackg->getPosition() + Vect(0, 270));
+	creditsHeader->enableOutline(Color4B::GRAY, 3);
+
+	_creditsPopup->addTouchEventListener([=](Ref* sender, Widget::TouchEventType eventType) {
+		if (eventType == Widget::TouchEventType::ENDED)
+			_creditsPopup->setVisible(false);
+	});
+
+	int cIndex = 0;
+	auto crditsVec = GameChoice::getInstance().getCredits();
+	for (auto c : crditsVec)
+	{
+		auto personText = Text::create(c, GameChoice::getInstance().getFontName(), 50);
+		personText->setPosition(creditsBackg->getPosition() + Vect(0, 150 - (cIndex * 80)));
+		personText->enableOutline(Color4B::GRAY, 2);
+		_creditsPopup->addChild(personText);
+		cIndex++;
+	}
+
+	_creditsPopup->setVisible(false);
+
 	return true;
 }
 
 void MenuScene::onEnter()
 {
 	Layer::onEnter();
+
+	CocosDenshion::SimpleAudioEngine::getInstance()->playBackgroundMusic("sounds/music_menu.ogg", true);
 }
 
 void MenuScene::update(float dt)
@@ -125,6 +197,51 @@ void MenuScene::buttonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget::TouchE
 		if (sender == _exitButton)
 		{
 			Director::getInstance()->end();
+		}
+		if (sender == _settingButton)
+		{
+			const int actionTag = 1001;
+			auto act = _settingButton->getActionByTag(actionTag);
+			if (act == nullptr || act->isDone())
+			{
+				if (!_settingLayout->isVisible())
+				{
+					act = RotateBy::create(.5f, 180);
+					act->setTag(actionTag);
+					_settingButton->runAction(act);
+					_settingLayout->setVisible(true);
+					_settingLayout->runAction(MoveBy::create(.5f, Vect(0, 600)));
+				}
+				else
+				{
+					act = RotateBy::create(.5f, -180);
+					act->setTag(actionTag);
+					_settingButton->runAction(act);
+					_settingLayout->runAction(MoveBy::create(.5f, Vect(0, -600)));
+					runAction(Sequence::createWithTwoActions(DelayTime::create(.5f), CallFunc::create([=]() {_settingLayout->setVisible(false); })));
+				}
+			}
+		}
+
+
+		auto node = static_cast<Button*>(sender);
+		if (node == _settingLayout->getChildByName("volume"))
+		{
+			bool on = !PlayerPrefs::getInstance().getVolume();
+			PlayerPrefs::getInstance().setVolume(on);
+			node->loadTextureNormal(on ? "gui/setting/volume_on.png" : "gui/setting/volume_off.png");
+			CocosDenshion::SimpleAudioEngine::getInstance()->setBackgroundMusicVolume(on ? GameChoice::getInstance().getMusicVolume() : 0);
+			CocosDenshion::SimpleAudioEngine::getInstance()->setEffectsVolume(on ? GameChoice::getInstance().getEffectVolume() : 0);
+			
+		}
+		if (node == _settingLayout->getChildByName("info"))
+		{
+
+		}
+		if (node == _settingLayout->getChildByName("credits"))
+		{
+			auto creditsPopup = _background->getChildByName("CreditsPopup");
+			creditsPopup->setVisible(true);
 		}
 	}
 }

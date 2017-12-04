@@ -4,6 +4,8 @@
 #include "PlayerPrefs.h"
 #include "FoodFactory.h"
 #include "GameUser.h"
+#include "SimpleAudioEngine.h"
+#include "GameChoice.h"
 
 USING_NS_CC;
 using namespace cocos2d::ui;
@@ -59,6 +61,10 @@ bool SplashScene::init()
 void SplashScene::onEnter()
 {
 	Layer::onEnter();
+
+	bool on = PlayerPrefs::getInstance().getVolume();
+	CocosDenshion::SimpleAudioEngine::getInstance()->setBackgroundMusicVolume(on ? GameChoice::getInstance().getMusicVolume() : 0);
+	CocosDenshion::SimpleAudioEngine::getInstance()->setEffectsVolume(on ? GameChoice::getInstance().getEffectVolume() : 0);
 
 	scheduleOnce(CC_SCHEDULE_SELECTOR(SplashScene::goMenu), 1);
 }

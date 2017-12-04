@@ -40,6 +40,9 @@ private:
 
 	cocos2d::ui::Layout* _background;
 
+	cocos2d::ui::Layout* _settingLayout;
+
+	cocos2d::ui::Layout* _creditsPopup;
 
 };
 

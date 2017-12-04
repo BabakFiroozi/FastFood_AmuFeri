@@ -10,9 +10,9 @@ Food::Food() : _type(FoodTypes::None)
 {
 }
 
-Food::Food(FoodTypes type, int place, int worth, const std::string& name, bool unlocked, const std::string& iconPath, int count, int price, int height)
+Food::Food(FoodTypes type, int place, int worth, const std::string& name, bool unlocked, const std::string& iconPath, int count, int initCount, int price, int height)
 	:_type(type), _place(place), _worth(worth), _name(name), _unlocked(unlocked),
-	_iconPath(iconPath), _count(count), _price(price), _height(height)
+	_iconPath(iconPath), _count(count), _initCount(initCount), _price(price), _height(height)
 {
 }
 
@@ -54,6 +54,11 @@ const std::string& Food::getIconPath() const
 int Food::getCount() const
 {
 	return _count;
+}
+
+int Food::getInitCount() const
+{
+	return _initCount;
 }
 
 int Food::getPrice() const

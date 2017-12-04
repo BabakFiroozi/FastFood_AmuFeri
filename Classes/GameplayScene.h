@@ -72,7 +72,6 @@ private:
 	cocos2d::Node* _burger;
 
 	float _clockTimer;
-	float _burgerTime;
 	bool _gameStarted = false;
 	bool _isGameOver = false;
 	bool _comboIsActive = false;

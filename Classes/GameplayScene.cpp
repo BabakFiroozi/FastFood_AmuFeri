@@ -4,6 +4,7 @@
 #include "ShopScene.h"
 #include "PlayerPrefs.h"
 #include "GameUser.h"
+#include "SimpleAudioEngine.h"
 
 
 USING_NS_CC;
@@ -138,33 +139,30 @@ bool GameplayScene::init(cocos2d::ValueMap& initData)
 	clockFrame->setName("clock");
 	statsLayout->addChild(clockFrame);
 	clockFrame->setPosition(statsLayout->getContentSize() / 2 + Size(0, 100));
-	auto clockText = Text::create("12:12", GameChoice::getInstance().getFontName(), 60);
+	auto clockText = Text::create("", GameChoice::getInstance().getFontName(), 60);
 	clockFrame->addChild(clockText);
 	clockText->setPosition(clockFrame->getContentSize() / 2 + Size(60, 0));
 	clockText->setTextHorizontalAlignment(TextHAlignment::CENTER);
-	//clockText->setAnchorPoint(Point(0, .5f));
 	clockText->enableOutline(Color4B::GRAY, 2);
 
 	auto moneyFrame = ImageView::create("gui/money.png");
 	moneyFrame->setName("money");
 	statsLayout->addChild(moneyFrame);
 	moneyFrame->setPosition(statsLayout->getContentSize() / 2 + Size(0, 0));
-	auto moneyText = Text::create("150000", GameChoice::getInstance().getFontName(), 60);
+	auto moneyText = Text::create("", GameChoice::getInstance().getFontName(), 60);
 	moneyFrame->addChild(moneyText);
 	moneyText->setPosition(moneyFrame->getContentSize() / 2 + Size(-20, 0));
 	moneyText->setTextHorizontalAlignment(TextHAlignment::RIGHT);
-	//moneyText->setAnchorPoint(Point(0, .5f));
 	moneyText->enableOutline(Color4B::GRAY, 2);
 
 	auto bonusFrame = ImageView::create("gui/bonus.png");
 	bonusFrame->setName("bonus");
 	statsLayout->addChild(bonusFrame);
 	bonusFrame->setPosition(statsLayout->getContentSize() / 2 + Size(0, -100));
-	auto bonusText = Text::create("150000", GameChoice::getInstance().getFontName(), 60);
+	auto bonusText = Text::create("", GameChoice::getInstance().getFontName(), 60);
 	bonusFrame->addChild(bonusText);
 	bonusText->setPosition(bonusFrame->getContentSize() / 2 + Size(-20, 0));
 	bonusText->setTextHorizontalAlignment(TextHAlignment::RIGHT);
-	//bonusText->setAnchorPoint(Point(0, .5f));
 	bonusText->enableOutline(Color4B::GRAY, 2);
 
 	_pauseLayout->setVisible(false);
@@ -176,6 +174,8 @@ bool GameplayScene::init(cocos2d::ValueMap& initData)
 void GameplayScene::onEnter()
 {
 	Layer::onEnter();
+
+	CocosDenshion::SimpleAudioEngine::getInstance()->playBackgroundMusic("sounds/music_game.ogg", true);
 
 	scheduleUpdate();
 }
@@ -226,7 +226,7 @@ void GameplayScene::createHud()
 
 	_coinText = Text::create(StringUtils::format("%d x", _coinsCount), GameChoice::getInstance().getFontName(true), 50);
 	coinImage->addChild(_coinText);
-	_coinText->setPosition(coinImage->getContentSize() / 2 + Size(-55, 0));
+	_coinText->setPosition(coinImage->getContentSize() / 2 + Size(-50, 0));
 	_coinText->setTextHorizontalAlignment(TextHAlignment::RIGHT);
 	_coinText->setAnchorPoint(Point::ANCHOR_MIDDLE_RIGHT);
 	_coinText->enableOutline(Color4B::GRAY, 2);
@@ -344,13 +344,13 @@ void GameplayScene::dishButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget
 			if (!_comboIsActive)
 			{
 				_clockTimer += _rightFoodTime;
-				if (_clockTimer >= _makeBurgerTime)
-				{
-					_comboIsActive = true;
-					_clockTimer = _makeBurgerTime + _comboIncTime;
-					_comboBar->getParent()->setVisible(true);
-					_comboBar->setPercent(100);
-				}
+				//if (_clockTimer >= _makeBurgerTime)
+				//{
+				//	_comboIsActive = true;
+				//	_clockTimer = _makeBurgerTime + _comboIncTime;
+				//	_comboBar->getParent()->setVisible(true);
+				//	_comboBar->setPercent(100);
+				//}
 			}
 
 			auto recipeList = static_cast<Layout*>(_hudLayout->getChildByName("recipeBack")->getChildByName("recipe"));
@@ -480,7 +480,7 @@ void GameplayScene::createRecipeAndDishes()
 	_recipeFoodsVec.push_back(FoodTypes::Bread);
 
 	int minFoodsCount = 2;
-	int maxFoodsCount = minFoodsCount  + _burgersCount / 5;
+	int maxFoodsCount = minFoodsCount  + _burgersCount / 3;
 	if (maxFoodsCount > 8)
 		maxFoodsCount = 8;
 
@@ -530,10 +530,11 @@ void GameplayScene::createRecipeAndDishes()
 
 void GameplayScene::startGame()
 {
-	_burgerTime = GameChoice::getInstance().getMakeBurgerTime();
-	_clockTimer = _burgerTime;
+	_clockTimer = _makeBurgerTime;
 	_gameStarted = true;
-	playCookAnimation("idle", true);
+	scheduleOnce([=](float dt) {
+		playCookAnimation("idle", true);
+	}, 4, "Idle_First");
 }
 
 void GameplayScene::update(float delta)
@@ -557,7 +558,7 @@ void GameplayScene::update(float delta)
 			}
 		}
 
-		float barPercent = _clockTimer / _burgerTime * 100;
+		float barPercent = _clockTimer / _makeBurgerTime * 100;
 		_clockBar->setPercent(barPercent);
 
 		_coinText->setString(StringUtils::format("%d x", _coinsCount));
@@ -584,7 +585,7 @@ void GameplayScene::packBurger(float dt)
 	auto func1 = CallFunc::create([=]() {
 		//pack animation code
 		int coin = 0;
-		for (auto foodType : _availableFoodsVec)
+		for (auto foodType : _recipeFoodsVec)
 		{
 			auto food = FoodFactory::getInstance().getFood(foodType);
 			coin += food->getWorth();
@@ -596,10 +597,25 @@ void GameplayScene::packBurger(float dt)
 		int cookCoinCoef = Inventories::getInstance().getKitchenByType(currentKitchen)->getValue();
 		coin *= cookCoinCoef;
 
-		_coinsCount += _recipeFoodsVec.size() * coin;
+		auto coinFunc = [=]() {_coinsCount += coin;};
 
 		GameUser::getInstance().setCoin(_coinsCount);
 		PlayerPrefs::getInstance().saveCoin();
+		auto animFunc = [=]() {
+			auto coinImage = _coinText->getParent();
+			auto image = ImageView::create("gui/coin.png");
+			image->setScale(.8f);
+			image->setPosition(coinImage->getPosition() - Vect(170, 330));
+			coinImage->getParent()->addChild(image);
+			image->runAction(Sequence::createWithTwoActions(MoveTo::create(.3f, coinImage->getPosition()), RemoveSelf::create()));
+			coinImage->runAction(Sequence::create(DelayTime::create(.3f), ScaleTo::create(.05f, 1.2f), ScaleTo::create(.05f, 1.0f), nullptr));
+		};
+		auto seq = Sequence::create(DelayTime::create(.2f), CallFunc::create(animFunc), DelayTime::create(.1f),
+			CallFunc::create(animFunc), DelayTime::create(.1f), CallFunc::create(animFunc),
+			DelayTime::create(.2f), CallFunc::create(coinFunc), nullptr);
+		_coinText->getParent()->getParent()->runAction(seq);
+		//play sound
+		CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/earn_money.ogg");
 
 		_burgersCount++;
 	});
@@ -629,6 +645,8 @@ void GameplayScene::onExit()
 {
 	Layer::onExit();
 	PlayerPrefs::getInstance().saveFoods();
+
+	CocosDenshion::SimpleAudioEngine::getInstance()->stopBackgroundMusic();
 }
 
 void GameplayScene::pauseButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget::TouchEventType eventType)
@@ -728,7 +746,12 @@ cocos2d::Sprite* GameplayScene::createCookAnimation(const std::string& animation
 	auto spriteFrameChache = SpriteFrameCache::getInstance();
 	spriteFrameChache->addSpriteFramesWithFile(StringUtils::format("kitchens/kitchen_%d/cook.plist", kitchenNumber));
 
-	cookSpriteBatch->setScale(1.5f);
+	if (kitchenNumber == 1)
+		cookSpriteBatch->setScale(1.5f);
+	if (kitchenNumber == 2)
+		cookSpriteBatch->setScale(1.8f);
+	if (kitchenNumber == 3)
+		cookSpriteBatch->setScale(1.7f);
 
 	auto firstSprite = Sprite::createWithSpriteFrameName(StringUtils::format("Cook%d_%s__001.png", kitchenNumber, animationName.c_str()));
 	cookSpriteBatch->addChild(firstSprite);
@@ -759,15 +782,21 @@ void GameplayScene::playCookAnimation(const std::string& animationName, bool loo
 	auto spr = _animationsMap[animationName];
 	auto animation = static_cast<Animation*>(spr->getUserData());
 
+	const int actionTag = 10001;
+	auto action = spr->getActionByTag(actionTag);
+	if (action != nullptr)
+		spr->stopAction(action);
+
 	auto animate = Animate::create(animation);
+	animate->setTag(actionTag);
+
 	spr->runAction(animate);
 
 	if (animationName == "loss" || animationName == "ok")
 	{
-		float duration = animate->getDuration();
 		scheduleOnce([=](float dt) {
 			playCookAnimation("idle", true);
-		}, duration, "Idle_After_Loss_Ok");
+		}, 4, "Idle_After_Loss_Ok");
 	}
 }
 

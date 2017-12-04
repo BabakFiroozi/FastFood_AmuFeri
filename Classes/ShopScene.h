@@ -67,6 +67,8 @@ private:
 
 	void updateCoinsText();
 
+	void showMessage(const std::string& msg);
+
 	ShopTypes _defaultShopType;
 
 	cocos2d::Vect _visibleOrigin;
