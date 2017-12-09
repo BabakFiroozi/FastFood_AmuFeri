@@ -3,6 +3,7 @@
 #include "cocos2d.h"
 #include "json/document.h"
 
+
 enum class KitchenTypes
 {
 	None = -1,
@@ -56,7 +57,7 @@ class Powerup
 public:
 	Powerup() {};
 	~Powerup() {};
-	Powerup(PowerupTypes type, const std::string& name, int value): _type(type), _name(name), _value(value)
+	Powerup(PowerupTypes type, const std::string& name, int value, int amount): _type(type), _name(name), _value(value), _amount(amount)
 	{
 	}
 
@@ -75,11 +76,25 @@ public:
 		return _name;
 	}
 
+	int getAmount() const
+	{
+		return _amount;
+	}
+
+	void addAmount()
+	{
+		_amount++;
+	}
+
 private:
 	PowerupTypes _type;
 	std::string _name;
 	int _value;
+	int _amount;
 };
+
+typedef std::shared_ptr<Kitchen> KitchenPtr;
+typedef std::shared_ptr<Powerup> PowerupPtr;
 
 
 class Inventories
@@ -90,27 +105,31 @@ public:
 
 	static Inventories& getInstance();
 
-	std::vector<std::shared_ptr<Kitchen>> getAllKitchens();
-	std::vector<std::shared_ptr<Powerup>> getAllPowerups();
-	std::shared_ptr<Kitchen> getKitchenByType(KitchenTypes type);
-	std::shared_ptr<Powerup> getPowerupByType(PowerupTypes type);
+	std::vector<KitchenPtr> getAllKitchens();
+	std::vector<PowerupPtr> getAllPowerups();
+	KitchenPtr getKitchenByType(KitchenTypes type);
+	PowerupPtr getPowerupByType(PowerupTypes type);
 
-	void usePowerup(PowerupTypes powerupType);
 	void addPowerup(PowerupTypes powerupType);
+	bool isPowerupAdded(PowerupTypes powerupType);
 
 	void unlockKitchen(KitchenTypes kitchenType);
-	bool kitchenUnlocked(KitchenTypes kitchenType);
+	bool isKitchenUnlocked(KitchenTypes kitchenType);
 
 	void initialize(const std::string& data);
 
 	std::string serializeUnlockedKitchens();
 	void initializeUnlockedKitchens(const std::string& data);
 
+	std::string serializeAddedPowerups();
+	void initializeAddedPowerups(const std::string& data);
+
 private:
 	static bool _initialized;
 
-	std::vector<std::shared_ptr<Kitchen>> _kitchens;
-	std::vector<std::shared_ptr<Powerup>> _powerups;
+	std::vector<KitchenPtr> _allKitchens;
+	std::vector<PowerupPtr> _allPowerups;
 
 	std::vector<KitchenTypes> _unlockedKitchens;
+	std::vector<PowerupTypes> _addedPowerups;
 };

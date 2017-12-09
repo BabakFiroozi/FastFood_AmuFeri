@@ -224,6 +224,8 @@ void GameplayScene::createHud()
 	_hudLayout->addChild(coinImage);
 	coinImage->setPosition(_visibleSize - coinImage->getContentSize() / 2);
 
+	_coinsCount = GameUser::getInstance().getCoin();
+
 	_coinText = Text::create(StringUtils::format("%d x", _coinsCount), GameChoice::getInstance().getFontName(true), 50);
 	coinImage->addChild(_coinText);
 	_coinText->setPosition(coinImage->getContentSize() / 2 + Size(-50, 0));

@@ -22,27 +22,27 @@ Inventories& Inventories::getInstance()
 	return instance;
 }
 
-std::vector<std::shared_ptr<Kitchen>> Inventories::getAllKitchens()
+std::vector<KitchenPtr> Inventories::getAllKitchens()
 {
-	return _kitchens;
+	return _allKitchens;
 }
 
-std::vector<std::shared_ptr<Powerup>> Inventories::getAllPowerups()
+std::vector<PowerupPtr> Inventories::getAllPowerups()
 {
-	return _powerups;
+	return _allPowerups;
 }
 
-std::shared_ptr<Kitchen> Inventories::getKitchenByType(KitchenTypes type)
+KitchenPtr Inventories::getKitchenByType(KitchenTypes type)
 {
-	for (auto c : _kitchens)
+	for (auto c : _allKitchens)
 		if (c->getType() == type)
 			return c;
 	return nullptr;
 }
 
-std::shared_ptr<Powerup> Inventories::getPowerupByType(PowerupTypes type)
+PowerupPtr Inventories::getPowerupByType(PowerupTypes type)
 {
-	for (auto p : _powerups)
+	for (auto p : _allPowerups)
 		if (p->getType() == type)
 			return p;
 	return nullptr;
@@ -50,22 +50,28 @@ std::shared_ptr<Powerup> Inventories::getPowerupByType(PowerupTypes type)
 
 void Inventories::addPowerup(PowerupTypes powerupType)
 {
+	if (isPowerupAdded(powerupType))
+		return;
+	_addedPowerups.push_back(powerupType);
 }
 
-void Inventories::usePowerup(PowerupTypes powerupType)
+bool Inventories::isPowerupAdded(PowerupTypes powerupType)
 {
+	bool found = std::find(_addedPowerups.begin(), _addedPowerups.end(), powerupType) != _addedPowerups.end();
+	return found;
 }
 
 void Inventories::unlockKitchen(KitchenTypes kitchenType)
 {
-	if (kitchenUnlocked(kitchenType))
+	if (isKitchenUnlocked(kitchenType))
 		return;
 	_unlockedKitchens.push_back(kitchenType);
 }
 
-bool Inventories::kitchenUnlocked(KitchenTypes kitchenType)
+bool Inventories::isKitchenUnlocked(KitchenTypes kitchenType)
 {
-	return std::find(_unlockedKitchens.begin(), _unlockedKitchens.end(), kitchenType) != _unlockedKitchens.end();
+	bool found = std::find(_unlockedKitchens.begin(), _unlockedKitchens.end(), kitchenType) != _unlockedKitchens.end();
+	return found;
 }
 
 
@@ -87,7 +93,7 @@ void Inventories::initialize(const std::string& data)
 		std::string name = c["name"].GetString();
 		int value = c["value"].GetInt();
 		Kitchen kitchen(type, name, value);
-		_kitchens.push_back(std::make_shared<Kitchen>(kitchen));
+		_allKitchens.push_back(std::make_shared<Kitchen>(kitchen));
 	}	
 
 	auto powerupsArr = doc["powerups"].GetArray();
@@ -96,8 +102,9 @@ void Inventories::initialize(const std::string& data)
 		PowerupTypes type = (PowerupTypes)c["type"].GetInt();
 		std::string name = c["name"].GetString();
 		int value = c["value"].GetInt();
-		Powerup powerup(type, name, value);
-		_powerups.push_back(std::make_shared<Powerup>(powerup));
+		int amount = c["amount"].GetInt();
+		Powerup powerup(type, name, value, amount);
+		_allPowerups.push_back(std::make_shared<Powerup>(powerup));
 	}
 }
 
@@ -129,6 +136,37 @@ void Inventories::initializeUnlockedKitchens(const std::string& data)
 	{
 		KitchenTypes kitchen = (KitchenTypes)k.GetInt();
 		_unlockedKitchens.push_back(kitchen);
+	}
+}
+
+std::string Inventories::serializeAddedPowerups()
+{
+	rapidjson::Document doc;
+	doc.SetObject();
+	auto& allocator = doc.GetAllocator();
+
+	rapidjson::Value kitchesArr(rapidjson::kArrayType);
+	for (auto k : _unlockedKitchens)
+		kitchesArr.PushBack((int)k, allocator);
+	doc.AddMember("addedPowerups", kitchesArr, allocator);
+
+	rapidjson::StringBuffer strBuffer;
+	rapidjson::Writer<rapidjson::StringBuffer> writer(strBuffer);
+	doc.Accept(writer);
+
+	return strBuffer.GetString();
+}
+
+void Inventories::initializeAddedPowerups(const std::string& data)
+{
+	rapidjson::Document doc;
+	doc.Parse<0>(data.c_str());
+
+	auto arr = doc["addedPowerups"].GetArray();
+	for (auto& p : arr)
+	{
+		PowerupTypes powerup = (PowerupTypes)p.GetInt();
+		_addedPowerups.push_back(powerup);
 	}
 }
 

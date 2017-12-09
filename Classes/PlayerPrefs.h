@@ -26,6 +26,9 @@ public:
 	void loadUnlockedKitchens() const;
 	void saveUnlockedKitchens() const;
 
+	void loadAddedPowerups() const;
+	void saveAddedPowerups() const;
+
 	void setVolume(bool on) const;
 	bool getVolume() const;
 

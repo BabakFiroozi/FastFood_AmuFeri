@@ -84,6 +84,20 @@ void PlayerPrefs::saveUnlockedKitchens() const
 	UserDefault::getInstance()->setStringForKey(key, kitchensStr);
 }
 
+void PlayerPrefs::loadAddedPowerups() const
+{
+	const char* key = "addedPowerups";
+	std::string powerupsStr = UserDefault::getInstance()->getStringForKey(key);
+	Inventories::getInstance().initializeAddedPowerups(powerupsStr);
+}
+
+void PlayerPrefs::saveAddedPowerups() const
+{
+	const char* key = "addedPowerups";
+	std::string powerupsStr = Inventories::getInstance().serializeAddedPowerups();
+	UserDefault::getInstance()->setStringForKey(key, powerupsStr);
+}
+
 void PlayerPrefs::setVolume(bool on) const
 {
 	const char* key = "gameVolume";

@@ -44,6 +44,7 @@ bool SplashScene::init()
 		PlayerPrefs::getInstance().saveUnlockedKitchens();
 		GameUser::getInstance().setCurrentKitchen(KitchenTypes::Kitchen_1);
 		PlayerPrefs::getInstance().saveCurrentKitchen();
+		PlayerPrefs::getInstance().saveAddedPowerups();
 
 		PlayerPrefs::getInstance().doneFirstRun();
 	}
@@ -53,6 +54,7 @@ bool SplashScene::init()
 		PlayerPrefs::getInstance().loadFoods();
 		PlayerPrefs::getInstance().loadCurrentKitchen();
 		PlayerPrefs::getInstance().loadUnlockedKitchens();
+		PlayerPrefs::getInstance().loadAddedPowerups();
 	}
 
 	return true;

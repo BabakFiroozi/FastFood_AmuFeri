@@ -24,6 +24,8 @@ bool ShopScene::init(ValueMap& initData)
 	if (!Layer::init())
 		return false;
 
+	Device::setKeepScreenOn(true);
+
 	_defaultShopType = (ShopTypes)initData["shopType"].asInt();
 
 	_visibleOrigin = Director::getInstance()->getVisibleOrigin();
@@ -100,7 +102,8 @@ bool ShopScene::init(ValueMap& initData)
 	background->addChild(coinImage);
 	coinImage->setPosition(_visibleSize - coinImage->getContentSize() / 2);
 
-	auto coinsText = Text::create(StringUtils::format("%d x", GameUser::getInstance().getCoin()), GameChoice::getInstance().getFontName(true), 50);
+	int coinsCount = GameUser::getInstance().getCoin();
+	auto coinsText = Text::create(StringUtils::format("%d x", coinsCount), GameChoice::getInstance().getFontName(true), 50);
 	coinImage->addChild(coinsText);
 	coinsText->setPosition(coinImage->getContentSize() / 2 + Size(-50, 0));
 	coinsText->setTextHorizontalAlignment(TextHAlignment::RIGHT);
@@ -353,7 +356,7 @@ void ShopScene::showTab(ShopTypes shopType)
 			if (shopType == ShopTypes::Kitchen)
 			{
 				KitchenTypes kitchenType = (KitchenTypes)(itemNumber - 1);
-				if (Inventories::getInstance().kitchenUnlocked(kitchenType))
+				if (Inventories::getInstance().isKitchenUnlocked(kitchenType))
 				{
 					if (GameUser::getInstance().getCurrentKitchen() == kitchenType)
 						buyText->setString(GameChoice::getInstance().getString("TEXT_ACTIVE"));
