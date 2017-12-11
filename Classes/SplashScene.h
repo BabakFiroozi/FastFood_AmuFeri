@@ -2,7 +2,7 @@
 
 #include "General.h"
 
-class SplashScene : public cocos2d::Layer
+class SplashScene : public cocos2d::LayerColor
 {
 public:
 	SplashScene();

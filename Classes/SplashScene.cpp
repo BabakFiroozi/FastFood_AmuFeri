@@ -25,17 +25,25 @@ SplashScene::~SplashScene()
 
 bool SplashScene::init()
 {
-	if (!Layer::init())
+	if (!LayerColor::initWithColor(Color4B::WHITE))
 		return false;
 
 	Vect visibleOrigin = Director::getInstance()->getVisibleOrigin();
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 
+	setColor(Color3B::WHITE);
+	setOpacity(255);
+
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
 	auto player = experimental::ui::VideoPlayer::create();
-	player->setFileName("gui/splash.ogg");
+	addChild(player);
+	player->setPosition(visibleSize / 2);
+	player->setFileName("gui/splash.mp4");
 	player->play();
-	_duration = 6;
+	player->setKeepAspectRatioEnabled(true);
+	player->setContentSize(visibleSize);
+	player->setAnchorPoint(Point::ANCHOR_MIDDLE);
+	_duration = 5.5f;
 #else
 	auto splashImage = ImageView::create("gui/Logo.png");
 	addChild(splashImage);
@@ -75,7 +83,7 @@ bool SplashScene::init()
 
 void SplashScene::onEnter()
 {
-	Layer::onEnter();
+	LayerColor::onEnter();
 
 	bool on = PlayerPrefs::getInstance().getVolume();
 	CocosDenshion::SimpleAudioEngine::getInstance()->setBackgroundMusicVolume(on ? GameChoice::getInstance().getMusicVolume() : 0);
