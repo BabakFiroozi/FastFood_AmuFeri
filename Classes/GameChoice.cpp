@@ -52,9 +52,9 @@ int GameChoice::getTapsellVideoAvailableTime()
 	return n;
 }
 
-float GameChoice::getMakeBurgerTime()
+float GameChoice::getInitClockTime()
 {
-	float n = _document["makeBurgerTime"].GetDouble();
+	float n = _document["initClockTime"].GetDouble();
 	return n;
 }
 

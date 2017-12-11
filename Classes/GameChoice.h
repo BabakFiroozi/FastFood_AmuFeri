@@ -23,7 +23,7 @@ public:
 	int getTapsellCheckVideoInterval();
 	int getTapsellVideoAvailableTime();
 
-	float getMakeBurgerTime();
+	float getInitClockTime();
 	float getRightFoodTime();
 	float getWrongFoodTime();
 	float getPackBurgerTime();

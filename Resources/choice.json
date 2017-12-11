@@ -9,7 +9,7 @@
 	"tapsellVideoAvailableTime": 30,
 	"tapsellVideoReward": 50,
 
-	"makeBurgerTime": 5,
+	"initClockTime": 5,
 	"packBurgerTime": 1,
 	"rigtFoodTime": 0.5,
 	"wrongFoodTime": 1.5,

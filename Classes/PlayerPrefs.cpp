@@ -110,3 +110,18 @@ bool PlayerPrefs::getVolume() const
 	bool on = UserDefault::getInstance()->getBoolForKey(key, true);
 	return on;
 }
+
+void PlayerPrefs::setSandwitch(int count) const
+{
+	const char* key = "sandwitch";
+	int c = UserDefault::getInstance()->getIntegerForKey(key, 0);
+	if (count > c)
+		UserDefault::getInstance()->setIntegerForKey(key, count);
+}
+
+int PlayerPrefs::getSandwitch() const
+{
+	const char* key = "sandwitch";
+	int c = UserDefault::getInstance()->getIntegerForKey(key, 0);
+	return c;
+}

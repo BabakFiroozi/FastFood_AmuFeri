@@ -27,11 +27,9 @@ bool GameplayScene::init(cocos2d::ValueMap& initData)
 
 	_rightFoodTime = GameChoice::getInstance().getRightFoodTime();
 	_wrongFoodTime = GameChoice::getInstance().getWrongFoodTime();
-	_makeBurgerTime = GameChoice::getInstance().getMakeBurgerTime();
+	_initClockTime = GameChoice::getInstance().getInitClockTime();
 	_comboIncTime = 12;
 	_comboDecTime = 4;
-
-	_coinsCount = GameUser::getInstance().getCoin();
 
 	_visibleSize = Director::getInstance()->getVisibleSize();
 	_visibleOrigin = Director::getInstance()->getVisibleOrigin();
@@ -225,9 +223,7 @@ void GameplayScene::createHud()
 	_hudLayout->addChild(coinImage);
 	coinImage->setPosition(_visibleSize - coinImage->getContentSize() / 2);
 
-	_coinsCount = GameUser::getInstance().getCoin();
-
-	_coinText = Text::create(StringUtils::format("%d x", _coinsCount), GameChoice::getInstance().getFontName(true), 50);
+	_coinText = Text::create(StringUtils::format("%d x", GameUser::getInstance().getCoin()), GameChoice::getInstance().getFontName(true), 50);
 	coinImage->addChild(_coinText);
 	_coinText->setPosition(coinImage->getContentSize() / 2 + Size(-50, 0));
 	_coinText->setTextHorizontalAlignment(TextHAlignment::RIGHT);
@@ -381,12 +377,12 @@ void GameplayScene::dishButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget
 
 			if (!_comboIsActive)
 			{
-				_clockTimer -= _wrongFoodTime;
+				_clockTimer -= _wrongFoodTime * _clockDecerementRate;
 			}
 			else
 			{
 				_comboIsActive = false;
-				_clockTimer = _makeBurgerTime - _comboDecTime;
+				_clockTimer = _initClockTime - _comboDecTime;
 				_comboBar->getParent()->setVisible(false);
 			}
 
@@ -532,7 +528,7 @@ void GameplayScene::createRecipeAndDishes()
 
 void GameplayScene::startGame()
 {
-	_clockTimer = _makeBurgerTime;
+	_clockTimer = _initClockTime;
 	_gameStarted = true;
 	scheduleOnce([=](float dt) {
 		playCookAnimation("idle", true);
@@ -545,25 +541,25 @@ void GameplayScene::update(float delta)
 
 	if (_gameStarted && !_isGameOver && _foodFinishedLayout == nullptr)
 	{
-		_clockTimer -= delta;
+		_clockTimer -= delta * _clockDecerementRate;
 
 		if (_comboIsActive)
 		{
-			float barPercent = (_clockTimer - _makeBurgerTime) / _comboIncTime * 100;
+			float barPercent = (_clockTimer - _initClockTime) / _comboIncTime * 100;
 			_comboBar->setPercent(barPercent);
 
-			if (_clockTimer <= _makeBurgerTime)
+			if (_clockTimer <= _initClockTime)
 			{
-				_clockTimer = _makeBurgerTime - _comboDecTime;
+				_clockTimer = _initClockTime - _comboDecTime;
 				_comboIsActive = false;
 				_comboBar->getParent()->setVisible(false);
 			}
 		}
 
-		float barPercent = _clockTimer / _makeBurgerTime * 100;
+		float barPercent = _clockTimer / _initClockTime * 100;
 		_clockBar->setPercent(barPercent);
 
-		_coinText->setString(StringUtils::format("%d x", _coinsCount));
+		_coinText->setString(StringUtils::format("%d x", GameUser::getInstance().getCoin()));
 
 		if (_clockTimer <= 0)
 		{
@@ -640,6 +636,10 @@ void GameplayScene::packBurger(float dt)
 
 	if (!_comboIsActive)
 		_clockTimer += packBurgerTime;
+
+	_clockDecerementRate += .1f;
+	if (_clockDecerementRate > 1)
+		_clockDecerementRate = 1;
 
 	return;
 }
@@ -718,6 +718,8 @@ void GameplayScene::showPausePage(bool show, bool gameOver)
 
 	auto bonusText = static_cast<Text*>(stats->getChildByName("bonus")->getChildren().at(0));
 	bonusText->setString(StringUtils::toString(_burgersCount));
+
+	PlayerPrefs::getInstance().setSandwitch(_burgersCount);
 
 	if (show)
 		Director::getInstance()->pause();
@@ -955,10 +957,12 @@ void GameplayScene::createAdjunct()
 
 void GameplayScene::coinEffect(int coin, const Vect& pos, float scale, bool forAdjunct)
 {
-	auto coinFunc = [=]() {_coinsCount += coin; };
+	auto coinFunc = [=]() {
+		_coinsCount += coin;
+		GameUser::getInstance().addCoin(coin);
+		PlayerPrefs::getInstance().saveCoin();
+	};	
 
-	GameUser::getInstance().setCoin(_coinsCount);
-	PlayerPrefs::getInstance().saveCoin();
 	auto animFunc = [=]() {
 		auto coinImage = _coinText->getParent();
 		auto image = ImageView::create("gui/coin.png");

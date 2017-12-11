@@ -82,7 +82,7 @@ private:
 
 	float _rightFoodTime;
 	float _wrongFoodTime;
-	float _makeBurgerTime;
+	float _initClockTime;
 	float _comboIncTime;
 	float _comboDecTime;
 
@@ -90,6 +90,8 @@ private:
 	int _sceneNumber;
 
 	cocos2d::ui::Layout* _foodFinishedLayout = nullptr;
+
+	float _clockDecerementRate = .5f;
 };
 
 #endif //__GAMEPLAY_SCENE_H__
