@@ -32,7 +32,7 @@ public:
 	void setVolume(bool on) const;
 	bool getVolume() const;
 
-	void setSandwitch(int count) const;
+	void addSandwitch(int count) const;
 	int  getSandwitch() const;
 
 private:
