@@ -135,7 +135,7 @@ bool GameplayScene::init(cocos2d::ValueMap& initData)
 	//statsLayout->setBackGroundColorType(Layout::BackGroundColorType::SOLID);
 	//statsLayout->setBackGroundColor(Color3B::RED);
 
-	auto clockFrame = ImageView::create("gui/clock.png");
+	auto clockFrame = ImageView::create("gui/gameover/clock.png");
 	clockFrame->setName("clock");
 	statsLayout->addChild(clockFrame);
 	clockFrame->setPosition(statsLayout->getContentSize() / 2 + Size(0, 100));
@@ -145,7 +145,7 @@ bool GameplayScene::init(cocos2d::ValueMap& initData)
 	clockText->setTextHorizontalAlignment(TextHAlignment::CENTER);
 	clockText->enableOutline(Color4B::GRAY, 2);
 
-	auto moneyFrame = ImageView::create("gui/money.png");
+	auto moneyFrame = ImageView::create("gui/gameover/money.png");
 	moneyFrame->setName("money");
 	statsLayout->addChild(moneyFrame);
 	moneyFrame->setPosition(statsLayout->getContentSize() / 2 + Size(0, 0));
@@ -155,7 +155,7 @@ bool GameplayScene::init(cocos2d::ValueMap& initData)
 	moneyText->setTextHorizontalAlignment(TextHAlignment::RIGHT);
 	moneyText->enableOutline(Color4B::GRAY, 2);
 
-	auto bonusFrame = ImageView::create("gui/bonus.png");
+	auto bonusFrame = ImageView::create("gui/gameover/bonus.png");
 	bonusFrame->setName("bonus");
 	statsLayout->addChild(bonusFrame);
 	bonusFrame->setPosition(statsLayout->getContentSize() / 2 + Size(0, -100));
@@ -184,7 +184,8 @@ void GameplayScene::onKeyReleasedCallback(EventKeyboard::KeyCode keyCode, Event*
 {
 	if (keyCode == EventKeyboard::KeyCode::KEY_ESCAPE)
 	{
-		showPausePage(true, false);
+		if (!_isGameOver)
+			showPausePage(!_pauseLayout->isVisible(), false);
 	}
 }
 
@@ -979,7 +980,11 @@ void GameplayScene::coinEffect(int coin, const Vect& pos, float scale, bool forA
 		seq = Sequence::create(DelayTime::create(.02f), CallFunc::create(animFunc), nullptr);
 
 	_coinText->getParent()->getParent()->runAction(seq);
+
 	//play sound
-	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/earn_money.ogg");
+	if (!forAdjunct)
+		CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/earn_money.ogg");
+	else
+		CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/coin.ogg");
 }
 

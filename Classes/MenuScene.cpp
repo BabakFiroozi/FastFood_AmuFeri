@@ -73,6 +73,7 @@ bool MenuScene::init(ValueMap& initData)
 	_background->addChild(_playButton);
 	_playButton->setPosition(Vect(backgSize.width / 2, backgSize.height - 950));
 	_playButton->addTouchEventListener(CC_CALLBACK_2(MenuScene::buttonCallback, this));
+	_playButton->setScale(1.2f);
 
 	_exitButton = Button::create("gui/menu/exitButton.png");
 	_background->addChild(_exitButton);

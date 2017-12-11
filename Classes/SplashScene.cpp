@@ -33,7 +33,7 @@ bool SplashScene::init()
 
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
 	auto player = experimental::ui::VideoPlayer::create();
-	player->setFileName("gui/splash.mp4");
+	player->setFileName("gui/splash.ogg");
 	player->play();
 	_duration = 6;
 #else
