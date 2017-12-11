@@ -637,9 +637,18 @@ void GameplayScene::packBurger(float dt)
 	if (!_comboIsActive)
 		_clockTimer += packBurgerTime;
 
-	_clockDecerementRate += .1f;
-	if (_clockDecerementRate > 1)
-		_clockDecerementRate = 1;
+	if (_clockDecerementRate < 1)
+	{
+		_clockDecerementRate += .1f;
+		if (_clockDecerementRate > 1)
+			_clockDecerementRate = 1;
+	}
+	else
+	{
+		_clockDecerementRate += .02f;
+		if (_clockDecerementRate > 1.5f)
+			_clockDecerementRate = 1.5f;
+	}
 
 	return;
 }
