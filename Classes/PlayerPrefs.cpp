@@ -111,16 +111,17 @@ bool PlayerPrefs::getVolume() const
 	return on;
 }
 
-void PlayerPrefs::addSandwitch(int count) const
+void PlayerPrefs::setSandwitch(int count) const
 {
-	const char* key = "maxSandwitch";
+	const char* key = "sandwitch";
 	int c = UserDefault::getInstance()->getIntegerForKey(key, 0);
-	UserDefault::getInstance()->setIntegerForKey(key, count + c);
+	if (count > c)
+		UserDefault::getInstance()->setIntegerForKey(key, count);
 }
 
 int PlayerPrefs::getSandwitch() const
 {
-	const char* key = "maxSandwitch";
+	const char* key = "sandwitch";
 	int c = UserDefault::getInstance()->getIntegerForKey(key, 0);
 	return c;
 }

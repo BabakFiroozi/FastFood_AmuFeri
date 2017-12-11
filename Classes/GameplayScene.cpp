@@ -719,7 +719,7 @@ void GameplayScene::showPausePage(bool show, bool gameOver)
 	auto bonusText = static_cast<Text*>(stats->getChildByName("bonus")->getChildren().at(0));
 	bonusText->setString(StringUtils::toString(_burgersCount));
 
-	PlayerPrefs::getInstance().addSandwitch(_burgersCount);
+	PlayerPrefs::getInstance().setSandwitch(_burgersCount);
 
 	if (show)
 		Director::getInstance()->pause();
