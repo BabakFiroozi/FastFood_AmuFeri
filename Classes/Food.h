@@ -10,13 +10,16 @@ enum class FoodTypes
 	Bread,
 	Sauce,
 	Meat,
-	Cucumber,
+	Cucumber_Salty,
 	Onion,
 	Steak,
 	Lettuce,
 	CheeseGoda,
 	FishFillet,
 	Tomato,
+	Ham_Meat,
+	Egg_Half,
+	Cucumber,
 
 	Count
 };

@@ -364,8 +364,7 @@ void GameplayScene::dishButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget
 			trueSign->setVisible(true);
 			falseSign->setVisible(false);
 
-			//play right sound
-			//TODO
+			CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/right.ogg");
 
 			FoodFactory::getInstance().consumeFood(food->getType());
 
@@ -399,8 +398,7 @@ void GameplayScene::dishButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget
 			trueSign->setVisible(false);
 			falseSign->setVisible(true);
 
-			//play wrong sound
-			//TODO
+			CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/wrong.ogg");
 		}
 	}
 }

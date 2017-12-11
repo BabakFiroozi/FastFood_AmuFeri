@@ -51,6 +51,21 @@
       "type": 9,
       "price": -1,
 	  "amount": 100
+    },
+    {
+      "type": 10,
+      "price": -1,
+	  "amount": 100
+    },
+    {
+      "type": 11,
+      "price": -1,
+	  "amount": 100
+    },
+    {
+      "type": 12,
+      "price": -1,
+	  "amount": 100
     }
   ],
   "coin": [
@@ -104,17 +119,32 @@
   ],
   "powerup": [
     {
-      "name": "power 1",
+      "name": "nHk²¼Q#ÁoTz¶",
       "price": 100,
       "amount": 1
     },
     {
-      "name": "power 2",
+      "name": "nHk²¼Q#ÁoTz¶",
       "price": 200,
       "amount": 1
     },
     {
-      "name": "power 3",
+      "name": "nHk²¼Q#ÁoTz¶",
+      "price": 300,
+      "amount": 1
+    },
+    {
+      "name": "nHk²¼Q#ÁoTz¶",
+      "price": 300,
+      "amount": 1
+    },
+    {
+      "name": "nHk²¼Q#ÁoTz¶",
+      "price": 300,
+      "amount": 1
+    },
+    {
+      "name": "nHk²¼Q#ÁoTz¶",
       "price": 300,
       "amount": 1
     }

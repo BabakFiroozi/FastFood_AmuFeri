@@ -111,6 +111,16 @@ bool ShopScene::init(ValueMap& initData)
 	coinsText->enableOutline(Color4B::GRAY, 2);
 	_coinsText = coinsText;
 
+	_messagePopup = ImageView::create("gui/shop/messagePopup.png");
+	background->addChild(_messagePopup);
+	_messagePopup->setPosition(Vect(_visibleSize.width / 2, _visibleSize.height - _messagePopup->getContentSize().height / 2));
+	auto messageText = Text::create("", GameChoice::getInstance().getFontName(), 60);
+	_messagePopup->addChild(messageText);
+	messageText->setPosition(_messagePopup->getContentSize() / 2);
+	_messagePopup->setPositionY(_messagePopup->getPositionY() + 300);
+	messageText->setTextColor(Color4B::WHITE);
+	messageText->enableOutline(Color4B::GRAY, 3);
+
 	return true;
 }
 
@@ -321,7 +331,7 @@ void ShopScene::showTab(ShopTypes shopType)
 			if (shopType == ShopTypes::Powerup)
 			{
 				shopName = shop["name"].GetString();
-				shopIconPath = StringUtils::format("gui/shop/powers/power_%d.png", itemNumber);
+				shopIconPath = StringUtils::format("gui/shop/powers/powerup_%d.png", itemNumber);
 				frameIconPath = "gui/shop/powers/frame.png";
 				shopIconScale = 1;
 			}
@@ -530,5 +540,21 @@ void ShopScene::updateCoinsText()
 
 void ShopScene::showMessage(const std::string& msg)
 {
+	if (_messagePopup == nullptr)
+		return;
 
+	const int actTag = 1020;
+	auto act = _messagePopup->getActionByTag(actTag);
+	if (act != nullptr && !act->isDone())
+		return;
+
+	auto text = static_cast<Text*>(_messagePopup->getChildren().at(0));
+	text->setString(msg);
+
+	auto seq = Sequence::create(
+		MoveBy::create(.5f, Vect(0, -300)),
+		DelayTime::create(1),
+		MoveBy::create(.5f, Vect(0, 300)), nullptr);
+	seq->setTag(actTag);
+	_messagePopup->runAction(seq);
 }

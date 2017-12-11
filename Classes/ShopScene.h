@@ -84,6 +84,8 @@ private:
 	int _foodAddAmount = 0;
 
 	cocos2d::ui::Text* _coinsText;
+
+	cocos2d::ui::ImageView* _messagePopup = nullptr;
 };
 
 #endif //__SHOP_SCENE_H__

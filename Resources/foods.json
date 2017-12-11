@@ -39,7 +39,7 @@
       "name": "n¼{nIÃi",
       "worth": 10,
       "unlocked": true,
-      "iconPath": "foods/cucumber.png",
+      "iconPath": "foods/cucumber_salty.png",
 	  "count": 100,
 	  "price": 2000,
 	  "height": 22
@@ -106,6 +106,39 @@
       "worth": 5,
       "unlocked": false,
       "iconPath": "foods/tomato.png",
+	  "count": 100,
+	  "price": 1000,
+	  "height": 22
+    },
+    {
+      "type": 10,
+	  "place": 0,
+      "name": "S{¼¬#·¼L¶Hr",
+      "worth": 5,
+      "unlocked": false,
+      "iconPath": "foods/ham_meat.png",
+	  "count": 100,
+	  "price": 1000,
+	  "height": 22
+    },
+    {
+      "type": 11,
+	  "place": 0,
+      "name": "—o¶#´hU",
+      "worth": 5,
+      "unlocked": false,
+      "iconPath": "foods/egg_half.png",
+	  "count": 100,
+	  "price": 1000,
+	  "height": 22
+    },
+    {
+      "type": 12,
+	  "place": 0,
+      "name": "nIÃi",
+      "worth": 5,
+      "unlocked": false,
+      "iconPath": "foods/cucumber.png",
 	  "count": 100,
 	  "price": 1000,
 	  "height": 22

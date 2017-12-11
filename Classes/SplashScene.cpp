@@ -37,13 +37,14 @@ bool SplashScene::init()
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
 	auto player = experimental::ui::VideoPlayer::create();
 	addChild(player);
+	player->setName("VideoPlayer");
 	player->setPosition(visibleSize / 2);
 	player->setFileName("gui/splash.mp4");
 	player->play();
 	player->setKeepAspectRatioEnabled(true);
 	player->setContentSize(visibleSize);
 	player->setAnchorPoint(Point::ANCHOR_MIDDLE);
-	_duration = 5.5f;
+	_duration = 6;
 #else
 	auto splashImage = ImageView::create("gui/Logo.png");
 	addChild(splashImage);
@@ -94,6 +95,11 @@ void SplashScene::onEnter()
 
 void SplashScene::goMenu(float dt)
 {
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+	auto player = static_cast<experimental::ui::VideoPlayer*>(getChildByName("VideoPlayer"));
+	player->stop();
+#endif
+
 	auto scene = TransitionFade::create(.5f, MenuScene::createSceneData());
 	Director::getInstance()->replaceScene(scene);
 }
