@@ -22,14 +22,13 @@ public:
 			return scene;
 	}
 
-	float _duration = 0;
 
 protected:
 	bool init() override;
 	void onEnter() override;
 
 private:
-
 	void goMenu(float dt);
 
+	float _duration = 0;
 };
