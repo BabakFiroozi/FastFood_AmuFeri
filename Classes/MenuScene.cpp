@@ -69,7 +69,7 @@ bool MenuScene::init(ValueMap& initData)
 
 	Size backgSize = _background->getContentSize();
 
-	_playButton = Button::create("gui/menu/button.png");
+	_playButton = Button::create("gui/menu/start.png");
 	_background->addChild(_playButton);
 	_playButton->setPosition(Vect(backgSize.width / 2, backgSize.height - 950));
 	_playButton->addTouchEventListener(CC_CALLBACK_2(MenuScene::buttonCallback, this));

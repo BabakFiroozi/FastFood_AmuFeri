@@ -7,6 +7,11 @@
 #include "SimpleAudioEngine.h"
 #include "GameChoice.h"
 
+#if(CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+#include "ui/UIVideoPlayer.h"
+#endif
+
+
 USING_NS_CC;
 using namespace cocos2d::ui;
 
@@ -26,9 +31,17 @@ bool SplashScene::init()
 	Vect visibleOrigin = Director::getInstance()->getVisibleOrigin();
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+	auto player = experimental::ui::VideoPlayer::create();
+	player->setFileName("gui/splash.mp4");
+	player->play();
+	_duration = 6;
+#else
 	auto splashImage = ImageView::create("gui/Logo.png");
 	addChild(splashImage);
 	splashImage->setPosition(visibleSize / 2);
+	_duration = 1;
+#endif
 
 	std::string inventoriesStr = cocos2d::FileUtils::getInstance()->getStringFromFile("inventories.json");
 	Inventories::getInstance().initialize(inventoriesStr);
@@ -68,7 +81,7 @@ void SplashScene::onEnter()
 	CocosDenshion::SimpleAudioEngine::getInstance()->setBackgroundMusicVolume(on ? GameChoice::getInstance().getMusicVolume() : 0);
 	CocosDenshion::SimpleAudioEngine::getInstance()->setEffectsVolume(on ? GameChoice::getInstance().getEffectVolume() : 0);
 
-	scheduleOnce(CC_SCHEDULE_SELECTOR(SplashScene::goMenu), 1);
+	scheduleOnce(CC_SCHEDULE_SELECTOR(SplashScene::goMenu), _duration);
 }
 
 void SplashScene::goMenu(float dt)

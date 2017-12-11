@@ -22,6 +22,8 @@ public:
 			return scene;
 	}
 
+	float _duration = 0;
+
 protected:
 	bool init() override;
 	void onEnter() override;

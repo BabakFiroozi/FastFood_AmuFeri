@@ -47,6 +47,10 @@ private:
 
 	void onFoodFinished(FoodTypes foodType);
 
+	void createAdjunct();
+
+	void coinEffect(int coin, const cocos2d::Vect& pos, float scale, bool forAdjunct = false);
+
 	cocos2d::Size _visibleSize;
 	cocos2d::Vect _visibleOrigin;
 

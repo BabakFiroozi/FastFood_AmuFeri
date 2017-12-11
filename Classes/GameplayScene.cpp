@@ -139,7 +139,7 @@ bool GameplayScene::init(cocos2d::ValueMap& initData)
 	clockFrame->setName("clock");
 	statsLayout->addChild(clockFrame);
 	clockFrame->setPosition(statsLayout->getContentSize() / 2 + Size(0, 100));
-	auto clockText = Text::create("", GameChoice::getInstance().getFontName(), 60);
+	auto clockText = Text::create("", "fonts/Far_Morvarid.ttf", 44);
 	clockFrame->addChild(clockText);
 	clockText->setPosition(clockFrame->getContentSize() / 2 + Size(60, 0));
 	clockText->setTextHorizontalAlignment(TextHAlignment::CENTER);
@@ -149,7 +149,7 @@ bool GameplayScene::init(cocos2d::ValueMap& initData)
 	moneyFrame->setName("money");
 	statsLayout->addChild(moneyFrame);
 	moneyFrame->setPosition(statsLayout->getContentSize() / 2 + Size(0, 0));
-	auto moneyText = Text::create("", GameChoice::getInstance().getFontName(), 60);
+	auto moneyText = Text::create("", "fonts/Far_Morvarid.ttf", 44);
 	moneyFrame->addChild(moneyText);
 	moneyText->setPosition(moneyFrame->getContentSize() / 2 + Size(-20, 0));
 	moneyText->setTextHorizontalAlignment(TextHAlignment::RIGHT);
@@ -159,7 +159,7 @@ bool GameplayScene::init(cocos2d::ValueMap& initData)
 	bonusFrame->setName("bonus");
 	statsLayout->addChild(bonusFrame);
 	bonusFrame->setPosition(statsLayout->getContentSize() / 2 + Size(0, -100));
-	auto bonusText = Text::create("", GameChoice::getInstance().getFontName(), 60);
+	auto bonusText = Text::create("", "fonts/Far_Morvarid.ttf", 44);
 	bonusFrame->addChild(bonusText);
 	bonusText->setPosition(bonusFrame->getContentSize() / 2 + Size(-20, 0));
 	bonusText->setTextHorizontalAlignment(TextHAlignment::RIGHT);
@@ -455,13 +455,14 @@ void GameplayScene::createRecipeAndDishes()
 		_hudLayout->addChild(dishButton);
 		dishButton->setPosition(dishOffset);
 
-		auto foodCountLabel = Label::createWithTTF(StringUtils::toString(food->getCount()), GameChoice::getInstance().getFontName(), 50);
+		auto foodCountLabel = Label::createWithTTF(StringUtils::toString(food->getCount()), "fonts/Far_Morvarid.ttf", 40);
 		foodCountLabel->setName("FoodsCount");
 		dishButton->addChild(foodCountLabel);
 		foodCountLabel->setPosition(dishButton->getContentSize() / 2 + Size(0, 80));
-		foodCountLabel->setTextColor(Color4B(100, 100, 100, 255));
+		foodCountLabel->setTextColor(Color4B::ORANGE);
 		if (food->getCount() == 0)
 			foodCountLabel->setTextColor(Color4B::RED);
+		foodCountLabel->enableOutline(Color4B::GRAY, 1);
 
 		Size size = dishButton->getContentSize();
 
@@ -582,6 +583,8 @@ void GameplayScene::gameOver()
 
 void GameplayScene::packBurger(float dt)
 {
+	createAdjunct();
+
 	//pack and give
 	Vect burgerPos = _burger->getPosition();
 	auto func1 = CallFunc::create([=]() {
@@ -595,29 +598,11 @@ void GameplayScene::packBurger(float dt)
 		if (!_comboIsActive)
 			coin *= 2;
 
+		coinEffect(coin, _coinText->getParent()->getPosition() - Vect(170, 330), .8f);
+
 		KitchenTypes currentKitchen = GameUser::getInstance().getCurrentKitchen();
 		int cookCoinCoef = Inventories::getInstance().getKitchenByType(currentKitchen)->getValue();
-		coin *= cookCoinCoef;
-
-		auto coinFunc = [=]() {_coinsCount += coin;};
-
-		GameUser::getInstance().setCoin(_coinsCount);
-		PlayerPrefs::getInstance().saveCoin();
-		auto animFunc = [=]() {
-			auto coinImage = _coinText->getParent();
-			auto image = ImageView::create("gui/coin.png");
-			image->setScale(.8f);
-			image->setPosition(coinImage->getPosition() - Vect(170, 330));
-			coinImage->getParent()->addChild(image);
-			image->runAction(Sequence::createWithTwoActions(MoveTo::create(.3f, coinImage->getPosition()), RemoveSelf::create()));
-			coinImage->runAction(Sequence::create(DelayTime::create(.3f), ScaleTo::create(.05f, 1.2f), ScaleTo::create(.05f, 1.0f), nullptr));
-		};
-		auto seq = Sequence::create(DelayTime::create(.2f), CallFunc::create(animFunc), DelayTime::create(.1f),
-			CallFunc::create(animFunc), DelayTime::create(.1f), CallFunc::create(animFunc),
-			DelayTime::create(.2f), CallFunc::create(coinFunc), nullptr);
-		_coinText->getParent()->getParent()->runAction(seq);
-		//play sound
-		CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/earn_money.ogg");
+		coin *= cookCoinCoef;		
 
 		_burgersCount++;
 	});
@@ -637,8 +622,25 @@ void GameplayScene::packBurger(float dt)
 	seq = Sequence::create(DelayTime::create(.2f), move1, move2, CallFunc::create([=]() {createRecipeAndDishes(); _recipeFoodIndex = 0; }), EaseSineInOut::create(move3), nullptr);
 	recipeBack->runAction(seq);
 
+	float packBurgerTime = GameChoice::getInstance().getPackBurgerTime();
+
+	scheduleOnce([=](float dt) {
+		auto adjunctButton = _hudLayout->getChildByName("Adjunct");
+		if (adjunctButton != nullptr)
+		{
+			if (adjunctButton->getPositionX() > _hudLayout->getContentSize().width / 2)
+			{
+				adjunctButton->runAction(Sequence::create(EaseSineIn::create(MoveBy::create(.2f, Vect(400, 0))), RemoveSelf::create(), nullptr));
+			}
+			else
+			{
+				adjunctButton->runAction(Sequence::create(EaseSineIn::create(MoveBy::create(.2f, Vect(-400, 0))), RemoveSelf::create(), nullptr));
+			}
+		}
+	}, packBurgerTime, "RemoveAdjunctFood");
+
 	if (!_comboIsActive)
-		_clockTimer += GameChoice::getInstance().getPackBurgerTime();
+		_clockTimer += packBurgerTime;
 
 	return;
 }
@@ -710,7 +712,7 @@ void GameplayScene::showPausePage(bool show, bool gameOver)
 	int min = duration / 60 % 60;
 	int sec = duration % 60;
 	auto clockText = static_cast<Text*>(stats->getChildByName("clock")->getChildren().at(0));
-	clockText->setString(StringUtils::toString(StringUtils::format("%02d:%02d:%02d", hou, min, sec)));
+	clockText->setString(StringUtils::toString(StringUtils::format("%02d : %02d : %02d", hou, min, sec)));
 
 	auto moneyText = static_cast<Text*>(stats->getChildByName("money")->getChildren().at(0));
 	moneyText->setString(StringUtils::toString(_coinsCount));
@@ -861,7 +863,7 @@ void GameplayScene::onFoodFinished(FoodTypes foodType)
 				{
 					auto foodCountLabel = static_cast<Label*>(dish->getChildByName("FoodsCount"));
 					foodCountLabel->setString(StringUtils::toString(food->getCount()));
-					foodCountLabel->setTextColor(Color4B(100, 100, 100, 255));
+					foodCountLabel->setTextColor(Color4B::ORANGE);
 				}
 			}
 		}
@@ -901,5 +903,83 @@ void GameplayScene::onFoodFinished(FoodTypes foodType)
 			_foodFinishedLayout = nullptr;
 		}
 	});
+}
+
+void GameplayScene::createAdjunct()
+{
+	if (random(0, 100) < 50)
+		return;
+
+	rapidjson::Document doc;
+	std::string str = FileUtils::getInstance()->getStringFromFile("adjunct.json");
+	doc.Parse<0>(str.c_str());
+
+	auto arr = doc["adjunct"].GetArray();
+	int n = random(0, (int)arr.Size() - 1);
+	auto& adjunct = arr[n];
+
+	std::string iconPath = adjunct["iconPath"].GetString();
+	int worth = adjunct["worth"].GetInt();
+	std::string name = adjunct["name"].GetString();
+
+	auto button = Button::create(iconPath);
+	button->setName("Adjunct");
+	_hudLayout->addChild(button);
+	if (random(0, 100) < 50)
+	{
+		button->setPosition(_dishesVec.at(3)->getPosition() + Vect(-200, 20));
+		button->setPositionX(button->getPositionX() - 400);
+		button->runAction(EaseSineOut::create(MoveBy::create(.2f, Vect(400, 0))));
+	}
+	else
+	{
+		button->setPosition(_dishesVec.at(4)->getPosition() + Vect(200, 20));
+		button->setPositionX(button->getPositionX() + 400);
+		button->runAction(EaseSineOut::create(MoveBy::create(.2f, Vect(-400, 0))));
+	}	
+
+	button->setScale(.35f);
+
+	auto text = Text::create(name, GameChoice::getInstance().getFontName(), 120);
+	button->addChild(text);
+	text->setPosition(button->getContentSize() / 2 + Size(0, 250));
+	text->setTextColor(Color4B::YELLOW);
+
+	button->addTouchEventListener([=](Ref* sender, Widget::TouchEventType eventType) {
+		if (eventType == Widget::TouchEventType::BEGAN)
+		{
+			coinEffect(worth * 5, button->getPosition(), .8f, true);
+			button->removeFromParent();
+		}
+	});
+}
+
+void GameplayScene::coinEffect(int coin, const Vect& pos, float scale, bool forAdjunct)
+{
+	auto coinFunc = [=]() {_coinsCount += coin; };
+
+	GameUser::getInstance().setCoin(_coinsCount);
+	PlayerPrefs::getInstance().saveCoin();
+	auto animFunc = [=]() {
+		auto coinImage = _coinText->getParent();
+		auto image = ImageView::create("gui/coin.png");
+		image->setScale(scale);
+		image->setPosition(pos);
+		coinImage->getParent()->addChild(image);
+		image->runAction(Sequence::createWithTwoActions(MoveTo::create(.3f, coinImage->getPosition()), RemoveSelf::create()));
+		coinImage->runAction(Sequence::create(DelayTime::create(.3f), ScaleTo::create(.05f, 1.2f), ScaleTo::create(.05f, 1.0f), nullptr));
+	};
+
+	Sequence* seq = nullptr;
+	if (!forAdjunct)
+		seq = Sequence::create(DelayTime::create(.2f), CallFunc::create(animFunc), DelayTime::create(.1f),
+			CallFunc::create(animFunc), DelayTime::create(.1f), CallFunc::create(animFunc),
+			DelayTime::create(.2f), CallFunc::create(coinFunc), nullptr);
+	else
+		seq = Sequence::create(DelayTime::create(.02f), CallFunc::create(animFunc), nullptr);
+
+	_coinText->getParent()->getParent()->runAction(seq);
+	//play sound
+	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/earn_money.ogg");
 }
 
