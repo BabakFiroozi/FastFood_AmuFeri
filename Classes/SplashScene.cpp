@@ -28,6 +28,8 @@ bool SplashScene::init()
 	if (!LayerColor::initWithColor(Color4B::WHITE))
 		return false;
 
+	Device::setKeepScreenOn(true);
+
 	Vect visibleOrigin = Director::getInstance()->getVisibleOrigin();
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 

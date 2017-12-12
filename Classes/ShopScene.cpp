@@ -24,8 +24,6 @@ bool ShopScene::init(ValueMap& initData)
 	if (!Layer::init())
 		return false;
 
-	Device::setKeepScreenOn(true);
-
 	_defaultShopType = (ShopTypes)initData["shopType"].asInt();
 
 	_visibleOrigin = Director::getInstance()->getVisibleOrigin();
@@ -232,12 +230,12 @@ void ShopScene::showTab(ShopTypes shopType)
 
 			auto icon = ImageView::create(food->getIconPath());
 			itemFrame->addChild(icon);
-			icon->setPosition(itemFrame->getContentSize() / 2 + Size(0, -310));
+			icon->setPosition(itemFrame->getContentSize() / 2 + Size(0, -320));
 			icon->setScale(.45f);
 
-			auto name = Text::create(food->getName(), fontName, fontSize - 12);
+			auto name = Text::create(food->getName(), fontName, fontSize - 15);
 			itemFrame->addChild(name);
-			name->setPosition(icon->getPosition() + Vect(0, -90));
+			name->setPosition(icon->getPosition() + Vect(0, -105));
 			name->setTextColor(Color4B(160, 100, 10, 255));
 
 			auto frame = ImageView::create("gui/shop/entrepot_frame.png");
@@ -331,12 +329,12 @@ void ShopScene::showTab(ShopTypes shopType)
 			if (shopType == ShopTypes::Powerup)
 			{
 				shopName = shop["name"].GetString();
-				shopIconPath = StringUtils::format("gui/shop/powers/powerup_%d.png", itemNumber);
+				shopIconPath = StringUtils::format("gui/shop/powerups/powerup_%d.png", itemNumber);
 				frameIconPath = "gui/shop/powers/frame.png";
 				shopIconScale = 1;
 			}
 
-			auto nameText = Text::create(shopName, fontName, fontSize - 10);
+			auto nameText = Text::create(shopName, fontName, fontSize - 15);
 			itemFrame->addChild(nameText);
 			nameText->setPosition(itemFrame->getContentSize() / 2 + Size(0, 430));
 			nameText->setTextColor(Color4B(160, 100, 10, 255));
@@ -363,6 +361,7 @@ void ShopScene::showTab(ShopTypes shopType)
 			buyButton->addChild(buyText);
 			buyText->setPosition(buyButton->getContentSize() / 2 + Size(0, -10));
 			buyText->enableOutline(Color4B::GRAY, 3);
+
 			if (shopType == ShopTypes::Kitchen)
 			{
 				KitchenTypes kitchenType = (KitchenTypes)(itemNumber - 1);
@@ -373,14 +372,15 @@ void ShopScene::showTab(ShopTypes shopType)
 					else
 						buyText->setString(GameChoice::getInstance().getString("TEXT_SELECT"));
 				}
-			}
+			}			
 
 			int shopAmount = shop["amount"].GetInt();
 			if (shopAmount > 1)
 			{
-				auto amountText = Text::create(StringUtils::toString(shopAmount), fontName, fontSize + 20);
+				auto amountText = Text::create(StringUtils::toString(shopAmount), "fonts/Far_Morvarid.ttf", fontSize + 10);
 				itemFrame->addChild(amountText);
-				amountText->enableOutline(Color4B::GRAY, 2);
+				amountText->setTextColor(Color4B::ORANGE);
+				//amountText->enableOutline(Color4B::GRAY, 2);
 				if (shopType == ShopTypes::Food)
 				{
 					amountText->setString(StringUtils::toString(foodsCount));
@@ -412,6 +412,20 @@ void ShopScene::showTab(ShopTypes shopType)
 				auto coinIcon = ImageView::create("gui/coin.png");
 				priceText->addChild(coinIcon);
 				coinIcon->setPosition(priceText->getTextAreaSize() / 2 + Size(220, 10));
+			}
+
+			if (shopType == ShopTypes::Powerup)
+			{
+				PowerupTypes powerupType = (PowerupTypes)(itemNumber - 1);
+				if (Inventories::getInstance().isPowerupAdded(powerupType))
+				{
+					buyButton->setVisible(false);
+					priceText->setVisible(false);
+					auto trueSign = ImageView::create("gui/trueSign.png");
+					priceFrame->addChild(trueSign);
+					trueSign->setPosition(priceFrame->getContentSize() / 2);
+					trueSign->setScale(1.5f);
+				}
 			}
 
 			_shopDataMap[buyButton] = ShopData(shopType, itemNumber - 1, shopPrice);
@@ -497,7 +511,7 @@ void ShopScene::addButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget::Tou
 		{
 			FoodTypes foodType = (FoodTypes)button->getTag();
 			auto food = FoodFactory::getInstance().getFood(foodType);
-			int addPrice = food->getPrice() / food->getCount() * _foodAddAmount;
+			int addPrice = food->getPrice() / food->getInitCount() * _foodAddAmount;
 
 			if (addPrice <= GameUser::getInstance().getCoin())
 			{
@@ -528,6 +542,7 @@ void ShopScene::onExit()
 	Layer::onExit();
 	PlayerPrefs::getInstance().saveUnlockedKitchens();
 	PlayerPrefs::getInstance().saveCurrentKitchen();
+	PlayerPrefs::getInstance().saveAddedPowerups();
 	PlayerPrefs::getInstance().saveFoods();
 }
 

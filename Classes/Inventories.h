@@ -19,6 +19,11 @@ enum class PowerupTypes
 {
 	None = -1,
 
+	RichCustomer,
+	HeadLight,
+	CaptainCook,
+	BellClock,
+
 	Count
 };
 

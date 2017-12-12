@@ -34,9 +34,9 @@ std::vector<PowerupPtr> Inventories::getAllPowerups()
 
 KitchenPtr Inventories::getKitchenByType(KitchenTypes type)
 {
-	for (auto c : _allKitchens)
-		if (c->getType() == type)
-			return c;
+	for (auto k : _allKitchens)
+		if (k->getType() == type)
+			return k;
 	return nullptr;
 }
 
@@ -145,10 +145,10 @@ std::string Inventories::serializeAddedPowerups()
 	doc.SetObject();
 	auto& allocator = doc.GetAllocator();
 
-	rapidjson::Value kitchesArr(rapidjson::kArrayType);
-	for (auto k : _unlockedKitchens)
-		kitchesArr.PushBack((int)k, allocator);
-	doc.AddMember("addedPowerups", kitchesArr, allocator);
+	rapidjson::Value powerupsArr(rapidjson::kArrayType);
+	for (auto k : _addedPowerups)
+		powerupsArr.PushBack((int)k, allocator);
+	doc.AddMember("addedPowerups", powerupsArr, allocator);
 
 	rapidjson::StringBuffer strBuffer;
 	rapidjson::Writer<rapidjson::StringBuffer> writer(strBuffer);

@@ -596,8 +596,8 @@ void GameplayScene::packBurger(float dt)
 		coinEffect(coin, _coinText->getParent()->getPosition() - Vect(170, 330), .8f);
 
 		KitchenTypes currentKitchen = GameUser::getInstance().getCurrentKitchen();
-		int cookCoinCoef = Inventories::getInstance().getKitchenByType(currentKitchen)->getValue();
-		coin *= cookCoinCoef;		
+		int kitchenCoinCoef = Inventories::getInstance().getKitchenByType(currentKitchen)->getValue();
+		coin *= kitchenCoinCoef;		
 
 		_burgersCount++;
 	});
