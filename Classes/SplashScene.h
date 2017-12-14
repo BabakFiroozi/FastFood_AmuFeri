@@ -29,6 +29,7 @@ protected:
 
 private:
 	void goMenu(float dt);
+	void showLogo(float dt);
 
 	float _duration = 0;
 };

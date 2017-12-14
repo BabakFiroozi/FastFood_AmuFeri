@@ -25,16 +25,13 @@ SplashScene::~SplashScene()
 
 bool SplashScene::init()
 {
-	if (!LayerColor::initWithColor(Color4B::WHITE))
+	if (!LayerColor::initWithColor(Color4B::BLACK))
 		return false;
 
 	Device::setKeepScreenOn(true);
 
 	Vect visibleOrigin = Director::getInstance()->getVisibleOrigin();
 	Size visibleSize = Director::getInstance()->getVisibleSize();
-
-	setColor(Color3B::WHITE);
-	setOpacity(255);
 
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
 	auto player = experimental::ui::VideoPlayer::create();
@@ -50,6 +47,7 @@ bool SplashScene::init()
 #else
 	auto splashImage = ImageView::create("gui/Logo.png");
 	addChild(splashImage);
+	splashImage->setName("Splash");
 	splashImage->setPosition(visibleSize / 2);
 	_duration = 1;
 #endif
@@ -92,16 +90,31 @@ void SplashScene::onEnter()
 	CocosDenshion::SimpleAudioEngine::getInstance()->setBackgroundMusicVolume(on ? GameChoice::getInstance().getMusicVolume() : 0);
 	CocosDenshion::SimpleAudioEngine::getInstance()->setEffectsVolume(on ? GameChoice::getInstance().getEffectVolume() : 0);
 
-	scheduleOnce(CC_SCHEDULE_SELECTOR(SplashScene::goMenu), _duration);
+	scheduleOnce(CC_SCHEDULE_SELECTOR(SplashScene::showLogo), _duration);
+	scheduleOnce(CC_SCHEDULE_SELECTOR(SplashScene::goMenu), _duration + 2);
 }
 
 void SplashScene::goMenu(float dt)
 {
+	auto scene = TransitionFade::create(.5f, MenuScene::createSceneData());
+	Director::getInstance()->replaceScene(scene);
+}
+
+void SplashScene::showLogo(float dt)
+{
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
 	auto player = static_cast<experimental::ui::VideoPlayer*>(getChildByName("VideoPlayer"));
 	player->stop();
+	player->removeFromParent();
+	//player->runAction(FadeOut::create(.5f));
+#else
+	auto splashImage = getChildByName("Splash");
+	splashImage->removeFromParent();
 #endif
 
-	auto scene = TransitionFade::create(.5f, MenuScene::createSceneData());
-	Director::getInstance()->replaceScene(scene);
+	auto logo = ImageView::create("gui/GameLogo.png");
+	addChild(logo);
+	logo->setPosition(getContentSize() / 2);
+	logo->setOpacity(0);
+	logo->runAction(FadeIn::create(.5f));
 }

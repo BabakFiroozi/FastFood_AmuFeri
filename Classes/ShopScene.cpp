@@ -75,8 +75,8 @@ bool ShopScene::init(ValueMap& initData)
 		tabButton->addEventListener(CC_CALLBACK_2(ShopScene::tabButtonCallback, this));
 
 		if(i == 0) tabButton->setName("food");
-		if (i == 1) tabButton->setName("power");
-		if (i == 2) tabButton->setName("cook");
+		if (i == 1) tabButton->setName("kitchen");
+		if (i == 2) tabButton->setName("powerup");
 		if (i == 3) tabButton->setName("coin");
 	}
 	tabButtonGroup->setSelectedButton(0);
@@ -152,8 +152,8 @@ void ShopScene::tabButtonCallback(cocos2d::ui::RadioButton* sender, cocos2d::ui:
 	{
 		ShopTypes shopType = ShopTypes::None;
 		if (sender->getName() == "food") shopType = ShopTypes::Food;
-		if (sender->getName() == "power") shopType = ShopTypes::Powerup;
-		if (sender->getName() == "cook") shopType = ShopTypes::Kitchen;
+		if (sender->getName() == "powerup") shopType = ShopTypes::Powerup;
+		if (sender->getName() == "kitchen") shopType = ShopTypes::Kitchen;
 		if (sender->getName() == "coin") shopType = ShopTypes::Coin;
 		showTab(shopType);
 	}
@@ -290,6 +290,8 @@ void ShopScene::showTab(ShopTypes shopType)
 		else// not unlocked food
 		{
 			std::string shopName = "";
+			int shopAmount = shop["amount"].GetInt();
+			std::string shopDesc = shop["desc"].GetString();
 			std::string shopIconPath = "";
 			std::string frameIconPath = "";
 			float shopIconScale = 1.0f;			
@@ -330,7 +332,7 @@ void ShopScene::showTab(ShopTypes shopType)
 			{
 				shopName = shop["name"].GetString();
 				shopIconPath = StringUtils::format("gui/shop/powerups/powerup_%d.png", itemNumber);
-				frameIconPath = "gui/shop/powers/frame.png";
+				frameIconPath = "gui/shop/powerups/frame.png";
 				shopIconScale = 1;
 			}
 
@@ -353,6 +355,19 @@ void ShopScene::showTab(ShopTypes shopType)
 			priceFrame->setPosition(itemFrame->getContentSize() / 2 + Size(0, -270));
 			priceFrame->setOpacity(230);
 
+			if (shopDesc != "")
+			{
+				auto descFrame = ImageView::create("gui/shop/powerups/descFrame.png");
+				itemFrame->addChild(descFrame);
+				descFrame->setPosition(itemFrame->getContentSize() / 2 + Size(0, 10));
+
+				auto descText = Text::create(shopDesc, GameChoice::getInstance().getFontName(), 32);
+				descFrame->addChild(descText);
+				descText->setPosition(descFrame->getContentSize() / 2);
+				descText->setTextColor(Color4B(200, 100, 0, 255));
+				descText->enableOutline(Color4B::WHITE, 2);
+			}
+
 			auto buyButton = Button::create("gui/shop/shopButton.png");
 			itemFrame->addChild(buyButton);
 			buyButton->setScale(.9f);
@@ -374,7 +389,6 @@ void ShopScene::showTab(ShopTypes shopType)
 				}
 			}			
 
-			int shopAmount = shop["amount"].GetInt();
 			if (shopAmount > 1)
 			{
 				auto amountText = Text::create(StringUtils::toString(shopAmount), "fonts/Far_Morvarid.ttf", fontSize + 10);
@@ -417,7 +431,7 @@ void ShopScene::showTab(ShopTypes shopType)
 			if (shopType == ShopTypes::Powerup)
 			{
 				PowerupTypes powerupType = (PowerupTypes)(itemNumber - 1);
-				if (Inventories::getInstance().isPowerupAdded(powerupType))
+				if (Inventories::getInstance().hasPowerup(powerupType))
 				{
 					buyButton->setVisible(false);
 					priceText->setVisible(false);

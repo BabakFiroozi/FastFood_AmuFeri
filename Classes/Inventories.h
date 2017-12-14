@@ -116,7 +116,7 @@ public:
 	PowerupPtr getPowerupByType(PowerupTypes type);
 
 	void addPowerup(PowerupTypes powerupType);
-	bool isPowerupAdded(PowerupTypes powerupType);
+	bool hasPowerup(PowerupTypes powerupType);
 
 	void unlockKitchen(KitchenTypes kitchenType);
 	bool isKitchenUnlocked(KitchenTypes kitchenType);

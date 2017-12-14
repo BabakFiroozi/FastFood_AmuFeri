@@ -5,138 +5,164 @@
     {
       "type": 0,
       "price": -1,
-	  "amount": 100
+	  "amount": 100,
+	  "desc": ""
     },
     {
       "type": 1,
       "price": -1,
-	  "amount": 100
+	  "amount": 100,
+	  "desc": ""
     },
     {
       "type": 2,
       "price": -1,
-	  "amount": 100
+	  "amount": 100,
+	  "desc": ""
     },
     {
       "type": 3,
       "price": -1,
-	  "amount": 100
+	  "amount": 100,
+	  "desc": ""
     },
     {
       "type": 4,
       "price": -1,
-	  "amount": 100
+	  "amount": 100,
+	  "desc": ""
     },
     {
       "type": 5,
       "price": -1,
-	  "amount": 100
+	  "amount": 100,
+	  "desc": ""
     },
     {
       "type": 6,
       "price": -1,
-	  "amount": 100
+	  "amount": 100,
+	  "desc": ""
     },
     {
       "type": 7,
       "price": -1,
-	  "amount": 100
+	  "amount": 100,
+	  "desc": ""
     },
     {
       "type": 8,
       "price": -1,
-	  "amount": 100
+	  "amount": 100,
+	  "desc": ""
     },
     {
       "type": 9,
       "price": -1,
-	  "amount": 100
+	  "amount": 100,
+	  "desc": ""
     },
     {
       "type": 10,
       "price": -1,
-	  "amount": 100
+	  "amount": 100,
+	  "desc": ""
     },
     {
       "type": 11,
       "price": -1,
-	  "amount": 100
+	  "amount": 100,
+	  "desc": ""
     },
     {
       "type": 12,
       "price": -1,
-	  "amount": 100
+	  "amount": 100,
+	  "desc": ""
     }
   ],
   "coin": [
     {
       "name": "",
       "price": 1000,
-      "amount": 100
+      "amount": 100,
+	  "desc": ""
     },
     {
       "name": "",
       "price": 2000,
-      "amount": 500
+      "amount": 500,
+	  "desc": ""
     },
     {
       "name": "",
       "price": 3000,
-      "amount": 1000
+      "amount": 1000,
+	  "desc": ""
     },
     {
       "name": "",
       "price": 5000,
-      "amount": 10000
+      "amount": 10000,
+	  "desc": ""
     },
     {
       "name": "",
       "price": 10000,
-      "amount": 20000
+      "amount": 20000,
+	  "desc": ""
     },
     {
       "name": "",
       "price": 20000,
-      "amount": 100000
+      "amount": 100000,
+	  "desc": ""
     }
   ],
   "kitchen": [
     {
       "name": "",
       "price": 100,
-      "amount": 1
+      "amount": 1,
+	  "desc": ""
     },
     {
       "name": "",
       "price": 200,
-      "amount": 1
+      "amount": 1,
+	  "desc": ""
     },
     {
       "name": "",
       "price": 300,
-      "amount": 1
+      "amount": 1,
+	  "desc": ""
     }
   ],
   "powerup": [
     {
       "name": "nHk²¼Q#ÁoTz¶",
       "price": 1000,
-      "amount": 1
+      "amount": 1,
+	  "desc": "...#»#Â¹Ã¶p#KÃw#»#¾MI{¼º#x»oÎ"
     },
     {
       "name": "—Hoa#ow",
       "price": 2000,
-      "amount": 1
+      "amount": 1,
+	  "desc": "Swnj#JIhTºH#oÀ#ÁHpH#¾M#oTzÃM#S¤»"
     },
     {
       "name": "qP{Aow#ÁHmš",
       "price": 300,
-      "amount": 1
+      "amount": 1,
+	  "desc": "³I•ºH#SÎIÄnj#ÁHoM#oTzÃM#uºI{"
     },
     {
       "name": "Â«ºp#S–Iw",
       "price": 400,
-      "amount": 1
+      "amount": 1,
+	  "desc": "¾zÃ¶#oTzÃM#·Hn¼Twn#nI¨#·I¶p"
     }
   ]
 }

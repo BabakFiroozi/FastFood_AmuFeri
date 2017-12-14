@@ -50,12 +50,12 @@ PowerupPtr Inventories::getPowerupByType(PowerupTypes type)
 
 void Inventories::addPowerup(PowerupTypes powerupType)
 {
-	if (isPowerupAdded(powerupType))
+	if (hasPowerup(powerupType))
 		return;
 	_addedPowerups.push_back(powerupType);
 }
 
-bool Inventories::isPowerupAdded(PowerupTypes powerupType)
+bool Inventories::hasPowerup(PowerupTypes powerupType)
 {
 	bool found = std::find(_addedPowerups.begin(), _addedPowerups.end(), powerupType) != _addedPowerups.end();
 	return found;

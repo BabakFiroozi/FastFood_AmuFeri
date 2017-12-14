@@ -28,8 +28,6 @@ bool GameplayScene::init(cocos2d::ValueMap& initData)
 	_rightFoodTime = GameChoice::getInstance().getRightFoodTime();
 	_wrongFoodTime = GameChoice::getInstance().getWrongFoodTime();
 	_initClockTime = GameChoice::getInstance().getInitClockTime();
-	_comboIncTime = 12;
-	_comboDecTime = 4;
 
 	_visibleSize = Director::getInstance()->getVisibleSize();
 	_visibleOrigin = Director::getInstance()->getVisibleOrigin();
@@ -73,16 +71,16 @@ bool GameplayScene::init(cocos2d::ValueMap& initData)
 	_pauseLayout->setBackGroundColor(Color3B::BLACK);
 	_pauseLayout->setBackGroundColorOpacity(100);
 
-	auto pauseBackg = ImageView::create("gui/pauseBackg.png");
+	auto pauseBackg = ImageView::create("gui/pauseScreen/pauseBackg.png");
 	_pauseLayout->addChild(pauseBackg);
 	pauseBackg->setPosition(Size(_pauseLayout->getContentSize().width / 2, _pauseLayout->getContentSize().height - 500));
 
-	auto pauseHeader = ImageView::create("gui/pauseGameOver.png");
+	auto pauseHeader = ImageView::create("gui/pauseScreen/pauseGameOver.png");
 	pauseHeader->setName("pauseHeader");
 	pauseBackg->addChild(pauseHeader);
 	pauseHeader->setPosition(Vect(pauseBackg->getContentSize().width / 2, pauseBackg->getContentSize().height - pauseHeader->getContentSize().height / 2));
 
-	auto gameOverHeader = ImageView::create("gui/pauseHeader.png");
+	auto gameOverHeader = ImageView::create("gui/pauseScreen/pauseHeader.png");
 	gameOverHeader->setName("gameOverHeader");
 	pauseBackg->addChild(gameOverHeader);
 	gameOverHeader->setPosition(pauseHeader->getPosition());
@@ -96,28 +94,28 @@ bool GameplayScene::init(cocos2d::ValueMap& initData)
 	pauseText->setPosition(pauseBackg->getContentSize() / 2 + Size(0, 50));
 	pauseText->enableOutline(Color4B::GRAY, 4);
 
-	auto resumeButton = Button::create("gui/resumeButton.png");
+	auto resumeButton = Button::create("gui/pauseScreen/resumeButton.png");
 	resumeButton->setName("resume");
 	pauseBackg->addChild(resumeButton);
 	resumeButton->setPosition(pauseBackg->getContentSize() / 2 + Size(-150, buttonsPosY));
 	resumeButton->addTouchEventListener(CC_CALLBACK_2(GameplayScene::pauseButtonCallback, this));
 	resumeButton->setScale(buttonsScale);
 
-	auto retryButton = Button::create("gui/retryButton.png");
+	auto retryButton = Button::create("gui/pauseScreen/retryButton.png");
 	retryButton->setName("retry");
 	pauseBackg->addChild(retryButton);
 	retryButton->setPosition(resumeButton->getPosition());
 	retryButton->addTouchEventListener(CC_CALLBACK_2(GameplayScene::pauseButtonCallback, this));
 	retryButton->setScale(buttonsScale);
 
-	auto menuButton = Button::create("gui/menuButton.png");
+	auto menuButton = Button::create("gui/pauseScreen/menuButton.png");
 	menuButton->setName("menu");
 	pauseBackg->addChild(menuButton);
 	menuButton->setPosition(pauseBackg->getContentSize() / 2 + Size(0, buttonsPosY));
 	menuButton->addTouchEventListener(CC_CALLBACK_2(GameplayScene::pauseButtonCallback, this));
 	menuButton->setScale(buttonsScale);
 
-	auto shopButton = Button::create("gui/shopButton.png");
+	auto shopButton = Button::create("gui/pauseScreen/shopButton.png");
 	shopButton->setName("shop");
 	pauseBackg->addChild(shopButton);
 	shopButton->setPosition(pauseBackg->getContentSize() / 2 + Size(150, buttonsPosY));
@@ -262,11 +260,12 @@ void GameplayScene::createHud()
 	comboBarFrame->addChild(_comboBar);
 	_comboBar->setPosition(comboBarFrame->getContentSize() / 2);
 
-	auto comboText = Text::create("Combo", "fonts/Marker Felt.ttf", 32);
-	comboBarFrame->addChild(comboText);
-	comboText->setTextColor(Color4B::YELLOW);
-	comboText->setPosition(_comboBar->getPosition() + Vect(0, 30));
+	auto headLightIcon = ImageView::create("gui/shop/powerups/headLight.png");
+	comboBarFrame->addChild(headLightIcon);
+	headLightIcon->setPosition(_comboBar->getPosition() + Vect(0, 50));
+	headLightIcon->runAction(RepeatForever::create(Sequence::createWithTwoActions(ScaleTo::create(.2f, 1.2f), ScaleTo::create(.2f, 1.0f))));
 	comboBarFrame->setVisible(false);
+
 
 	_standbyLayout = Layout::create();
 	_hudLayout->addChild(_standbyLayout);
@@ -340,16 +339,23 @@ void GameplayScene::dishButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget
 				scheduleOnce(CC_SCHEDULE_SELECTOR(GameplayScene::packBurger), .3f);
 			}
 
-			if (!_comboIsActive)
+			if (!_isHeadLightActive)
 			{
 				_clockTimer += _rightFoodTime;
-				//if (_clockTimer >= _makeBurgerTime)
-				//{
-				//	_comboIsActive = true;
-				//	_clockTimer = _makeBurgerTime + _comboIncTime;
-				//	_comboBar->getParent()->setVisible(true);
-				//	_comboBar->setPercent(100);
-				//}
+				if (_clockTimer >_initClockTime)
+					_clockTimer = _initClockTime;
+
+				if (_burgersCount > 8 && Inventories::getInstance().hasPowerup(PowerupTypes::HeadLight))
+				{
+					auto powerup = Inventories::getInstance().getPowerupByType(PowerupTypes::HeadLight);
+					if (_clockTimer >= _initClockTime)
+					{
+						_isHeadLightActive = true;
+						_clockTimer = _initClockTime + powerup->getValue();
+						_comboBar->getParent()->setVisible(true);
+						_comboBar->setPercent(100);
+					}
+				}
 			}
 
 			auto recipeList = static_cast<Layout*>(_hudLayout->getChildByName("recipeBack")->getChildByName("recipe"));
@@ -375,14 +381,14 @@ void GameplayScene::dishButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget
 		{
 			playCookAnimation("loss", false);
 
-			if (!_comboIsActive)
+			if (!_isHeadLightActive)
 			{
 				_clockTimer -= _wrongFoodTime * _clockDecerementRate;
 			}
 			else
 			{
-				_comboIsActive = false;
-				_clockTimer = _initClockTime - _comboDecTime;
+				_isHeadLightActive = false;
+				_clockTimer = _initClockTime * .9f;
 				_comboBar->getParent()->setVisible(false);
 			}
 
@@ -496,7 +502,7 @@ void GameplayScene::createRecipeAndDishes()
 
 	recipeList->removeAllChildren();
 
-	for (int i = 0; i < _recipeFoodsVec.size(); ++i)
+	for (int i = 0; i < (int)_recipeFoodsVec.size(); ++i)
 	{
 		auto food = FoodFactory::getInstance().getFood(_recipeFoodsVec.at(i));
 		auto layout = Layout::create();
@@ -541,17 +547,18 @@ void GameplayScene::update(float delta)
 
 	if (_gameStarted && !_isGameOver && _foodFinishedLayout == nullptr)
 	{
-		_clockTimer -= delta * _clockDecerementRate;
+		if (!_burgerIsPacking || _isHeadLightActive)
+			_clockTimer -= delta * _clockDecerementRate;
 
-		if (_comboIsActive)
+		if (_isHeadLightActive)
 		{
-			float barPercent = (_clockTimer - _initClockTime) / _comboIncTime * 100;
+			float barPercent = (_clockTimer - _initClockTime) / Inventories::getInstance().getPowerupByType(PowerupTypes::HeadLight)->getValue() * 100;
 			_comboBar->setPercent(barPercent);
 
 			if (_clockTimer <= _initClockTime)
 			{
-				_clockTimer = _initClockTime - _comboDecTime;
-				_comboIsActive = false;
+				_clockTimer = _initClockTime * .9f;
+				_isHeadLightActive = false;
 				_comboBar->getParent()->setVisible(false);
 			}
 		}
@@ -578,7 +585,10 @@ void GameplayScene::gameOver()
 
 void GameplayScene::packBurger(float dt)
 {
-	createAdjunct();
+	if (Inventories::getInstance().hasPowerup(PowerupTypes::RichCustomer))
+		createAdjunct();
+
+	_burgersCount++;
 
 	//pack and give
 	Vect burgerPos = _burger->getPosition();
@@ -590,21 +600,33 @@ void GameplayScene::packBurger(float dt)
 			auto food = FoodFactory::getInstance().getFood(foodType);
 			coin += food->getWorth();
 		}
-		if (!_comboIsActive)
+
+		if (!_isHeadLightActive)
 			coin *= 2;
 
-		coinEffect(coin, _coinText->getParent()->getPosition() - Vect(170, 330), .8f);
+		if (Inventories::getInstance().hasPowerup(PowerupTypes::CaptainCook))
+		{
+			auto powerup = Inventories::getInstance().getPowerupByType(PowerupTypes::CaptainCook);
+			coin += powerup->getValue();
+			//effect
+		}
+
+		giveCoinWithEffect(coin, _coinText->getParent()->getPosition() - Vect(170, 330), .8f);
 
 		KitchenTypes currentKitchen = GameUser::getInstance().getCurrentKitchen();
 		int kitchenCoinCoef = Inventories::getInstance().getKitchenByType(currentKitchen)->getValue();
 		coin *= kitchenCoinCoef;		
 
-		_burgersCount++;
 	});
 
-	auto move1 = MoveTo::create(.3f, burgerPos + Vect(500, 0));
+	auto move1 = MoveTo::create(.3f, burgerPos + Vect(400, 0));
 	auto move2 = MoveTo::create(.0f, burgerPos);
-	auto seq = Sequence::create(func1, DelayTime::create(.2f), move1, CallFunc::create([=]() {_burger->removeAllChildren(); }), move2, nullptr);
+	auto seq = Sequence::create(func1, DelayTime::create(.1f),
+		CallFunc::create([=]() { 
+		auto packBag = Sprite::create("dishes/packBag.png");
+		_burger->addChild(packBag);
+		packBag->setPosition(Vect(0, 110)); }),
+		DelayTime::create(.1f), move1, CallFunc::create([=]() {_burger->removeAllChildren(); }), move2, nullptr);
 	_burger->runAction(seq);
 
 
@@ -619,23 +641,18 @@ void GameplayScene::packBurger(float dt)
 
 	float packBurgerTime = GameChoice::getInstance().getPackBurgerTime();
 
+	_burgerIsPacking = true;
 	scheduleOnce([=](float dt) {
+		_burgerIsPacking = false;
 		auto adjunctButton = _hudLayout->getChildByName("Adjunct");
 		if (adjunctButton != nullptr)
 		{
 			if (adjunctButton->getPositionX() > _hudLayout->getContentSize().width / 2)
-			{
 				adjunctButton->runAction(Sequence::create(EaseSineIn::create(MoveBy::create(.2f, Vect(400, 0))), RemoveSelf::create(), nullptr));
-			}
 			else
-			{
 				adjunctButton->runAction(Sequence::create(EaseSineIn::create(MoveBy::create(.2f, Vect(-400, 0))), RemoveSelf::create(), nullptr));
-			}
 		}
 	}, packBurgerTime, "RemoveAdjunctFood");
-
-	if (!_comboIsActive)
-		_clockTimer += packBurgerTime;
 
 	if (_clockDecerementRate < 1)
 	{
@@ -958,13 +975,13 @@ void GameplayScene::createAdjunct()
 	button->addTouchEventListener([=](Ref* sender, Widget::TouchEventType eventType) {
 		if (eventType == Widget::TouchEventType::BEGAN)
 		{
-			coinEffect(worth * 5, button->getPosition(), .8f, true);
+			giveCoinWithEffect(worth * 5, button->getPosition(), .8f, true);
 			button->removeFromParent();
 		}
 	});
 }
 
-void GameplayScene::coinEffect(int coin, const Vect& pos, float scale, bool forAdjunct)
+void GameplayScene::giveCoinWithEffect(int coin, const Vect& pos, float scale, bool forAdjunct)
 {
 	auto coinFunc = [=]() {
 		_coinsCount += coin;

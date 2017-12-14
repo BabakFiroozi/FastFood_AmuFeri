@@ -49,7 +49,7 @@ private:
 
 	void createAdjunct();
 
-	void coinEffect(int coin, const cocos2d::Vect& pos, float scale, bool forAdjunct = false);
+	void giveCoinWithEffect(int coin, const cocos2d::Vect& pos, float scale, bool forAdjunct = false);
 
 	cocos2d::Size _visibleSize;
 	cocos2d::Vect _visibleOrigin;
@@ -78,13 +78,11 @@ private:
 	float _clockTimer;
 	bool _gameStarted = false;
 	bool _isGameOver = false;
-	bool _comboIsActive = false;
+	bool _isHeadLightActive = false;
 
 	float _rightFoodTime;
 	float _wrongFoodTime;
 	float _initClockTime;
-	float _comboIncTime;
-	float _comboDecTime;
 
 	std::map<std::string, cocos2d::Sprite*> _animationsMap;
 	int _sceneNumber;
@@ -92,6 +90,8 @@ private:
 	cocos2d::ui::Layout* _foodFinishedLayout = nullptr;
 
 	float _clockDecerementRate = .5f;
+
+	bool _burgerIsPacking = false;
 };
 
 #endif //__GAMEPLAY_SCENE_H__
