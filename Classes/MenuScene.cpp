@@ -187,7 +187,7 @@ void MenuScene::buttonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget::TouchE
 	{
 		if (sender == _playButton)
 		{
-			auto scene = TransitionSlideInR::create(.5f, GameplayScene::createSceneData(1));
+			auto scene = TransitionFadeDown::create(1, GameplayScene::createSceneData(1));
 			Director::getInstance()->replaceScene(scene);
 		}
 		if (sender == _foodButton)

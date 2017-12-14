@@ -101,7 +101,7 @@ bool ShopScene::init(ValueMap& initData)
 	coinImage->setPosition(_visibleSize - coinImage->getContentSize() / 2);
 
 	int coinsCount = GameUser::getInstance().getCoin();
-	auto coinsText = Text::create(StringUtils::format("%d x", coinsCount), GameChoice::getInstance().getFontName(true), 50);
+	auto coinsText = Text::create(StringUtils::format("%d*", coinsCount), GameChoice::getInstance().getFontName(), 65);
 	coinImage->addChild(coinsText);
 	coinsText->setPosition(coinImage->getContentSize() / 2 + Size(-50, 0));
 	coinsText->setTextHorizontalAlignment(TextHAlignment::RIGHT);
@@ -247,7 +247,7 @@ void ShopScene::showTab(ShopTypes shopType)
 			frame->addChild(bar);
 			bar->setPosition(frame->getContentSize() / 2);
 			int foodCount = food->getCount();
-			int percent = foodCount * 100 / maxCount;
+			int percent = foodCount * foodCount / maxCount;
 			bar->setPercent(percent);
 
 			if (percent >= 50)
@@ -562,8 +562,8 @@ void ShopScene::onExit()
 
 void ShopScene::updateCoinsText()
 {
-	int coins = GameUser::getInstance().getCoin();
-	_coinsText->setString(StringUtils::toString(coins));
+	int coinsCount = GameUser::getInstance().getCoin();
+	_coinsText->setString(StringUtils::format("%d*", coinsCount));
 	PlayerPrefs::getInstance().saveCoin();
 }
 

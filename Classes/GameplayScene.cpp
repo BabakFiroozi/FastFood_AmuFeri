@@ -221,7 +221,7 @@ void GameplayScene::createHud()
 	_hudLayout->addChild(coinImage);
 	coinImage->setPosition(_visibleSize - coinImage->getContentSize() / 2);
 
-	_coinText = Text::create(StringUtils::format("%d x", GameUser::getInstance().getCoin()), GameChoice::getInstance().getFontName(true), 50);
+	_coinText = Text::create(StringUtils::format("%d*", GameUser::getInstance().getCoin()), GameChoice::getInstance().getFontName(), 65);
 	coinImage->addChild(_coinText);
 	_coinText->setPosition(coinImage->getContentSize() / 2 + Size(-50, 0));
 	_coinText->setTextHorizontalAlignment(TextHAlignment::RIGHT);
@@ -290,7 +290,7 @@ void GameplayScene::createHud()
 
 void GameplayScene::dishButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget::TouchEventType eventType)
 {
-	if (eventType == Widget::TouchEventType::ENDED)
+	if (eventType == Widget::TouchEventType::BEGAN)
 	{
 		if (!_gameStarted || _isGameOver)
 			return;
@@ -566,7 +566,7 @@ void GameplayScene::update(float delta)
 		float barPercent = _clockTimer / _initClockTime * 100;
 		_clockBar->setPercent(barPercent);
 
-		_coinText->setString(StringUtils::format("%d x", GameUser::getInstance().getCoin()));
+		_coinText->setString(StringUtils::format("%d*", GameUser::getInstance().getCoin()));
 
 		if (_clockTimer <= 0)
 		{
@@ -693,8 +693,8 @@ void GameplayScene::pauseButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widge
 
 		if (buttonName == "shop")
 		{
-			showPausePage(false, false);
-			auto scene = TransitionSlideInR::create(.5f, ShopScene::createSceneData(ShopTypes::Food));
+			Director::getInstance()->resume();
+			auto scene = TransitionFlipX::create(.5f, ShopScene::createSceneData(ShopTypes::Food));
 			Director::getInstance()->replaceScene(scene);
 		}
 
@@ -713,7 +713,7 @@ void GameplayScene::pauseButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widge
 		if (buttonName == "menu")
 		{
 			Director::getInstance()->resume();
-			auto scene = TransitionSlideInL::create(.5f, MenuScene::createSceneData());
+			auto scene = TransitionTurnOffTiles::create(.7f, MenuScene::createSceneData());
 			Director::getInstance()->replaceScene(scene);
 		}
 	}

@@ -1,11 +1,11 @@
 {
-  "foodAddAmount": 5,
+  "foodAddAmount": 10,
   
   "food": [
     {
       "type": 0,
       "price": -1,
-	  "amount": 100,
+	  "amount": 200,
 	  "desc": ""
     },
     {
