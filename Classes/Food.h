@@ -8,7 +8,8 @@ enum class FoodTypes
 	None = -1,
 
 	Bread,
-	Sauce,
+	SauceRed,
+	SauceWhite,
 	Meat,
 	Cucumber_Salty,
 	Onion,
@@ -20,6 +21,7 @@ enum class FoodTypes
 	Ham_Meat,
 	Egg_Half,
 	Cucumber,
+	Parsley,
 
 	Count
 };

@@ -391,7 +391,7 @@ void ShopScene::showTab(ShopTypes shopType)
 
 			if (shopAmount > 1)
 			{
-				auto amountText = Text::create(StringUtils::toString(shopAmount), "fonts/Far_Morvarid.ttf", fontSize + 10);
+				auto amountText = Text::create(StringUtils::toString(shopAmount), "fonts/Far_Morvarid.ttf", fontSize);
 				itemFrame->addChild(amountText);
 				amountText->setTextColor(Color4B::ORANGE);
 				//amountText->enableOutline(Color4B::GRAY, 2);

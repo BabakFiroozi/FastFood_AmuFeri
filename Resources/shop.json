@@ -79,6 +79,18 @@
       "price": -1,
 	  "amount": 100,
 	  "desc": ""
+    },
+    {
+      "type": 13,
+      "price": -1,
+	  "amount": 100,
+	  "desc": ""
+    },
+    {
+      "type": 14,
+      "price": -1,
+	  "amount": 100,
+	  "desc": ""
     }
   ],
   "coin": [
