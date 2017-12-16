@@ -35,6 +35,9 @@ public:
 	void setSandwitch(int count) const;
 	int  getSandwitch() const;
 
+	bool isTutorialFinished() const;
+	void finishTutrial() const;
+
 private:
 };
 

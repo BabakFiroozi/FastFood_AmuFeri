@@ -51,6 +51,8 @@ private:
 
 	void giveCoinWithEffect(int coin, const cocos2d::Vect& pos, float scale, bool forAdjunct = false);
 
+	void showTutorialStep(bool finish = false);
+
 	cocos2d::Size _visibleSize;
 	cocos2d::Vect _visibleOrigin;
 
@@ -92,6 +94,10 @@ private:
 	float _clockDecerementRate = .5f;
 
 	bool _burgerIsPacking = false;
+
+	std::vector<Node*> _tutVec;
+
+	int _tutorialStep = 0;
 };
 
 #endif //__GAMEPLAY_SCENE_H__

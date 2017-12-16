@@ -213,9 +213,7 @@ void GameplayScene::createHud()
 	//recipeList->setBackGroundColorType(Layout::BackGroundColorType::SOLID);
 	//recipeList->setBackGroundColor(Color3B::RED);
 	//recipeList->setBackGroundColorOpacity(100);
-
-	createRecipeAndDishes();
-
+	
 
 	auto coinImage = ImageView::create("gui/coin.png");
 	_hudLayout->addChild(coinImage);
@@ -266,6 +264,7 @@ void GameplayScene::createHud()
 	headLightIcon->runAction(RepeatForever::create(Sequence::createWithTwoActions(ScaleTo::create(.2f, 1.2f), ScaleTo::create(.2f, 1.0f))));
 	comboBarFrame->setVisible(false);
 
+	createRecipeAndDishes();
 
 	_standbyLayout = Layout::create();
 	_hudLayout->addChild(_standbyLayout);
@@ -376,31 +375,36 @@ void GameplayScene::dishButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget
 			foodCountLabel->setString(StringUtils::toString(food->getCount()));
 			if (food->getCount() == 0)
 				foodCountLabel->setTextColor(Color4B::RED);
+
+			showTutorialStep();
 		}
-		else
+		else//wrong food
 		{
-			playCookAnimation("loss", false);
-
-			if (!_isHeadLightActive)
+			if (PlayerPrefs::getInstance().isTutorialFinished())
 			{
-				_clockTimer -= _wrongFoodTime * _clockDecerementRate;
+				playCookAnimation("loss", false);
+
+				if (!_isHeadLightActive)
+				{
+					_clockTimer -= _wrongFoodTime * _clockDecerementRate;
+				}
+				else
+				{
+					_isHeadLightActive = false;
+					_clockTimer = _initClockTime * .9f;
+					_comboBar->getParent()->setVisible(false);
+				}
+
+				auto recipeList = static_cast<Layout*>(_hudLayout->getChildByName("recipeBack")->getChildByName("recipe"));
+				auto foodLayout = recipeList->getChildren().at(_recipeFoodIndex);
+
+				auto trueSign = foodLayout->getChildByName("trueSign");
+				auto falseSign = foodLayout->getChildByName("falseSign");
+				trueSign->setVisible(false);
+				falseSign->setVisible(true);
+
+				CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/wrong.ogg");
 			}
-			else
-			{
-				_isHeadLightActive = false;
-				_clockTimer = _initClockTime * .9f;
-				_comboBar->getParent()->setVisible(false);
-			}
-
-			auto recipeList = static_cast<Layout*>(_hudLayout->getChildByName("recipeBack")->getChildByName("recipe"));
-			auto foodLayout = recipeList->getChildren().at(_recipeFoodIndex);
-
-			auto trueSign = foodLayout->getChildByName("trueSign");
-			auto falseSign = foodLayout->getChildByName("falseSign");
-			trueSign->setVisible(false);
-			falseSign->setVisible(true);
-
-			CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/wrong.ogg");
 		}
 	}
 }
@@ -424,11 +428,16 @@ void GameplayScene::createRecipeAndDishes()
 	}
 
 	//foods on dishes
-	_availableFoodsVec.push_back(FoodTypes::Bread);
+	int breadDishNumber = random(0, Dishes_Count - 1);
 	FoodTypes foodType = FoodTypes::None;
 	bool exist = false;
 	do
 	{
+		if (_availableFoodsVec.size() == breadDishNumber)
+		{
+			_availableFoodsVec.push_back(FoodTypes::Bread);
+			continue;
+		}
 		int randomFood = random(0, (int)unlockedFoodsVec.size() - 1);
 		foodType = (FoodTypes)unlockedFoodsVec.at(randomFood);
 		exist = std::find(_availableFoodsVec.begin(), _availableFoodsVec.end(), foodType) != _availableFoodsVec.end();
@@ -490,9 +499,31 @@ void GameplayScene::createRecipeAndDishes()
 
 	int foodsCount = cocos2d::random(minFoodsCount, maxFoodsCount);
 
+	if (!PlayerPrefs::getInstance().isTutorialFinished())
+		foodsCount = 3;
+
 	for (int f = 0; f < foodsCount; ++f)
 	{
-		FoodTypes foodType = _availableFoodsVec.at(random(1, (int)_availableFoodsVec.size() - 1));
+		int randomNumber = random(0, (int)_availableFoodsVec.size() - 1);
+		if (randomNumber == breadDishNumber)
+		{
+			--f;
+			continue;
+		}
+		FoodTypes foodType = _availableFoodsVec.at(randomNumber);
+
+		int alreadyExist = 0;
+		for (int v = 0; v < _recipeFoodsVec.size(); ++v)
+			alreadyExist += _recipeFoodsVec.at(v) == foodType ? 1 : 0;
+
+		int maxSameFood = (PlayerPrefs::getInstance().isTutorialFinished() ? 3 : 1) - 1;
+
+		if (alreadyExist > maxSameFood)
+		{
+			--f;
+			continue;
+		}
+
 		_recipeFoodsVec.push_back(foodType);
 	}
 
@@ -507,12 +538,12 @@ void GameplayScene::createRecipeAndDishes()
 		auto food = FoodFactory::getInstance().getFood(_recipeFoodsVec.at(i));
 		auto layout = Layout::create();
 		layout->setContentSize(Size(170, 25));
-		auto item = ImageView::create(makeIconPath(food->getType(), food->getIconPath(), i == 0));
-		item->setScale(.25f);
-		item->setPosition(layout->getContentSize() / 2);
-		layout->addChild(item);
+		auto foodImage = ImageView::create(makeIconPath(food->getType(), food->getIconPath(), i == 0));
+		foodImage->setScale(.25f);
+		foodImage->setPosition(layout->getContentSize() / 2);
+		layout->addChild(foodImage);
 		recipeList->addChild(layout);
-		layout->setPosition(Vec2(0, (i + 1) * layout->getContentSize().height * 1.2f));
+		layout->setPosition(Vec2(0, (i + 1) * layout->getContentSize().height * 1.25f));
 
 		auto trueSign = ImageView::create("gui/trueSign.png");
 		trueSign->setName("trueSign");
@@ -535,10 +566,14 @@ void GameplayScene::createRecipeAndDishes()
 void GameplayScene::startGame()
 {
 	_clockTimer = _initClockTime;
+	if (!PlayerPrefs::getInstance().isTutorialFinished())
+		_clockTimer -= _initClockTime / 2;
 	_gameStarted = true;
 	scheduleOnce([=](float dt) {
 		playCookAnimation("idle", true);
 	}, 4, "Idle_First");
+
+	showTutorialStep();
 }
 
 void GameplayScene::update(float delta)
@@ -548,7 +583,8 @@ void GameplayScene::update(float delta)
 	if (_gameStarted && !_isGameOver && _foodFinishedLayout == nullptr)
 	{
 		if (!_burgerIsPacking || _isHeadLightActive)
-			_clockTimer -= delta * _clockDecerementRate;
+			if (PlayerPrefs::getInstance().isTutorialFinished())
+				_clockTimer -= delta * _clockDecerementRate;
 
 		if (_isHeadLightActive)
 		{
@@ -585,6 +621,8 @@ void GameplayScene::gameOver()
 
 void GameplayScene::packBurger(float dt)
 {
+	showTutorialStep(true);
+
 	if (Inventories::getInstance().hasPowerup(PowerupTypes::RichCustomer))
 		createAdjunct();
 
@@ -1014,5 +1052,94 @@ void GameplayScene::giveCoinWithEffect(int coin, const Vect& pos, float scale, b
 		CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/earn_money.ogg");
 	else
 		CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/coin.ogg");
+}
+
+void GameplayScene::showTutorialStep(bool finish)
+{
+	if (PlayerPrefs::getInstance().isTutorialFinished())
+		return;
+
+	if (finish && !PlayerPrefs::getInstance().isTutorialFinished())
+	{
+		PlayerPrefs::getInstance().finishTutrial();
+		auto finishFrame = ImageView::create("tut/frame3.png");
+		_hudLayout->addChild(finishFrame);
+		finishFrame->setPosition(_hudLayout->getContentSize() / 2 + Size(0, 200));
+		finishFrame->setScale(.9f);
+
+		auto finishText = Text::create(GameChoice::getInstance().getString("TEXT_TUT_FINISH"), GameChoice::getInstance().getFontName(), 50);
+		finishFrame->addChild(finishText);
+		finishText->setPosition(finishFrame->getContentSize() / 2);
+		finishText->setTextColor(Color4B::GREEN);
+		scheduleOnce([=](float dt) {finishFrame->removeFromParent(); }, 1.5f, "RemoveTutorialFinishedText");
+
+		_clockTimer = _initClockTime;
+
+		return;
+	}
+
+	auto recipeList = _hudLayout->getChildByName("recipeBack")->getChildByName("recipe");
+
+	for (auto n : _tutVec)
+		n->removeFromParent();
+	_tutVec.clear();
+
+	if (_recipeFoodIndex == recipeList->getChildren().size())
+		return;
+
+	auto node = recipeList->getChildren().at(_recipeFoodIndex);
+	auto arrowImage = ImageView::create("tut/arrow.png");
+	node->addChild(arrowImage);
+	arrowImage->setAnchorPoint(Point::ANCHOR_MIDDLE_LEFT);
+	arrowImage->setPosition(node->getContentSize() / 2 + Size(70, 0));
+	arrowImage->runAction(RepeatForever::create(Sequence::createWithTwoActions(MoveBy::create(.4f, Vect(30, 0)), MoveBy::create(.4f, Vect(-30, 0)))));
+
+	_tutVec.push_back(arrowImage);
+
+	auto tutFrame = ImageView::create("tut/frame.png");
+	tutFrame->setAnchorPoint(Point::ANCHOR_BOTTOM_LEFT);
+	arrowImage->addChild(tutFrame);
+	tutFrame->setPosition(arrowImage->getContentSize() + Size(-70, -20));
+
+	auto tutText = Text::create(GameChoice::getInstance().getString("TEXT_TUT_SELECT_DISH"), GameChoice::getInstance().getFontName(), 40);
+	tutFrame->addChild(tutText);
+	tutText->setPosition(tutFrame->getContentSize() / 2);
+	tutText->setTextColor(Color4B::BLACK);
+
+	FoodTypes foodType = _recipeFoodsVec.at(_recipeFoodIndex);
+	for (auto dish : _dishesVec)
+	{
+		if ((FoodTypes)dish->getTag() == foodType)
+		{
+			auto glow = ImageView::create("tut/glow.png");
+			dish->addChild(glow);
+			glow->setPosition(dish->getContentSize() / 2);
+			glow->runAction(RepeatForever::create(Sequence::createWithTwoActions(FadeOut::create(.4f), FadeIn::create(.4f))));
+			_tutVec.push_back(glow);
+			break;
+		}
+	}
+
+
+	if (_tutorialStep > 1)
+	{
+		auto tutFrame2 = ImageView::create("tut/frame2.png");
+		_clockBar->getParent()->addChild(tutFrame2);
+		tutFrame2->setPosition(_clockBar->getPosition() + Vect(-10, 150));
+		tutFrame2->setScale(1.05f);
+		_tutVec.push_back(tutFrame2);
+
+		auto tutText2 = Text::create(GameChoice::getInstance().getString("TEXT_TUT_TIME_REWARD"), GameChoice::getInstance().getFontName(), 40);
+		tutFrame2->addChild(tutText2);
+		tutText2->setPosition(tutFrame2->getContentSize() / 2);
+		tutText2->setTextColor(Color4B::BLACK);
+		tutFrame2->runAction(RepeatForever::create(Sequence::createWithTwoActions(MoveBy::create(.4f, Vect(0, -30)), MoveBy::create(.4f, Vect(0, 30)))));
+
+		auto arrowImage2 = ImageView::create("tut/arrow2.png");
+		tutFrame2->addChild(arrowImage2);
+		arrowImage2->setPosition(tutFrame2->getContentSize() / 2 + Size(0, -70));
+	}
+
+	_tutorialStep++;
 }
 

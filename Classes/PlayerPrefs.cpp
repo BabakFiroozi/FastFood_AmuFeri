@@ -125,3 +125,15 @@ int PlayerPrefs::getSandwitch() const
 	int c = UserDefault::getInstance()->getIntegerForKey(key, 0);
 	return c;
 }
+
+bool PlayerPrefs::isTutorialFinished() const
+{
+	const char* key = "tutorialFinished";
+	return UserDefault::getInstance()->getBoolForKey(key, false);
+}
+
+void PlayerPrefs::finishTutrial() const
+{
+	const char* key = "tutorialFinished";
+	UserDefault::getInstance()->setBoolForKey(key, true);
+}
