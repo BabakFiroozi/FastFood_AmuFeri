@@ -768,6 +768,8 @@ void GameplayScene::showPausePage(bool show, bool gameOver)
 	pauseBackg->getChildByName("pauseText")->setVisible(!gameOver);
 	_pauseLayout->setVisible(show);
 
+	
+
 	auto stats = pauseBackg->getChildByName("stats");
 
 	int duration = _playDuration;
@@ -783,7 +785,15 @@ void GameplayScene::showPausePage(bool show, bool gameOver)
 	auto bonusText = static_cast<Text*>(stats->getChildByName("bonus")->getChildren().at(0));
 	bonusText->setString(StringUtils::toString(_burgersCount));
 
+	int exRecord = PlayerPrefs::getInstance().getSandwitch();
 	PlayerPrefs::getInstance().setSandwitch(_burgersCount);
+	if (exRecord > 0 && exRecord < _burgersCount && show && gameOver)
+	{
+		auto star = ImageView::create("gui/score.png");
+		pauseBackg->addChild(star);
+		star->setPosition(pauseBackg->getContentSize() / 2 + Size(250, -50));
+		star->runAction(Repeat::create(RotateBy::create(360, 1), 100));
+	}
 
 	if (show)
 		Director::getInstance()->pause();

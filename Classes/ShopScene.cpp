@@ -247,7 +247,7 @@ void ShopScene::showTab(ShopTypes shopType)
 			frame->addChild(bar);
 			bar->setPosition(frame->getContentSize() / 2);
 			int foodCount = food->getCount();
-			int percent = foodCount * foodCount / maxCount;
+			int percent = foodCount / (float)maxCount * 100;
 			bar->setPercent(percent);
 
 			if (percent >= 50)
