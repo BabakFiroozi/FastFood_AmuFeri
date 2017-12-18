@@ -20,6 +20,7 @@ LOCAL_SRC_FILES := hellocpp/main.cpp \
 				   ../../Classes/GameplayScene.cpp \
 				   ../../Classes/ShopScene.cpp \
 				   ../../Classes/MenuScene.cpp \
+				   ../../Classes/InAppBilling.cpp \
 				   ../../Classes/PlayerPrefs.cpp \
 				   ../../Classes/Inventories.cpp
 

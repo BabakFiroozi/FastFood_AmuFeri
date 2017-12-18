@@ -194,6 +194,14 @@ void ShopScene::showTab(ShopTypes shopType)
 	if (shopType == ShopTypes::Coin)
 		_headerText->setString(GameChoice::getInstance().getString("TEXT_COINS"));
 
+	if (shopType == ShopTypes::Coin)
+	{
+		std::vector<int> shopItemsVec;
+		for (auto& shop : shopsArr)
+			shopItemsVec.push_back(shop["amount"].GetInt());
+		GameChoice::getInstance().updateShopItems(shopItemsVec);
+	}
+
 	_shopListView->removeAllItems();
 
 	_shopDataMap.clear();

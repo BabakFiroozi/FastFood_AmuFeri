@@ -37,8 +37,14 @@ public:
 
 	std::vector<std::string> getCredits() const;
 
+	void updateShopItems(const std::vector<int>& vec);
+	int getShopItem(int index);
+
 private:
 	rapidjson::Document _document;
+
+	std::vector<int> _shopItems;
+
 
 };
 

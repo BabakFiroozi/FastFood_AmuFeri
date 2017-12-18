@@ -110,5 +110,17 @@ std::vector<std::string> GameChoice::getCredits() const
 	for (int i = 0; i < arr.Size(); ++i)
 		vec.push_back(arr[i].GetString());
 	return vec;
+}
 
+void GameChoice::updateShopItems(const std::vector<int>& vec)
+{
+	_shopItems.clear();
+	for (auto v : vec)
+		_shopItems.push_back(v);
+}
+
+int GameChoice::getShopItem(int index)
+{
+	int item = _shopItems[index];
+	return item;
 }
