@@ -26,11 +26,13 @@ THE SOFTWARE.
 ****************************************************************************/
 package org.cocos2dx.cpp;
 
-import android.os.Bundle;
 import org.cocos2dx.lib.Cocos2dxActivity;
+
+import android.os.Bundle;
 
 public class AppActivity extends Cocos2dxActivity {
 
+	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.setEnableVirtualButton(false);
@@ -45,6 +47,8 @@ public class AppActivity extends Cocos2dxActivity {
         }
         // DO OTHER INITIALIZATION BELOW
         
+        InAppBillingWrapper.setActivity(this);
+        InAppBillingWrapper.startSetup();
+        
     }
-
 }
