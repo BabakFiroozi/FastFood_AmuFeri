@@ -6,7 +6,6 @@ proj.android/gen/
 proj.android/bin/
 proj.android/assets/
 proj.win10/
-proj.android-studio/
 proj.tizen/
 bin/
 proj.linux/
