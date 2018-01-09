@@ -119,6 +119,25 @@ bool ShopScene::init(ValueMap& initData)
 	messageText->setTextColor(Color4B::WHITE);
 	messageText->enableOutline(Color4B::GRAY, 3);
 
+	_shopInfoPage = Layout::create();
+	_shopInfoPage->setAnchorPoint(Point::ANCHOR_MIDDLE);
+	_shopInfoPage->setContentSize(_visibleSize);
+	background->addChild(_shopInfoPage);
+	_shopInfoPage->setPosition(background->getContentSize() / 2);
+	_shopInfoPage->setBackGroundColorType(Layout::BackGroundColorType::SOLID);
+	_shopInfoPage->setBackGroundColorOpacity(150);
+	_shopInfoPage->setBackGroundColor(Color3B::BLACK);
+	_shopInfoPage->setSwallowTouches(true);
+	_shopInfoPage->setTouchEnabled(true);
+	auto infoImage = ImageView::create("gui/shop/powerups/info_1.png");
+	_shopInfoPage->addChild(infoImage);
+	infoImage->setPosition(_shopInfoPage->getContentSize() / 2);
+	_shopInfoPage->setVisible(false);
+	_shopInfoPage->addTouchEventListener([=](Ref* sender, Widget::TouchEventType eventType) {
+		if (eventType == Widget::TouchEventType::ENDED)
+			_shopInfoPage->setVisible(false);
+	});
+
 	return true;
 }
 
@@ -439,15 +458,28 @@ void ShopScene::showTab(ShopTypes shopType)
 			if (shopType == ShopTypes::Powerup)
 			{
 				PowerupTypes powerupType = (PowerupTypes)(itemNumber - 1);
-				if (Inventories::getInstance().hasPowerup(powerupType))
-				{
-					buyButton->setVisible(false);
-					priceText->setVisible(false);
-					auto trueSign = ImageView::create("gui/trueSign.png");
-					priceFrame->addChild(trueSign);
-					trueSign->setPosition(priceFrame->getContentSize() / 2);
-					trueSign->setScale(1.5f);
-				}
+				int powerupsCount = Inventories::getInstance().getPowerupsCount(powerupType);
+				auto countText = Text::create(StringUtils::toString(powerupsCount), GameChoice::getInstance().getFontName(), 100);
+				itemFrame->addChild(countText);
+				countText->setPosition(itemFrame->getContentSize() / 2 + Size(200, 350));
+				countText->setTextColor(Color4B::GREEN);
+				countText->enableOutline(Color4B::GRAY, 2);
+			}
+
+			if (shopType == ShopTypes::Kitchen || shopType == ShopTypes::Powerup)
+			{
+				auto infoButton = Button::create("gui/shop/infoButton.png");
+				itemFrame->addChild(infoButton);
+				infoButton->setPosition(itemFrame->getContentSize() / 2 + Size(-220, 420));
+				infoButton->setScale(.6f);
+				infoButton->addTouchEventListener([=](Ref* sender, Widget::TouchEventType eventType) {
+					if (eventType == Widget::TouchEventType::ENDED)
+					{
+						auto infoImage = static_cast<ImageView*>(_shopInfoPage->getChildren().at(0));
+						infoImage->loadTexture(StringUtils::format("gui/shop/powerups/info_%d", itemNumber));
+						_shopInfoPage->setVisible(true);
+					}
+				});
 			}
 
 			_shopDataMap[buyButton] = ShopData(shopType, itemNumber - 1, shopPrice);
@@ -487,11 +519,12 @@ void ShopScene::buyButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget::Tou
 			int price = shopData.price;
 			if (price <= GameUser::getInstance().getCoin())
 			{
+				if (!Inventories::getInstance().isKitchenUnlocked(kitchenType))
+					GameUser::getInstance().addCoin(-price);
 				Inventories::getInstance().unlockKitchen(kitchenType);
 				GameUser::getInstance().setCurrentKitchen(kitchenType);
 				updateListScrollPos();
 				showTab(ShopTypes::Kitchen);
-				GameUser::getInstance().addCoin(-price);
 			}
 			else
 			{
@@ -506,8 +539,7 @@ void ShopScene::buyButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget::Tou
 			int price = shopData.price;
 			if (price <= GameUser::getInstance().getCoin())
 			{
-				Inventories::getInstance().addPowerup(powerupType);
-				//GameUser::getInstance().setCurrentKitchen(powerupType);
+				Inventories::getInstance().incPowerup(powerupType);
 				updateListScrollPos();
 				showTab(ShopTypes::Powerup);
 				GameUser::getInstance().addCoin(-price);

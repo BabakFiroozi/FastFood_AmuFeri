@@ -2,9 +2,7 @@ cocos2d/
 proj.android/obj/
 proj.win32/
 proj.ios_mac/
-proj.android/gen/
-proj.android/bin/
-proj.android/assets/
+proj.android/
 proj.win10/
 proj.tizen/
 bin/

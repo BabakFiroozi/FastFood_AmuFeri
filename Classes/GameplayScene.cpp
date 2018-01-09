@@ -266,25 +266,9 @@ void GameplayScene::createHud()
 
 	createRecipeAndDishes();
 
-	_standbyLayout = Layout::create();
+	_standbyLayout = StandbyLayout::createData(1);
 	_hudLayout->addChild(_standbyLayout);
-	_standbyLayout->setContentSize(_visibleSize);
-	_standbyLayout->setSwallowTouches(true);
-	_standbyLayout->setTouchEnabled(true);
-
-	_standbyLayout->setBackGroundColor(Color3B::BLACK);
-	_standbyLayout->setBackGroundColorType(Layout::BackGroundColorType::SOLID);
-	_standbyLayout->setBackGroundColorOpacity(100);
-
-	auto readyButton = Button::create("gui/ready.png");
-	_standbyLayout->addChild(readyButton);
-	readyButton->setPosition(_standbyLayout->getContentSize() / 2 + Size(0, 100));
-
-	readyButton->addTouchEventListener([=](cocos2d::Ref* sender, cocos2d::ui::Widget::TouchEventType eventType)
-	{
-		_hudLayout->removeChild(_standbyLayout);
-		startGame();
-	});
+	_standbyLayout->setReadyCallback(CC_CALLBACK_0(GameplayScene::startGame, this));
 }
 
 void GameplayScene::dishButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget::TouchEventType eventType)
@@ -353,6 +337,7 @@ void GameplayScene::dishButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget
 						_clockTimer = _initClockTime + powerup->getValue();
 						_comboBar->getParent()->setVisible(true);
 						_comboBar->setPercent(100);
+						Inventories::getInstance().decPowerup(PowerupTypes::HeadLight);
 					}
 				}
 			}
@@ -624,7 +609,10 @@ void GameplayScene::packBurger(float dt)
 	showTutorialStep(true);
 
 	if (Inventories::getInstance().hasPowerup(PowerupTypes::RichCustomer))
+	{
+		Inventories::getInstance().decPowerup(PowerupTypes::RichCustomer);
 		createAdjunct();
+	}
 
 	_burgersCount++;
 
@@ -644,6 +632,7 @@ void GameplayScene::packBurger(float dt)
 
 		if (Inventories::getInstance().hasPowerup(PowerupTypes::CaptainCook))
 		{
+			Inventories::getInstance().decPowerup(PowerupTypes::CaptainCook);
 			auto powerup = Inventories::getInstance().getPowerupByType(PowerupTypes::CaptainCook);
 			coin += powerup->getValue();
 			//effect

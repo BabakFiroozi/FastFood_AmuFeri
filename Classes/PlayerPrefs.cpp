@@ -126,6 +126,20 @@ int PlayerPrefs::getSandwitch() const
 	return c;
 }
 
+void PlayerPrefs::setSandwitchTotal(int count) const
+{
+	const char* key = "sandwitchTotal";
+	int c = UserDefault::getInstance()->getIntegerForKey(key, 0);
+	UserDefault::getInstance()->setIntegerForKey(key, count + c);
+}
+
+int PlayerPrefs::getSandwitchTotal() const
+{
+	const char* key = "sandwitchTotal";
+	int c = UserDefault::getInstance()->getIntegerForKey(key, 0);
+	return c;
+}
+
 bool PlayerPrefs::isTutorialFinished() const
 {
 	const char* key = "tutorialFinished";

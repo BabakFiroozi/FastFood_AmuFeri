@@ -22,22 +22,9 @@ Inventories& Inventories::getInstance()
 	return instance;
 }
 
-std::vector<KitchenPtr> Inventories::getAllKitchens()
-{
-	return _allKitchens;
-}
-
 std::vector<PowerupPtr> Inventories::getAllPowerups()
 {
 	return _allPowerups;
-}
-
-KitchenPtr Inventories::getKitchenByType(KitchenTypes type)
-{
-	for (auto k : _allKitchens)
-		if (k->getType() == type)
-			return k;
-	return nullptr;
 }
 
 PowerupPtr Inventories::getPowerupByType(PowerupTypes type)
@@ -48,17 +35,35 @@ PowerupPtr Inventories::getPowerupByType(PowerupTypes type)
 	return nullptr;
 }
 
-void Inventories::addPowerup(PowerupTypes powerupType)
+void Inventories::incPowerup(PowerupTypes powerupType)
 {
-	if (hasPowerup(powerupType))
+	_addedPowerups[powerupType] += 1;
+}
+
+void Inventories::decPowerup(PowerupTypes powerupType)
+{
+	if (!hasPowerup(powerupType))
 		return;
-	_addedPowerups.push_back(powerupType);
+	_addedPowerups[powerupType] -= 1;
 }
 
 bool Inventories::hasPowerup(PowerupTypes powerupType)
 {
-	bool found = std::find(_addedPowerups.begin(), _addedPowerups.end(), powerupType) != _addedPowerups.end();
-	return found;
+	bool has = _addedPowerups[powerupType] > 0;
+	return has;
+}
+
+std::vector<KitchenPtr> Inventories::getAllKitchens()
+{
+	return _allKitchens;
+}
+
+KitchenPtr Inventories::getKitchenByType(KitchenTypes type)
+{
+	for (auto k : _allKitchens)
+		if (k->getType() == type)
+			return k;
+	return nullptr;
 }
 
 void Inventories::unlockKitchen(KitchenTypes kitchenType)
@@ -147,7 +152,12 @@ std::string Inventories::serializeAddedPowerups()
 
 	rapidjson::Value powerupsArr(rapidjson::kArrayType);
 	for (auto k : _addedPowerups)
-		powerupsArr.PushBack((int)k, allocator);
+	{
+		rapidjson::Value obj(rapidjson::kObjectType);
+		obj.AddMember("type", (int)k.first, allocator);
+		obj.AddMember("count", (int)k.second, allocator);
+		powerupsArr.PushBack(obj, allocator);
+	}
 	doc.AddMember("addedPowerups", powerupsArr, allocator);
 
 	rapidjson::StringBuffer strBuffer;
@@ -165,8 +175,17 @@ void Inventories::initializeAddedPowerups(const std::string& data)
 	auto arr = doc["addedPowerups"].GetArray();
 	for (auto& p : arr)
 	{
-		PowerupTypes powerup = (PowerupTypes)p.GetInt();
-		_addedPowerups.push_back(powerup);
+		PowerupTypes type = (PowerupTypes)p["type"].GetInt();
+		int count = p["count"].GetInt();
+		_addedPowerups[type] = count;
 	}
+}
+
+int Inventories::getPowerupsCount(PowerupTypes type)
+{
+	int count = 0;
+	if (hasPowerup(type))
+		count = _addedPowerups[type];
+	return count;
 }
 

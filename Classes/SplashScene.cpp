@@ -58,6 +58,8 @@ bool SplashScene::init()
 	bool isFirsrRun = PlayerPrefs::getInstance().isFirstRun();
 	if (isFirsrRun)
 	{
+		GameUser::getInstance().addCoin(10000);
+
 		std::string foodsStr = cocos2d::FileUtils::getInstance()->getStringFromFile("foods.json");
 		FoodFactory::getInstance().initialize(foodsStr);
 		PlayerPrefs::getInstance().saveFoods();

@@ -6,6 +6,7 @@
 #include "json/document.h"
 #include "General.h"
 #include "FoodFactory.h"
+#include "StandbyLayout.h"
 
 class GameplayScene : public cocos2d::Layer
 {
@@ -61,7 +62,7 @@ private:
 	cocos2d::ui::LoadingBar* _clockBar;
 	cocos2d::ui::LoadingBar* _comboBar;
 
-	cocos2d::ui::Layout* _standbyLayout;
+	StandbyLayout* _standbyLayout;
 	cocos2d::ui::Layout* _pauseLayout;
 
 	std::vector<FoodTypes> _recipeFoodsVec;

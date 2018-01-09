@@ -115,7 +115,8 @@ public:
 	KitchenPtr getKitchenByType(KitchenTypes type);
 	PowerupPtr getPowerupByType(PowerupTypes type);
 
-	void addPowerup(PowerupTypes powerupType);
+	void incPowerup(PowerupTypes powerupType);
+	void decPowerup(PowerupTypes powerupType);
 	bool hasPowerup(PowerupTypes powerupType);
 
 	void unlockKitchen(KitchenTypes kitchenType);
@@ -129,6 +130,8 @@ public:
 	std::string serializeAddedPowerups();
 	void initializeAddedPowerups(const std::string& data);
 
+	int getPowerupsCount(PowerupTypes type);
+
 private:
 	static bool _initialized;
 
@@ -136,5 +139,5 @@ private:
 	std::vector<PowerupPtr> _allPowerups;
 
 	std::vector<KitchenTypes> _unlockedKitchens;
-	std::vector<PowerupTypes> _addedPowerups;
+	std::map<PowerupTypes, int> _addedPowerups;
 };

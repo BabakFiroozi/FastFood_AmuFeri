@@ -86,6 +86,8 @@ private:
 	cocos2d::ui::Text* _coinsText;
 
 	cocos2d::ui::ImageView* _messagePopup = nullptr;
+
+	cocos2d::ui::Layout* _shopInfoPage;
 };
 
 #endif //__SHOP_SCENE_H__

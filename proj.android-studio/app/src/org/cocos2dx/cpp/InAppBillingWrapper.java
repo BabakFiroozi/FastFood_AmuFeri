@@ -1,3 +1,4 @@
+/**
 package org.cocos2dx.cpp;
 
 import com.android.trivialdrive.util.IabHelper;
@@ -41,9 +42,9 @@ public class InAppBillingWrapper {
 	
 	public static void startSetup()
 	{
-		String base64EncodedPublicKey = "";
-				
-		mHelper = new IabHelper(_activity, base64EncodedPublicKey);
+		String base64EncodedPublicKey = "CONSTRUCT_YOUR_KEY_AND_PLACE_IT_HERE";
+
+        mHelper = new IabHelper(_activity, base64EncodedPublicKey);
 
         // enable debug logging (for a production application, you should set this to false).
         mHelper.enableDebugLogging(true);
@@ -134,3 +135,4 @@ public class InAppBillingWrapper {
     }; 
 
 }
+*/
