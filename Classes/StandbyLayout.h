@@ -31,4 +31,7 @@ private:
 	cocos2d::Size _visibleSize;
 
 	ReadyCallback _readyCallback;
+
+	cocos2d::Vector<cocos2d::ui::ImageView*> _pagesVec;
+	int _pageIndex = 0;
 };
