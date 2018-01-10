@@ -498,7 +498,7 @@ void GameplayScene::createRecipeAndDishes()
 		FoodTypes foodType = _availableFoodsVec.at(randomNumber);
 
 		int alreadyExist = 0;
-		for (int v = 0; v < _recipeFoodsVec.size(); ++v)
+		for (int v = 0; v < (int)_recipeFoodsVec.size(); ++v)
 			alreadyExist += _recipeFoodsVec.at(v) == foodType ? 1 : 0;
 
 		int maxSameFood = (PlayerPrefs::getInstance().isTutorialFinished() ? 3 : 1) - 1;
@@ -546,6 +546,8 @@ void GameplayScene::createRecipeAndDishes()
 	}
 
 	_recipeFoodIndex = 0;
+
+	playCustomerSound();
 }
 
 void GameplayScene::startGame()
@@ -679,7 +681,7 @@ void GameplayScene::packBurger(float dt)
 			else
 				adjunctButton->runAction(Sequence::create(EaseSineIn::create(MoveBy::create(.2f, Vect(-400, 0))), RemoveSelf::create(), nullptr));
 		}
-	}, packBurgerTime, "RemoveAdjunctFood");
+	}, packBurgerTime, "PackingBurgerFinished");
 
 	if (_clockDecerementRate < 1)
 	{
@@ -693,6 +695,8 @@ void GameplayScene::packBurger(float dt)
 		if (_clockDecerementRate > 1.5f)
 			_clockDecerementRate = 1.5f;
 	}
+
+	playCookSound();
 
 	return;
 }
@@ -755,9 +759,7 @@ void GameplayScene::showPausePage(bool show, bool gameOver)
 	pauseBackg->getChildByName("pauseHeader")->setVisible(!gameOver);
 	pauseBackg->getChildByName("gameOverHeader")->setVisible(gameOver);
 	pauseBackg->getChildByName("pauseText")->setVisible(!gameOver);
-	_pauseLayout->setVisible(show);
-
-	
+	_pauseLayout->setVisible(show);	
 
 	auto stats = pauseBackg->getChildByName("stats");
 
@@ -774,15 +776,19 @@ void GameplayScene::showPausePage(bool show, bool gameOver)
 	auto bonusText = static_cast<Text*>(stats->getChildByName("bonus")->getChildren().at(0));
 	bonusText->setString(StringUtils::toString(_burgersCount));
 
-	int exRecord = PlayerPrefs::getInstance().getSandwitch();
+	int previousRecord = PlayerPrefs::getInstance().getSandwitch();
+
 	PlayerPrefs::getInstance().setSandwitch(_burgersCount);
-	if (exRecord > 0 && exRecord < _burgersCount && show && gameOver)
+
+	if (previousRecord > 0 && previousRecord < _burgersCount && show && gameOver)
 	{
 		auto star = ImageView::create("gui/score.png");
 		pauseBackg->addChild(star);
 		star->setPosition(pauseBackg->getContentSize() / 2 + Size(250, -50));
 		star->runAction(Repeat::create(RotateBy::create(360, 1), 100));
 	}
+
+	PlayerPrefs::getInstance().addSandwitchTotal(_burgersCount);
 
 	if (show)
 		Director::getInstance()->pause();
@@ -1142,3 +1148,30 @@ void GameplayScene::showTutorialStep(bool finish)
 	_tutorialStep++;
 }
 
+void GameplayScene::playCustomerSound()
+{
+	//play customer sound
+	int randomNumber;
+	do
+	{
+		randomNumber = random(1, 10);
+	} while (randomNumber == _lastCustomerSoundNum);
+	_lastCustomerSoundNum = randomNumber;
+	std::string soundFile = StringUtils::format("sounds/customer/customer_%d.ogg", randomNumber);
+	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(soundFile.c_str());
+}
+
+void GameplayScene::playCookSound()
+{
+	int kitchenNumber = (int)GameUser::getInstance().getCurrentKitchen() + 1;
+
+	//play customer sound
+	int randomNumber;
+	do
+	{
+		randomNumber = random(1, 5);
+	} while (randomNumber == _lastCookSoundNum);
+	_lastCookSoundNum = randomNumber;
+	std::string soundFile = StringUtils::format("sounds/cook/cook_%d_%d.ogg", kitchenNumber, randomNumber);
+	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(soundFile.c_str());
+}

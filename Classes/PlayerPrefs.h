@@ -35,7 +35,7 @@ public:
 	void setSandwitch(int count) const;
 	int  getSandwitch() const;
 
-	void setSandwitchTotal(int count) const;
+	void addSandwitchTotal(int count) const;
 	int  getSandwitchTotal() const;
 
 	bool isTutorialFinished() const;

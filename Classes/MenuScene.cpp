@@ -86,14 +86,16 @@ bool MenuScene::init(ValueMap& initData)
 	_settingButton->setPosition(Vect(backgSize.width - _settingButton->getContentSize().width / 2, _settingButton->getContentSize().height / 2));
 	_settingButton->addTouchEventListener(CC_CALLBACK_2(MenuScene::buttonCallback, this));
 
-	_foodButton = Button::create("gui/menu/shopButton.png", "gui/menu/shopButton_press.png");
-	_background->addChild(_foodButton);
-	_foodButton->setPosition(Vect(backgSize.width / 2, backgSize.height - _foodButton->getContentSize().height / 2));
-	_foodButton->addTouchEventListener(CC_CALLBACK_2(MenuScene::buttonCallback, this));
+	_shopButton = Button::create("gui/menu/shopButton.png", "gui/menu/shopButton_press.png");
+	_background->addChild(_shopButton);
+	_shopButton->setPosition(Vect(backgSize.width / 2, backgSize.height - _shopButton->getContentSize().height / 2));
+	_shopButton->addTouchEventListener(CC_CALLBACK_2(MenuScene::buttonCallback, this));
 
 	auto shopBadge = ImageView::create("gui/menu/shopBadge.png");
-	_foodButton->addChild(shopBadge);
-	shopBadge->setPosition(_foodButton->getContentSize() / 2 + Size(0, 5));
+	_shopButton->addChild(shopBadge);
+	shopBadge->setPosition(_shopButton->getContentSize() / 2 + Size(0, 5));
+
+	_shopButton->setVisible(PlayerPrefs::getInstance().getSandwitchTotal() > 0);
 
 	auto seq = Sequence::createWithTwoActions(ScaleTo::create(.25f, 1.1f), ScaleTo::create(.25f, 1));
 	shopBadge->runAction(RepeatForever::create(seq));
@@ -191,7 +193,7 @@ void MenuScene::buttonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget::TouchE
 			auto scene = TransitionFadeDown::create(1, GameplayScene::createSceneData(1));
 			Director::getInstance()->replaceScene(scene);
 		}
-		if (sender == _foodButton)
+		if (sender == _shopButton)
 		{
 			auto scene = TransitionSlideInR::create(.5f, ShopScene::createSceneData(ShopTypes::Food));
 			Director::getInstance()->replaceScene(scene);

@@ -126,7 +126,7 @@ int PlayerPrefs::getSandwitch() const
 	return c;
 }
 
-void PlayerPrefs::setSandwitchTotal(int count) const
+void PlayerPrefs::addSandwitchTotal(int count) const
 {
 	const char* key = "sandwitchTotal";
 	int c = UserDefault::getInstance()->getIntegerForKey(key, 0);

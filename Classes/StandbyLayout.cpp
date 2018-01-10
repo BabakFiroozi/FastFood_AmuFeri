@@ -95,7 +95,7 @@ bool StandbyLayout::init(ValueMap& initData)
 	std::vector<FoodPtr> lowFoodsVec;
 	for (auto food : FoodFactory::getInstance().getAllFoods())
 	{
-		if (food->isUnlocked() && food->getCount() < 1000)
+		if (food->isUnlocked() && food->getCount() < 10)
 			lowFoodsVec.push_back(food);
 		if (lowFoodsVec.size() == 6)
 			break;
@@ -130,7 +130,7 @@ bool StandbyLayout::init(ValueMap& initData)
 			}
 		});
 
-		for (int i = 0; i < lowFoodsVec.size(); ++i)
+		for (int i = 0; i < (int)lowFoodsVec.size(); ++i)
 		{
 			auto food = lowFoodsVec.at(i);
 
@@ -162,7 +162,6 @@ bool StandbyLayout::init(ValueMap& initData)
 	readyButton->setZoomScale(0);
 	addChild(readyButton);
 	readyButton->setPosition(getContentSize() / 2 + Size(0, -380));
-	readyButton->setVisible(false);
 	readyButton->addTouchEventListener([=](cocos2d::Ref* sender, cocos2d::ui::Widget::TouchEventType eventType)
 	{
 		if (eventType == Widget::TouchEventType::ENDED)
@@ -172,7 +171,7 @@ bool StandbyLayout::init(ValueMap& initData)
 			removeFromParent();
 		}
 	});
-	readyButton->runAction(RepeatForever::create(Sequence::createWithTwoActions(ScaleTo::create(.2f, 1.1f), ScaleTo::create(.2f, 1.0f))));
+	readyButton->runAction(RepeatForever::create(Sequence::createWithTwoActions(ScaleTo::create(.25f, 1.1f), ScaleTo::create(.25f, 1.0f))));
 
 	for (auto page : _pagesVec)
 		page->setVisible(_pagesVec.getIndex(page) == _pageIndex);

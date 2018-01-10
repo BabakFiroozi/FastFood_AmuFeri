@@ -36,7 +36,7 @@ private:
 	cocos2d::ui::Button* _settingButton;
 	cocos2d::ui::Button* _exitButton;
 
-	cocos2d::ui::Button* _foodButton;
+	cocos2d::ui::Button* _shopButton;
 
 	cocos2d::ui::Layout* _background;
 

@@ -54,6 +54,9 @@ private:
 
 	void showTutorialStep(bool finish = false);
 
+	void playCustomerSound();
+	void playCookSound();
+
 	cocos2d::Size _visibleSize;
 	cocos2d::Vect _visibleOrigin;
 
@@ -99,6 +102,9 @@ private:
 	std::vector<Node*> _tutVec;
 
 	int _tutorialStep = 0;
+
+	int _lastCustomerSoundNum = -1;
+	int _lastCookSoundNum = -1;
 };
 
 #endif //__GAMEPLAY_SCENE_H__
