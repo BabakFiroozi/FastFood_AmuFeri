@@ -52,7 +52,7 @@ private:
 
 	void giveCoinWithEffect(int coin, const cocos2d::Vect& pos, float scale, bool forAdjunct = false);
 
-	void showTutorialStep(bool finish = false);
+	void goTutorialStep();
 
 	void playCustomerSound();
 	void playCookSound();
@@ -99,12 +99,14 @@ private:
 
 	bool _burgerIsPacking = false;
 
-	std::vector<Node*> _tutVec;
+	std::vector<Node*> _tutorialNodesVec;
 
-	int _tutorialStep = 0;
+	int _tutorialStep = -1;
 
 	int _lastCustomerSoundNum = -1;
 	int _lastCookSoundNum = -1;
+
+	cocos2d::ui::Button* _forceTutDishButton = nullptr;
 };
 
 #endif //__GAMEPLAY_SCENE_H__
