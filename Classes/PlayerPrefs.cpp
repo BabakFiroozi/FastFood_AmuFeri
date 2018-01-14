@@ -140,14 +140,18 @@ int PlayerPrefs::getSandwitchTotal() const
 	return c;
 }
 
-bool PlayerPrefs::isTutorialFinished() const
+bool PlayerPrefs::isTutorialFinished(int part) const
 {
-	const char* key = "tutorialFinished";
-	return UserDefault::getInstance()->getBoolForKey(key, false);
+	if (part > 1 && !isTutorialFinished(part - 1))
+		return true;
+	std::string key = "tutorialFinished" + StringUtils::toString(part);
+	return UserDefault::getInstance()->getBoolForKey(key.c_str(), false);
 }
 
-void PlayerPrefs::finishTutrial() const
+void PlayerPrefs::finishTutrial(int part) const
 {
-	const char* key = "tutorialFinished";
-	UserDefault::getInstance()->setBoolForKey(key, true);
+	if (part > 1 && !isTutorialFinished(part - 1))
+		return;
+	std::string key = "tutorialFinished" + StringUtils::toString(part);
+	UserDefault::getInstance()->setBoolForKey(key.c_str(), true);
 }

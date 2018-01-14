@@ -56,6 +56,7 @@ private:
 
 	void playCustomerSound();
 	void playCookSound();
+	void playHumanSound();
 
 	cocos2d::Size _visibleSize;
 	cocos2d::Vect _visibleOrigin;
@@ -107,6 +108,9 @@ private:
 	int _lastCookSoundNum = -1;
 
 	cocos2d::ui::Button* _forceTutDishButton = nullptr;
+
+	bool _togglePlaySound;
+	int _playSoundCounter = -1;
 };
 
 #endif //__GAMEPLAY_SCENE_H__

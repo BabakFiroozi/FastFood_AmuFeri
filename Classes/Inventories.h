@@ -120,7 +120,7 @@ public:
 	bool hasPowerup(PowerupTypes powerupType);
 
 	void unlockKitchen(KitchenTypes kitchenType);
-	bool isKitchenUnlocked(KitchenTypes kitchenType);
+	bool kitchenUnlocked(KitchenTypes kitchenType);
 
 	void initialize(const std::string& data);
 

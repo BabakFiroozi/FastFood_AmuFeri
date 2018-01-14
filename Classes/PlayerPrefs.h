@@ -38,8 +38,8 @@ public:
 	void addSandwitchTotal(int count) const;
 	int  getSandwitchTotal() const;
 
-	bool isTutorialFinished() const;
-	void finishTutrial() const;
+	bool isTutorialFinished(int part) const;
+	void finishTutrial(int part) const;
 
 private:
 };

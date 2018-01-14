@@ -78,9 +78,9 @@ bool StandbyLayout::init(ValueMap& initData)
 				powerupImage->setScale(.7f);
 
 				int powerupsCount = Inventories::getInstance().getPowerupsCount(type);
-				auto countText = Text::create(StringUtils::toString(powerupsCount), GameChoice::getInstance().getFontName(), 55);
+				auto countText = Text::create(StringUtils::toString(powerupsCount), GameChoice::getInstance().getFontName(), 60);
 				backg->addChild(countText);
-				countText->setPosition(powerupImage->getPosition() + Vect(0, -100));
+				countText->setPosition(powerupImage->getPosition() + Vect(0, -105));
 				countText->enableOutline(Color4B::GRAY);
 				countText->setTextColor(Color4B::YELLOW);
 
@@ -145,9 +145,9 @@ bool StandbyLayout::init(ValueMap& initData)
 			foodImage->setPosition(posOffset);
 			foodImage->setScale(.3f);
 
-			auto countText = Text::create(StringUtils::toString(food->getCount()), GameChoice::getInstance().getFontName(), 55);
+			auto countText = Text::create(StringUtils::toString(food->getCount()), GameChoice::getInstance().getFontName(), 60);
 			backg->addChild(countText);
-			countText->setPosition(foodImage->getPosition() + Vect(0, -70));
+			countText->setPosition(foodImage->getPosition() + Vect(0, -75));
 			countText->enableOutline(Color4B::GRAY);
 			countText->setTextColor(Color4B::YELLOW);
 

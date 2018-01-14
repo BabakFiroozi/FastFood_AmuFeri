@@ -98,57 +98,57 @@
       "name": "",
       "price": 1000,
       "amount": 100,
-	  "desc": ""
+	  "desc": "¾§w#Sz¶#¾Ä"
     },
     {
       "name": "",
       "price": 2000,
       "amount": 500,
-	  "desc": ""
+	  "desc": "¾§w#¾vÃ¨#¾Ä"
     },
     {
       "name": "",
       "price": 3000,
       "amount": 1000,
-	  "desc": ""
+	  "desc": "¾§w#¾L•]#¾Ä"
     },
     {
       "name": "",
       "price": 5000,
       "amount": 10000,
-	  "desc": ""
+	  "desc": "tI¹§wH#¾TvM#k¹a"
     },
     {
       "name": "",
       "price": 10000,
       "amount": 20000,
-	  "desc": ""
+	  "desc": "tI¹§wH#¾L•]#¾Ä"
     },
     {
       "name": "",
       "price": 20000,
       "amount": 100000,
-	  "desc": ""
+	  "desc": "tI¹§wH#»#¾§w#Â±¨"
     }
   ],
   "kitchen": [
     {
-      "name": "",
+      "name": "°Š#Swj#tIL–",
       "price": 100,
       "amount": 1,
-	  "desc": ""
+	  "desc": "´¨k¶Anj#,o¿{#J¼¹]"
     },
     {
-      "name": "",
+      "name": "qQ#ªw#¸ve",
       "price": 200,
       "amount": 1,
-	  "desc": ""
+	  "desc": "ˆw¼T¶#k¶Anj#,o¿{#ˆw»"
     },
     {
-      "name": "",
+      "name": "tH¼w»#°Ã²#¾µ–",
       "price": 300,
       "amount": 1,
-	  "desc": ""
+	  "desc": "¯IM#k¶Anj#,o¿{#ÏIµ{"
     }
   ],
   "powerup": [

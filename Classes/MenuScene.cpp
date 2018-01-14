@@ -177,6 +177,15 @@ void MenuScene::onEnter()
 	Layer::onEnter();
 
 	CocosDenshion::SimpleAudioEngine::getInstance()->playBackgroundMusic("sounds/music_menu.ogg", true);
+
+	if (!PlayerPrefs::getInstance().isTutorialFinished(2))
+	{
+		auto image = ImageView::create("tut/store.png");
+		_background->addChild(image);
+		image->setPosition(_background->getContentSize() / 2 + Size(0, 400));
+		image->setScale(1.5f);
+		image->runAction(RepeatForever::create(Sequence::createWithTwoActions(MoveBy::create(.5f, Vect(0, 20)), MoveBy::create(.5f, Vect(0, -20)))));
+	}
 }
 
 void MenuScene::update(float dt)
@@ -188,14 +197,18 @@ void MenuScene::buttonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget::TouchE
 {
 	if (eventType == Widget::TouchEventType::ENDED)
 	{
-		if (sender == _playButton)
-		{
-			auto scene = TransitionFadeDown::create(1, GameplayScene::createSceneData(1));
-			Director::getInstance()->replaceScene(scene);
-		}
 		if (sender == _shopButton)
 		{
 			auto scene = TransitionSlideInR::create(.5f, ShopScene::createSceneData(ShopTypes::Food));
+			Director::getInstance()->replaceScene(scene);
+			PlayerPrefs::getInstance().finishTutrial(2);
+		}
+		if (!PlayerPrefs::getInstance().isTutorialFinished(2))
+			return;
+
+		if (sender == _playButton)
+		{
+			auto scene = TransitionFadeDown::create(1, GameplayScene::createSceneData(1));
 			Director::getInstance()->replaceScene(scene);
 		}
 		if (sender == _exitButton)

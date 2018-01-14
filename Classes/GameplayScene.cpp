@@ -330,7 +330,7 @@ void GameplayScene::dishButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget
 				if (_clockTimer > _initClockTime)
 					_clockTimer = _initClockTime;
 
-				if (_burgersCount > 8 && Inventories::getInstance().hasPowerup(PowerupTypes::HeadLight))
+				if (_burgersCount > 0 && Inventories::getInstance().hasPowerup(PowerupTypes::HeadLight))
 				{
 					auto powerup = Inventories::getInstance().getPowerupByType(PowerupTypes::HeadLight);
 					if (_clockTimer >= _initClockTime)
@@ -488,7 +488,7 @@ void GameplayScene::createRecipeAndDishes()
 
 	int foodsCount = cocos2d::random(minFoodsCount, maxFoodsCount);
 
-	if (!PlayerPrefs::getInstance().isTutorialFinished())
+	if (!PlayerPrefs::getInstance().isTutorialFinished(1))
 		foodsCount = 3;
 
 	for (int f = 0; f < foodsCount; ++f)
@@ -505,7 +505,7 @@ void GameplayScene::createRecipeAndDishes()
 		for (int v = 0; v < (int)_recipeFoodsVec.size(); ++v)
 			alreadyExist += _recipeFoodsVec.at(v) == foodType ? 1 : 0;
 
-		int maxSameFood = (PlayerPrefs::getInstance().isTutorialFinished() ? 3 : 1) - 1;
+		int maxSameFood = (PlayerPrefs::getInstance().isTutorialFinished(1) ? 3 : 1) - 1;
 
 		if (alreadyExist > maxSameFood)
 		{
@@ -551,13 +551,14 @@ void GameplayScene::createRecipeAndDishes()
 
 	_recipeFoodIndex = 0;
 
-	playCustomerSound();
+	playHumanSound();
 }
+
 
 void GameplayScene::startGame()
 {
 	_clockTimer = _initClockTime;
-	if (!PlayerPrefs::getInstance().isTutorialFinished())
+	if (!PlayerPrefs::getInstance().isTutorialFinished(1))
 		_clockTimer -= _initClockTime / 2;
 	_gameStarted = true;
 	scheduleOnce([=](float dt) {
@@ -574,7 +575,7 @@ void GameplayScene::update(float delta)
 	if (_gameStarted && !_isGameOver && _foodFinishedLayout == nullptr)
 	{
 		if (!_burgerIsPacking || _isHeadLightActive)
-			if (PlayerPrefs::getInstance().isTutorialFinished())
+			if (PlayerPrefs::getInstance().isTutorialFinished(1))
 				_clockTimer -= delta * _clockDecerementRate;
 
 		if (_isHeadLightActive)
@@ -650,6 +651,11 @@ void GameplayScene::packBurger(float dt)
 			auto powerup = Inventories::getInstance().getPowerupByType(PowerupTypes::CaptainCook);
 			coin += powerup->getValue();
 			//effect
+			auto captainCookEffect = ImageView::create("gui/shop/powerups/captainCook.png");
+			_hudLayout->addChild(captainCookEffect);
+			captainCookEffect->setPosition(_clockBar->getParent()->getPosition() + Vect(0, -80));
+			captainCookEffect->setScale(.2f);
+			captainCookEffect->runAction(Sequence::create(EaseBounceOut::create(ScaleTo::create(.3f, .9f)), DelayTime::create(1), RemoveSelf::create(), nullptr));
 		}
 
 		giveCoinWithEffect(coin, _coinText->getParent()->getPosition() - Vect(170, 330), .8f);
@@ -695,7 +701,7 @@ void GameplayScene::packBurger(float dt)
 		}
 	}, packBurgerTime, "PackingBurgerFinished");
 
-	if (PlayerPrefs::getInstance().isTutorialFinished())
+	if (PlayerPrefs::getInstance().isTutorialFinished(1))
 	{
 		if (_clockDecerementRate < 1)
 		{
@@ -711,8 +717,6 @@ void GameplayScene::packBurger(float dt)
 		}
 	}
 
-	playCookSound();
-
 	return;
 }
 
@@ -726,7 +730,7 @@ void GameplayScene::onExit()
 
 void GameplayScene::pauseButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget::TouchEventType eventType)
 {
-	if (!PlayerPrefs::getInstance().isTutorialFinished())
+	if (!PlayerPrefs::getInstance().isTutorialFinished(1))
 		return;
 
 	if (eventType == Widget::TouchEventType::ENDED)
@@ -777,7 +781,9 @@ void GameplayScene::showPausePage(bool show, bool gameOver)
 	pauseBackg->getChildByName("pauseHeader")->setVisible(!gameOver);
 	pauseBackg->getChildByName("gameOverHeader")->setVisible(gameOver);
 	pauseBackg->getChildByName("pauseText")->setVisible(!gameOver);
-	_pauseLayout->setVisible(show);	
+	_pauseLayout->setVisible(show);
+
+	pauseBackg->getChildByName("shop")->setVisible(PlayerPrefs::getInstance().isTutorialFinished(2));
 
 	auto stats = pauseBackg->getChildByName("stats");
 
@@ -1051,7 +1057,7 @@ void GameplayScene::giveCoinWithEffect(int coin, const Vect& pos, float scale, b
 		_coinsCount += coin;
 		GameUser::getInstance().addCoin(coin);
 		PlayerPrefs::getInstance().saveCoin();
-	};	
+	};
 
 	auto animFunc = [=]() {
 		auto coinImage = _coinText->getParent();
@@ -1082,7 +1088,7 @@ void GameplayScene::giveCoinWithEffect(int coin, const Vect& pos, float scale, b
 
 void GameplayScene::goTutorialStep()
 {
-	if (PlayerPrefs::getInstance().isTutorialFinished())
+	if (PlayerPrefs::getInstance().isTutorialFinished(1))
 		return;
 
 	_tutorialStep++;
@@ -1090,7 +1096,7 @@ void GameplayScene::goTutorialStep()
 	if (_burgersCount == 2)
 	{
 		_forceTutDishButton = nullptr;
-		PlayerPrefs::getInstance().finishTutrial();
+		PlayerPrefs::getInstance().finishTutrial(1);
 	}
 
 	if (_tutorialStep == 5 || _burgersCount == 2)
@@ -1104,7 +1110,7 @@ void GameplayScene::goTutorialStep()
 		auto finishText = Text::create(GameChoice::getInstance().getString(messageName), GameChoice::getInstance().getFontName(), 50);
 		finishFrame->addChild(finishText);
 		finishText->setPosition(finishFrame->getContentSize() / 2);
-		finishText->setTextColor(Color4B::YELLOW);
+		finishText->setTextColor(Color4B::ORANGE);
 		scheduleOnce([=](float dt) {
 			finishFrame->removeFromParent();
 		}, 2, "RemoveTutorialFinishedText" + StringUtils::toString(_tutorialStep));
@@ -1225,11 +1231,10 @@ void GameplayScene::goTutorialStep()
 
 void GameplayScene::playCustomerSound()
 {
-	//play customer sound
 	int randomNumber;
 	do
 	{
-		randomNumber = random(1, 10);
+		randomNumber = random(1, 15);
 	} while (randomNumber == _lastCustomerSoundNum);
 	_lastCustomerSoundNum = randomNumber;
 	std::string soundFile = StringUtils::format("sounds/customer/customer_%d.ogg", randomNumber);
@@ -1239,14 +1244,55 @@ void GameplayScene::playCustomerSound()
 void GameplayScene::playCookSound()
 {
 	int kitchenNumber = (int)GameUser::getInstance().getCurrentKitchen() + 1;
-
-	//play customer sound
 	int randomNumber;
 	do
 	{
-		randomNumber = random(1, 5);
+		randomNumber = random(1, kitchenNumber == 3 ? 6 : 3);
 	} while (randomNumber == _lastCookSoundNum);
 	_lastCookSoundNum = randomNumber;
 	std::string soundFile = StringUtils::format("sounds/cook/cook_%d_%d.ogg", kitchenNumber, randomNumber);
 	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(soundFile.c_str());
+}
+
+
+void GameplayScene::playHumanSound()
+{
+	if (!PlayerPrefs::getInstance().isTutorialFinished(1))
+		return;
+
+	if (_playSoundCounter == -1)
+	{
+		_playSoundCounter = random(2, 4);
+		_togglePlaySound = random(1, 100) > 50;
+	}
+
+	if (_playSoundCounter > 0)
+	{
+		_playSoundCounter--;
+		if (_playSoundCounter == 0)
+		{
+			_playSoundCounter = random(2, 4);
+			_togglePlaySound = !_togglePlaySound;
+			if (_togglePlaySound)
+				playCookSound();
+			else
+				playCustomerSound();
+
+			auto sprite = Sprite::create("sounds/quote.png");
+			addChild(sprite);
+			if (_togglePlaySound)//cook
+			{
+				sprite->setPosition(_visibleSize / 2 + Size(100, 500));
+				sprite->setAnchorPoint(Point::ANCHOR_BOTTOM_LEFT);
+			}
+			else
+			{
+				sprite->setPosition(_visibleSize / 2 + Size(400, -200));
+				sprite->setAnchorPoint(Point::ANCHOR_BOTTOM_RIGHT);
+				sprite->setFlippedX(true);
+			}
+			sprite->setScale(.2f);
+			sprite->runAction(Sequence::create(ScaleTo::create(.1f, 1), DelayTime::create(1), RemoveSelf::create(), nullptr));
+		}
+	}
 }

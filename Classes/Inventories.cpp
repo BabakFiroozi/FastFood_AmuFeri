@@ -68,12 +68,12 @@ KitchenPtr Inventories::getKitchenByType(KitchenTypes type)
 
 void Inventories::unlockKitchen(KitchenTypes kitchenType)
 {
-	if (isKitchenUnlocked(kitchenType))
+	if (kitchenUnlocked(kitchenType))
 		return;
 	_unlockedKitchens.push_back(kitchenType);
 }
 
-bool Inventories::isKitchenUnlocked(KitchenTypes kitchenType)
+bool Inventories::kitchenUnlocked(KitchenTypes kitchenType)
 {
 	bool found = std::find(_unlockedKitchens.begin(), _unlockedKitchens.end(), kitchenType) != _unlockedKitchens.end();
 	return found;

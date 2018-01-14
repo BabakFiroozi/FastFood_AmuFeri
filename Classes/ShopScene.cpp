@@ -129,7 +129,8 @@ bool ShopScene::init(ValueMap& initData)
 	_shopInfoPage->setBackGroundColor(Color3B::BLACK);
 	_shopInfoPage->setSwallowTouches(true);
 	_shopInfoPage->setTouchEnabled(true);
-	auto infoImage = ImageView::create("gui/shop/powerups/info_1.png");
+
+	auto infoImage = ImageView::create("gui/shop/powerups/infoFrame.png");
 	_shopInfoPage->addChild(infoImage);
 	infoImage->setPosition(_shopInfoPage->getContentSize() / 2);
 	_shopInfoPage->setVisible(false);
@@ -137,6 +138,10 @@ bool ShopScene::init(ValueMap& initData)
 		if (eventType == Widget::TouchEventType::ENDED)
 			_shopInfoPage->setVisible(false);
 	});
+
+	auto infoTextImage = ImageView::create("gui/shop/powerups/info_1.png");
+	infoImage->addChild(infoTextImage);
+	infoTextImage->setPosition(infoImage->getContentSize() / 2);
 
 	return true;
 }
@@ -361,12 +366,7 @@ void ShopScene::showTab(ShopTypes shopType)
 				shopIconPath = StringUtils::format("gui/shop/powerups/powerup_%d.png", itemNumber);
 				frameIconPath = "gui/shop/powerups/frame.png";
 				shopIconScale = 1;
-			}
-
-			auto nameText = Text::create(shopName, fontName, fontSize - 15);
-			itemFrame->addChild(nameText);
-			nameText->setPosition(itemFrame->getContentSize() / 2 + Size(0, 430));
-			nameText->setTextColor(Color4B(160, 100, 10, 255));
+			}			
 
 			auto frameIcon = ImageView::create(frameIconPath);
 			itemFrame->addChild(frameIcon);
@@ -377,6 +377,11 @@ void ShopScene::showTab(ShopTypes shopType)
 			shopImage->setPosition(frameIcon->getContentSize() / 2 + Size(0, 10));
 			shopImage->setScale(shopIconScale);
 
+			auto nameText = Text::create(shopName, fontName, fontSize - 25);
+			itemFrame->addChild(nameText);
+			nameText->setPosition(itemFrame->getContentSize() / 2 + Size(0, 430));
+			nameText->setTextColor(Color4B(160, 100, 10, 255));
+
 			auto priceFrame = ImageView::create("gui/shop/priceFrame.png");
 			itemFrame->addChild(priceFrame);
 			priceFrame->setPosition(itemFrame->getContentSize() / 2 + Size(0, -270));
@@ -386,7 +391,7 @@ void ShopScene::showTab(ShopTypes shopType)
 			{
 				auto descFrame = ImageView::create("gui/shop/powerups/descFrame.png");
 				itemFrame->addChild(descFrame);
-				descFrame->setPosition(itemFrame->getContentSize() / 2 + Size(0, 10));
+				descFrame->setPosition(itemFrame->getContentSize() / 2 + Size(0, -10));
 
 				auto descText = Text::create(shopDesc, GameChoice::getInstance().getFontName(), 32);
 				descFrame->addChild(descText);
@@ -402,19 +407,7 @@ void ShopScene::showTab(ShopTypes shopType)
 			auto buyText = Text::create(GameChoice::getInstance().getString("TEXT_BUY"), fontName, fontSize);
 			buyButton->addChild(buyText);
 			buyText->setPosition(buyButton->getContentSize() / 2 + Size(0, -10));
-			buyText->enableOutline(Color4B::GRAY, 3);
-
-			if (shopType == ShopTypes::Kitchen)
-			{
-				KitchenTypes kitchenType = (KitchenTypes)(itemNumber - 1);
-				if (Inventories::getInstance().isKitchenUnlocked(kitchenType))
-				{
-					if (GameUser::getInstance().getCurrentKitchen() == kitchenType)
-						buyText->setString(GameChoice::getInstance().getString("TEXT_ACTIVE"));
-					else
-						buyText->setString(GameChoice::getInstance().getString("TEXT_SELECT"));
-				}
-			}			
+			buyText->enableOutline(Color4B::GRAY, 3);						
 
 			if (shopAmount > 1)
 			{
@@ -442,19 +435,42 @@ void ShopScene::showTab(ShopTypes shopType)
 			priceText->setTextAreaSize(Size(340, 140));
 			priceText->enableOutline(Color4B::GRAY, 3);
 
-			if (shopType == ShopTypes::Coin)
-			{
-				std::string tomanStr = GameChoice::getInstance().getString("TEXT_TOUMAN") + " " + priceText->getString();
-				priceText->setString(tomanStr);
-				priceText->setPositionX(priceText->getPositionX() + 120);
-			}
-			else
+			
+			if (shopType == ShopTypes::Food)
 			{
 				auto coinIcon = ImageView::create("gui/coin.png");
 				priceText->addChild(coinIcon);
 				coinIcon->setPosition(priceText->getTextAreaSize() / 2 + Size(220, 10));
 			}
 
+			if (shopType == ShopTypes::Kitchen)
+			{
+				KitchenTypes kitchenType = (KitchenTypes)(itemNumber - 1);
+				if (Inventories::getInstance().kitchenUnlocked(kitchenType))
+				{
+					if (GameUser::getInstance().getCurrentKitchen() == kitchenType)
+					{
+						buyText->setString(GameChoice::getInstance().getString("TEXT_ACTIVE"));
+						buyButton->setVisible(false);
+						auto trueSingImage = ImageView::create("gui/trueSign.png");
+						priceFrame->addChild(trueSingImage);
+						trueSingImage->setPosition(priceFrame->getContentSize() / 2);
+						priceText->setVisible(false);
+					}
+					else
+					{
+						buyText->setString(GameChoice::getInstance().getString("TEXT_SELECT"));
+						priceText->setVisible(false);
+					}
+				}
+				else
+				{
+					auto coinIcon = ImageView::create("gui/coin.png");
+					priceText->addChild(coinIcon);
+					coinIcon->setPosition(priceText->getTextAreaSize() / 2 + Size(220, 10));
+				}
+			}
+			
 			if (shopType == ShopTypes::Powerup)
 			{
 				PowerupTypes powerupType = (PowerupTypes)(itemNumber - 1);
@@ -464,10 +480,7 @@ void ShopScene::showTab(ShopTypes shopType)
 				countText->setPosition(itemFrame->getContentSize() / 2 + Size(200, 350));
 				countText->setTextColor(Color4B::GREEN);
 				countText->enableOutline(Color4B::GRAY, 2);
-			}
 
-			if (shopType == ShopTypes::Kitchen || shopType == ShopTypes::Powerup)
-			{
 				auto infoButton = Button::create("gui/shop/infoButton.png");
 				itemFrame->addChild(infoButton);
 				infoButton->setPosition(itemFrame->getContentSize() / 2 + Size(-220, 420));
@@ -475,11 +488,18 @@ void ShopScene::showTab(ShopTypes shopType)
 				infoButton->addTouchEventListener([=](Ref* sender, Widget::TouchEventType eventType) {
 					if (eventType == Widget::TouchEventType::ENDED)
 					{
-						auto infoImage = static_cast<ImageView*>(_shopInfoPage->getChildren().at(0));
-						infoImage->loadTexture(StringUtils::format("gui/shop/powerups/info_%d", itemNumber));
+						auto infoImage = static_cast<ImageView*>(_shopInfoPage->getChildren().at(0)->getChildren().at(0));
+						infoImage->loadTexture(StringUtils::format("gui/shop/powerups/info_%d.png", itemNumber));
 						_shopInfoPage->setVisible(true);
 					}
 				});
+			}
+			
+			if (shopType == ShopTypes::Coin)
+			{
+				std::string tomanStr = GameChoice::getInstance().getString("TEXT_TOUMAN") + " " + priceText->getString();
+				priceText->setString(tomanStr);
+				priceText->setPositionX(priceText->getPositionX() + 120);
 			}
 
 			_shopDataMap[buyButton] = ShopData(shopType, itemNumber - 1, shopPrice);
@@ -519,7 +539,7 @@ void ShopScene::buyButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget::Tou
 			int price = shopData.price;
 			if (price <= GameUser::getInstance().getCoin())
 			{
-				if (!Inventories::getInstance().isKitchenUnlocked(kitchenType))
+				if (!Inventories::getInstance().kitchenUnlocked(kitchenType))
 					GameUser::getInstance().addCoin(-price);
 				Inventories::getInstance().unlockKitchen(kitchenType);
 				GameUser::getInstance().setCurrentKitchen(kitchenType);
