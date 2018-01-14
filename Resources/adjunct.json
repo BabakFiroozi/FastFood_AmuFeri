@@ -1,32 +1,33 @@
 {
-	"adjunct": [{
+	"adjunct": [
+		{
 			"name": "jnp#¾MI{¼º",
-			"worth": 50,
+			"worth": 200,
 			"iconPath": "adjunct/drink_orange.png"
 		},
 		{
 			"name": "Â§z¶#¾MI{¼º",
-			"worth": 50,
+			"worth": 200,
 			"iconPath": "adjunct/drink_cola.png"
 		},
 		{
 			"name": "¾ÎI†H#uw",
-			"worth": 50,
+			"worth": 200,
 			"iconPath": "adjunct/sauce_red.png"
 		},
 		{
 			"name": "¾ÎI†H#uw",
-			"worth": 50,
+			"worth": 200,
 			"iconPath": "adjunct/sauce_white.png"
 		},
 		{
 			"name": "Â¹Ã¶p#KÃw",
-			"worth": 50,
+			"worth": 200,
 			"iconPath": "adjunct/french_fries.png"
 		},
 		{
 			"name": "¾ÎI†H#·¼º",
-			"worth": 50,
+			"worth": 200,
 			"iconPath": "adjunct/bread.png"
 		}
 	]

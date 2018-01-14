@@ -649,7 +649,7 @@ void GameplayScene::packBurger(float dt)
 		{
 			Inventories::getInstance().decPowerup(PowerupTypes::CaptainCook);
 			auto powerup = Inventories::getInstance().getPowerupByType(PowerupTypes::CaptainCook);
-			coin += powerup->getValue();
+			coin += random(powerup->getValue() / 2, powerup->getValue());
 			//effect
 			auto captainCookEffect = ImageView::create("gui/shop/powerups/captainCook.png");
 			_hudLayout->addChild(captainCookEffect);

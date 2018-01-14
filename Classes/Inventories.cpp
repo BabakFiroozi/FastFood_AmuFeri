@@ -96,7 +96,7 @@ void Inventories::initialize(const std::string& data)
 	{
 		KitchenTypes type = (KitchenTypes)c["type"].GetInt();
 		std::string name = c["name"].GetString();
-		int value = c["value"].GetInt();
+		float value = c["value"].GetFloat();
 		Kitchen kitchen(type, name, value);
 		_allKitchens.push_back(std::make_shared<Kitchen>(kitchen));
 	}	

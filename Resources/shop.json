@@ -60,7 +60,7 @@
       "type": 9,
       "price": -1,
 	  "amount": 100,
-	  "desc": "9#:j¼w"
+	  "desc": "20#:j¼w"
     },
     {
       "type": 10,
@@ -154,19 +154,19 @@
   "powerup": [
     {
       "name": "nHk²¼Q#ÁoTz¶",
-      "price": 500,
+      "price": 100,
       "amount": 1,
 	  "desc": "...#»#Â¹Ã¶p#KÃw#»#¾MI{¼º#x»oÎ"
     },
     {
       "name": "—Hoa#ow",
-      "price": 1000,
+      "price": 500,
       "amount": 1,
 	  "desc": "Swnj#JIhTºH#oÀ#ÁHpH#¾M#oTzÃM#S¤»"
     },
     {
       "name": "qP{Aow#ÁHmš",
-      "price": 2000,
+      "price": 300,
       "amount": 1,
 	  "desc": "³I•ºH#SÎIÄnj#ÁHoM#oTzÃM#uºI{"
     },

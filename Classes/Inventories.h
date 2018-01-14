@@ -32,7 +32,7 @@ class Kitchen
 public:
 	Kitchen() {};
 	~Kitchen() {};
-	Kitchen(KitchenTypes type, const std::string& name, int value): _type(type), _name(name), _value(value)
+	Kitchen(KitchenTypes type, const std::string& name, float value): _type(type), _name(name), _value(value)
 	{
 	}
 
@@ -41,7 +41,7 @@ public:
 		return _type;
 	}
 
-	int getValue() const
+	float getValue() const
 	{
 		return _value;
 	}
@@ -53,7 +53,7 @@ public:
 private:
 	KitchenTypes _type;
 	std::string _name;
-	int _value;
+	float _value;
 
 };
 

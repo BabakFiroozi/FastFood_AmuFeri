@@ -3,17 +3,17 @@
     {
       "type": 0,
       "name": "Kitchen 1",
-      "value": 1
+      "value": 1.0
     },
     {
       "type": 1,
       "name": "Kitchen 2",
-      "value": 2
+      "value": 1.5
     },
     {
       "type": 2,
       "name": "Kitchen 3",
-      "value": 3
+      "value": 2.0
     }
   ],
   "powerups": [
@@ -32,7 +32,7 @@
     {
       "type": 2,
       "name": "qP{Aow#ÁHmš",
-      "value": 1000,
+      "value": 600,
 	  "amount": 1
     },
     {
