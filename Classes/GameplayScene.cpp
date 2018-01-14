@@ -639,7 +639,7 @@ void GameplayScene::packBurger(float dt)
 		for (auto foodType : _recipeFoodsVec)
 		{
 			auto food = FoodFactory::getInstance().getFood(foodType);
-			coin += food->getWorth();
+			coin += food->getPrice() / food->getInitCount() + food->getWorth();
 		}
 
 		if (!_isHeadLightActive)
@@ -1278,21 +1278,36 @@ void GameplayScene::playHumanSound()
 			else
 				playCustomerSound();
 
-			auto sprite = Sprite::create("sounds/quote.png");
-			addChild(sprite);
+			auto quoteSprite = Sprite::create("sounds/quote.png");
+			addChild(quoteSprite);
 			if (_togglePlaySound)//cook
 			{
-				sprite->setPosition(_visibleSize / 2 + Size(100, 500));
-				sprite->setAnchorPoint(Point::ANCHOR_BOTTOM_LEFT);
+				quoteSprite->setPosition(_visibleSize / 2 + Size(100, 500));
+				quoteSprite->setAnchorPoint(Point::ANCHOR_BOTTOM_LEFT);
 			}
 			else
 			{
-				sprite->setPosition(_visibleSize / 2 + Size(400, -200));
-				sprite->setAnchorPoint(Point::ANCHOR_BOTTOM_RIGHT);
-				sprite->setFlippedX(true);
+				quoteSprite->setPosition(_visibleSize / 2 + Size(400, -200));
+				quoteSprite->setAnchorPoint(Point::ANCHOR_BOTTOM_RIGHT);
+				quoteSprite->setFlippedX(true);
 			}
-			sprite->setScale(.2f);
-			sprite->runAction(Sequence::create(ScaleTo::create(.1f, 1), DelayTime::create(1), RemoveSelf::create(), nullptr));
+
+			for (int i = 0; i < 3; ++i)
+			{
+				auto quoteDot = Sprite::create("sounds/quoteDot.png");
+				quoteSprite->addChild(quoteDot);
+				quoteDot->setPosition(quoteSprite->getContentSize() / 2 + Size(-30 + i * 30, 25));
+				quoteDot->setVisible(false);
+			}
+
+			quoteSprite->runAction(Sequence::create(
+				DelayTime::create(.2f), CallFunc::create([=]() {quoteSprite->getChildren().at(0)->setVisible(true); }),
+				DelayTime::create(.2f), CallFunc::create([=]() {quoteSprite->getChildren().at(1)->setVisible(true); }),
+				DelayTime::create(.2f), CallFunc::create([=]() {quoteSprite->getChildren().at(2)->setVisible(true); }),
+				nullptr));
+
+			quoteSprite->setScale(.2f);
+			quoteSprite->runAction(Sequence::create(ScaleTo::create(.1f, 1), DelayTime::create(1.2f), RemoveSelf::create(), nullptr));
 		}
 	}
 }

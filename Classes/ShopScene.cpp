@@ -493,6 +493,10 @@ void ShopScene::showTab(ShopTypes shopType)
 						_shopInfoPage->setVisible(true);
 					}
 				});
+
+				auto coinIcon = ImageView::create("gui/coin.png");
+				priceText->addChild(coinIcon);
+				coinIcon->setPosition(priceText->getTextAreaSize() / 2 + Size(220, 10));
 			}
 			
 			if (shopType == ShopTypes::Coin)

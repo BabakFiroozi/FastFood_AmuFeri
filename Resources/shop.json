@@ -6,91 +6,91 @@
       "type": 0,
       "price": -1,
 	  "amount": 200,
-	  "desc": ""
+	  "desc": "5#:j¼w"
     },
     {
       "type": 1,
       "price": -1,
 	  "amount": 100,
-	  "desc": ""
+	  "desc": "3#:j¼w"
     },
     {
       "type": 2,
       "price": -1,
 	  "amount": 100,
-	  "desc": ""
+	  "desc": "3#:j¼w"
     },
     {
       "type": 3,
       "price": -1,
 	  "amount": 100,
-	  "desc": ""
+	  "desc": "5#:j¼w"
     },
     {
       "type": 4,
       "price": -1,
 	  "amount": 100,
-	  "desc": ""
+	  "desc": "6#:j¼w"
     },
     {
       "type": 5,
       "price": -1,
 	  "amount": 100,
-	  "desc": ""
+	  "desc": "4#:j¼w"
     },
     {
       "type": 6,
       "price": -1,
 	  "amount": 100,
-	  "desc": ""
+	  "desc": "15#:j¼w"
     },
     {
       "type": 7,
       "price": -1,
 	  "amount": 100,
-	  "desc": ""
+	  "desc": "7#:#j¼w"
     },
     {
       "type": 8,
       "price": -1,
 	  "amount": 100,
-	  "desc": ""
+	  "desc": "10#:j¼w"
     },
     {
       "type": 9,
       "price": -1,
 	  "amount": 100,
-	  "desc": ""
+	  "desc": "9#:j¼w"
     },
     {
       "type": 10,
       "price": -1,
 	  "amount": 100,
-	  "desc": ""
+	  "desc": "3#:j¼w"
     },
     {
       "type": 11,
       "price": -1,
 	  "amount": 100,
-	  "desc": ""
+	  "desc": "25#:j¼w"
     },
     {
       "type": 12,
       "price": -1,
 	  "amount": 100,
-	  "desc": ""
+	  "desc": "8#:j¼w"
     },
     {
       "type": 13,
       "price": -1,
 	  "amount": 100,
-	  "desc": ""
+	  "desc": "13#:j¼w"
     },
     {
       "type": 14,
       "price": -1,
 	  "amount": 100,
-	  "desc": ""
+	  "desc": "8#:j¼w"
     }
   ],
   "coin": [
@@ -134,19 +134,19 @@
   "kitchen": [
     {
       "name": "°Š#Swj#tIL–",
-      "price": 100,
+      "price": 0,
       "amount": 1,
 	  "desc": "´¨k¶Anj#,o¿{#J¼¹]"
     },
     {
       "name": "qQ#ªw#¸ve",
-      "price": 200,
+      "price": 10000,
       "amount": 1,
 	  "desc": "ˆw¼T¶#k¶Anj#,o¿{#ˆw»"
     },
     {
       "name": "tH¼w»#°Ã²#¾µ–",
-      "price": 300,
+      "price": 20000,
       "amount": 1,
 	  "desc": "¯IM#k¶Anj#,o¿{#ÏIµ{"
     }
@@ -154,25 +154,25 @@
   "powerup": [
     {
       "name": "nHk²¼Q#ÁoTz¶",
-      "price": 1000,
+      "price": 500,
       "amount": 1,
 	  "desc": "...#»#Â¹Ã¶p#KÃw#»#¾MI{¼º#x»oÎ"
     },
     {
       "name": "—Hoa#ow",
-      "price": 2000,
+      "price": 1000,
       "amount": 1,
 	  "desc": "Swnj#JIhTºH#oÀ#ÁHpH#¾M#oTzÃM#S¤»"
     },
     {
       "name": "qP{Aow#ÁHmš",
-      "price": 300,
+      "price": 2000,
       "amount": 1,
 	  "desc": "³I•ºH#SÎIÄnj#ÁHoM#oTzÃM#uºI{"
     },
     {
       "name": "Â«ºp#S–Iw",
-      "price": 400,
+      "price": 4000,
       "amount": 1,
 	  "desc": "¾zÃ¶#oTzÃM#·Hn¼Twn#nI¨#·I¶p"
     }
