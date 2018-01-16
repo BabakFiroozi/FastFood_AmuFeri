@@ -264,11 +264,54 @@ void GameplayScene::createHud()
 	headLightIcon->runAction(RepeatForever::create(Sequence::createWithTwoActions(ScaleTo::create(.2f, 1.2f), ScaleTo::create(.2f, 1.0f))));
 	comboBarFrame->setVisible(false);
 
+	_cookAssistButton = Button::create("gui/shop/powerups/cookAssist.png");
+	_hudLayout->addChild(_cookAssistButton);
+	_cookAssistButton->setPosition(_hudLayout->getContentSize() / 2 + Size(200, 450));
+	_cookAssistButton->addTouchEventListener(CC_CALLBACK_2(GameplayScene::cookAssistButtonCallback, this));
+	_cookAssistButton->setVisible(false);
+	_cookAssistButton->runAction(RepeatForever::create(Sequence::createWithTwoActions(ScaleTo::create(.2f, 1.2f), ScaleTo::create(.2f, 1.0f))));
+
 	createRecipeAndDishes();
 
 	_standbyLayout = StandbyLayout::createData(1);
 	_hudLayout->addChild(_standbyLayout);
 	_standbyLayout->setReadyCallback(CC_CALLBACK_0(GameplayScene::startGame, this));
+}
+
+void GameplayScene::cookAssistButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget::TouchEventType eventType)
+{
+	if (eventType == Widget::TouchEventType::ENDED)
+	{
+		auto button = static_cast<Button*>(sender);
+		int iter = 0;
+
+		for (auto dish : _dishesVec)
+			dish->setEnabled(false);
+		scheduleOnce([=](float dt) {
+			for (auto dish : _dishesVec)
+				dish->setEnabled(true);
+		}, _recipeFoodsVec.size() * .2f + .1f, "_isCookAssistUsing_to_false");
+
+		for (auto needFood : _recipeFoodsVec)
+		{
+			scheduleOnce([=](float dt) {
+				Button* rightDish = nullptr;
+				for (auto dish : _dishesVec)
+				{
+					FoodTypes dishFood = (FoodTypes)dish->getTag();
+					if (dishFood == needFood)
+					{
+						rightDish = dish;
+						break;
+					}
+				}
+				dishButtonCallback(rightDish, Widget::TouchEventType::BEGAN);
+			}, ++iter * .2f, "CookAssistFood" + StringUtils::toString(iter));
+		}	
+
+		Inventories::getInstance().decPowerup(PowerupTypes::CookAssist);
+		button->setVisible(false);
+	}
 }
 
 void GameplayScene::dishButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget::TouchEventType eventType)
@@ -551,9 +594,17 @@ void GameplayScene::createRecipeAndDishes()
 
 	_recipeFoodIndex = 0;
 
+	if (_burgersCount > 0)
+	{
+		bool allowActiveCookAssist = true;
+		for (auto needFood : _recipeFoodsVec)
+			if (FoodFactory::getInstance().getFood(needFood)->getCount() < 1)
+				allowActiveCookAssist = false;
+		_cookAssistButton->setVisible(allowActiveCookAssist && Inventories::getInstance().hasPowerup(PowerupTypes::CookAssist));
+	}
+
 	playHumanSound();
 }
-
 
 void GameplayScene::startGame()
 {
@@ -724,8 +775,6 @@ void GameplayScene::onExit()
 {
 	Layer::onExit();
 	PlayerPrefs::getInstance().saveFoods();
-
-	CocosDenshion::SimpleAudioEngine::getInstance()->stopBackgroundMusic();
 }
 
 void GameplayScene::pauseButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget::TouchEventType eventType)
@@ -746,6 +795,7 @@ void GameplayScene::pauseButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widge
 
 		if (buttonName == "shop")
 		{
+			CocosDenshion::SimpleAudioEngine::getInstance()->stopBackgroundMusic();
 			Director::getInstance()->resume();
 			auto scene = TransitionFlipX::create(.5f, ShopScene::createSceneData(ShopTypes::Food));
 			Director::getInstance()->replaceScene(scene);
@@ -765,6 +815,7 @@ void GameplayScene::pauseButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widge
 
 		if (buttonName == "menu")
 		{
+			CocosDenshion::SimpleAudioEngine::getInstance()->stopBackgroundMusic();
 			Director::getInstance()->resume();
 			auto scene = TransitionTurnOffTiles::create(.7f, MenuScene::createSceneData());
 			Director::getInstance()->replaceScene(scene);
@@ -774,6 +825,9 @@ void GameplayScene::pauseButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widge
 
 void GameplayScene::showPausePage(bool show, bool gameOver)
 {
+	if(gameOver)
+		CocosDenshion::SimpleAudioEngine::getInstance()->playBackgroundMusic("sounds/music_end.ogg", false);
+
 	auto pauseBackg = _pauseLayout->getChildren().at(0);
 	pauseBackg->getChildByName("resume")->setVisible(!gameOver);
 	pauseBackg->getChildByName("retry")->setVisible(gameOver);
@@ -1099,6 +1153,8 @@ void GameplayScene::goTutorialStep()
 		PlayerPrefs::getInstance().finishTutrial(1);
 	}
 
+	_hudLayout->removeChildByName("TutHand");
+
 	if (_tutorialStep == 5 || _burgersCount == 2)
 	{
 		auto finishFrame = ImageView::create("tut/frame3.png");
@@ -1164,12 +1220,21 @@ void GameplayScene::goTutorialStep()
 					continue;
 				if (dish == _forceTutDishButton)
 					continue;
-				auto glow = ImageView::create("tut/glowRed.png");
+				auto glow = ImageView::create("tut/glow.png");
+				glow->setColor(Color3B::RED);
 				dish->addChild(glow);
 				glow->setPosition(dish->getContentSize() / 2);
 				glow->runAction(RepeatForever::create(Sequence::createWithTwoActions(FadeOut::create(.4f), FadeIn::create(.4f))));
 				_tutorialNodesVec.push_back(glow);
 				_forceTutDishButton = dish;
+
+				auto hand = ImageView::create("tut/hand.png");
+				_hudLayout->addChild(hand);
+				hand->setPosition(dish->getPosition());
+				hand->setAnchorPoint(Point::ANCHOR_TOP_LEFT);
+				hand->setName("TutHand");
+				hand->runAction(RepeatForever::create(Sequence::createWithTwoActions(ScaleTo::create(.4f, 1.2f), ScaleTo::create(.4f, 1))));
+
 				break;
 			}
 		}
@@ -1177,12 +1242,21 @@ void GameplayScene::goTutorialStep()
 		{
 			if ((FoodTypes)dish->getTag() == foodType)
 			{
-				auto glow = ImageView::create("tut/glowGreen.png");
+				auto glow = ImageView::create("tut/glow.png");
+				glow->setColor(Color3B::GREEN);
 				dish->addChild(glow);
 				glow->setPosition(dish->getContentSize() / 2);
 				glow->runAction(RepeatForever::create(Sequence::createWithTwoActions(FadeOut::create(.4f), FadeIn::create(.4f))));
 				_tutorialNodesVec.push_back(glow);
 				_forceTutDishButton = dish;
+
+				auto hand = ImageView::create("tut/hand.png");
+				_hudLayout->addChild(hand);
+				hand->setPosition(dish->getPosition());
+				hand->setAnchorPoint(Point::ANCHOR_TOP_LEFT);
+				hand->setName("TutHand");
+				hand->runAction(RepeatForever::create(Sequence::createWithTwoActions(ScaleTo::create(.4f, 1.2f), ScaleTo::create(.4f, 1))));
+
 				break;
 			}
 		}

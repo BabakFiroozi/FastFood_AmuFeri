@@ -35,6 +35,7 @@ private:
 	void createHud();
 	void dishButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget::TouchEventType eventType);
 	void pauseButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget::TouchEventType eventType);
+	void cookAssistButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget::TouchEventType eventType);
 	void createRecipeAndDishes();
 	void startGame();
 	void gameOver();
@@ -65,6 +66,7 @@ private:
 	cocos2d::Vector<cocos2d::ui::Button*> _dishesVec;
 	cocos2d::ui::LoadingBar* _clockBar;
 	cocos2d::ui::LoadingBar* _comboBar;
+	cocos2d::ui::Button* _cookAssistButton;
 
 	StandbyLayout* _standbyLayout;
 	cocos2d::ui::Layout* _pauseLayout;

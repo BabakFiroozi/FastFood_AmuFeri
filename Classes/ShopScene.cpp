@@ -6,6 +6,7 @@
 #include "Inventories.h"
 #include "GameUser.h"
 #include "PlayerPrefs.h"
+#include "SimpleAudioEngine.h"
 
 
 USING_NS_CC;
@@ -149,6 +150,9 @@ bool ShopScene::init(ValueMap& initData)
 void ShopScene::onEnter()
 {
 	Layer::onEnter();
+
+	if (!CocosDenshion::SimpleAudioEngine::getInstance()->isBackgroundMusicPlaying())
+		CocosDenshion::SimpleAudioEngine::getInstance()->playBackgroundMusic("sounds/music_menu.ogg", true);
 
 	showTab(_defaultShopType);
 }
@@ -484,7 +488,7 @@ void ShopScene::showTab(ShopTypes shopType)
 				auto infoButton = Button::create("gui/shop/infoButton.png");
 				itemFrame->addChild(infoButton);
 				infoButton->setPosition(itemFrame->getContentSize() / 2 + Size(-220, 420));
-				infoButton->setScale(.6f);
+				infoButton->setScale(.8f);
 				infoButton->addTouchEventListener([=](Ref* sender, Widget::TouchEventType eventType) {
 					if (eventType == Widget::TouchEventType::ENDED)
 					{

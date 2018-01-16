@@ -35,14 +35,13 @@ private:
 	cocos2d::ui::Button* _soundButton;
 	cocos2d::ui::Button* _settingButton;
 	cocos2d::ui::Button* _exitButton;
+	cocos2d::ui::Button* _leaderboardButton;
 
 	cocos2d::ui::Button* _shopButton;
 
 	cocos2d::ui::Layout* _background;
 
 	cocos2d::ui::Layout* _settingLayout;
-
-	cocos2d::ui::Layout* _creditsPopup;
 
 };
 

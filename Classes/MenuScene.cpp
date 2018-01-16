@@ -81,6 +81,11 @@ bool MenuScene::init(ValueMap& initData)
 	_exitButton->setPosition(Vect(_exitButton->getContentSize() / 2));
 	_exitButton->addTouchEventListener(CC_CALLBACK_2(MenuScene::buttonCallback, this));
 
+	_leaderboardButton = Button::create("gui/menu/leaderboardButton.png");
+	_background->addChild(_leaderboardButton);
+	_leaderboardButton->setPosition(Vect(backgSize.width / 2, _leaderboardButton->getContentSize().height / 2));
+	_leaderboardButton->addTouchEventListener(CC_CALLBACK_2(MenuScene::buttonCallback, this));
+
 	_settingButton = Button::create("gui/menu/settingButton.png");
 	_background->addChild(_settingButton, 2);
 	_settingButton->setPosition(Vect(backgSize.width - _settingButton->getContentSize().width / 2, _settingButton->getContentSize().height / 2));
@@ -117,7 +122,7 @@ bool MenuScene::init(ValueMap& initData)
 	volumeButton->addTouchEventListener(CC_CALLBACK_2(MenuScene::buttonCallback, this));
 
 	auto infoButton = Button::create("gui/setting/info.png");
-	infoButton->setName("Info");
+	infoButton->setName("info");
 	_settingLayout->addChild(infoButton);
 	infoButton->setPosition(_settingLayout->getContentSize() / 2 + Size(0, 0));
 	infoButton->addTouchEventListener(CC_CALLBACK_2(MenuScene::buttonCallback, this));
@@ -131,29 +136,49 @@ bool MenuScene::init(ValueMap& initData)
 	_settingLayout->setPositionY(_settingLayout->getPositionY() - 600);
 	_settingLayout->setVisible(false);
 
+	//Game info popup
+	auto infoPopup = Layout::create();
+	infoPopup->setName("InfoPopup");
+	infoPopup->setContentSize(_visibleSize);
+	_background->addChild(infoPopup, 4);
+	infoPopup->setTouchEnabled(true);
+	infoPopup->setBackGroundColorType(Layout::BackGroundColorType::SOLID);
+	infoPopup->setBackGroundColor(Color3B::BLACK);
+	infoPopup->setBackGroundColorOpacity(150);
+
+	auto infoBackg = ImageView::create("gui/setting/gameInfo.png");
+	infoPopup->addChild(infoBackg);
+	infoBackg->setPosition(infoPopup->getContentSize() / 2);
+
+	infoPopup->addTouchEventListener([=](Ref* sender, Widget::TouchEventType eventType) {
+		if (eventType == Widget::TouchEventType::ENDED)
+			infoPopup->setVisible(false);
+	});
+	infoPopup->setVisible(false);
+
 	//Credits popup
-	_creditsPopup = Layout::create();
-	_creditsPopup->setName("CreditsPopup");
-	_creditsPopup->setContentSize(_visibleSize);
-	_background->addChild(_creditsPopup, 4);
-	_creditsPopup->setTouchEnabled(true);
-	_creditsPopup->setBackGroundColorType(Layout::BackGroundColorType::SOLID);
-	_creditsPopup->setBackGroundColor(Color3B::BLACK);
-	_creditsPopup->setBackGroundColorOpacity(150);
+	auto creditsPopup = Layout::create();
+	creditsPopup->setName("CreditsPopup");
+	creditsPopup->setContentSize(_visibleSize);
+	_background->addChild(creditsPopup, 4);
+	creditsPopup->setTouchEnabled(true);
+	creditsPopup->setBackGroundColorType(Layout::BackGroundColorType::SOLID);
+	creditsPopup->setBackGroundColor(Color3B::BLACK);
+	creditsPopup->setBackGroundColorOpacity(150);
 
 	auto creditsBackg = ImageView::create("gui/gameover/finishedBackg.png");
-	_creditsPopup->addChild(creditsBackg);
-	creditsBackg->setPosition(_creditsPopup->getContentSize() / 2);
+	creditsPopup->addChild(creditsBackg);
+	creditsBackg->setPosition(creditsPopup->getContentSize() / 2);
 	creditsBackg->setScaleY(1.2f);
 
 	auto creditsHeader = Text::create(GameChoice::getInstance().getString("TEXT_CREDITS"), GameChoice::getInstance().getFontName(), 80);
-	_creditsPopup->addChild(creditsHeader);
+	creditsPopup->addChild(creditsHeader);
 	creditsHeader->setPosition(creditsBackg->getPosition() + Vect(0, 270));
 	creditsHeader->enableOutline(Color4B::GRAY, 3);
 
-	_creditsPopup->addTouchEventListener([=](Ref* sender, Widget::TouchEventType eventType) {
+	creditsPopup->addTouchEventListener([=](Ref* sender, Widget::TouchEventType eventType) {
 		if (eventType == Widget::TouchEventType::ENDED)
-			_creditsPopup->setVisible(false);
+			creditsPopup->setVisible(false);
 	});
 
 	int cIndex = 0;
@@ -163,11 +188,11 @@ bool MenuScene::init(ValueMap& initData)
 		auto personText = Text::create(c, GameChoice::getInstance().getFontName(), 50);
 		personText->setPosition(creditsBackg->getPosition() + Vect(0, 150 - (cIndex * 80)));
 		personText->enableOutline(Color4B::GRAY, 2);
-		_creditsPopup->addChild(personText);
+		creditsPopup->addChild(personText);
 		cIndex++;
 	}
 
-	_creditsPopup->setVisible(false);
+	creditsPopup->setVisible(false);
 
 	return true;
 }
@@ -176,7 +201,8 @@ void MenuScene::onEnter()
 {
 	Layer::onEnter();
 
-	CocosDenshion::SimpleAudioEngine::getInstance()->playBackgroundMusic("sounds/music_menu.ogg", true);
+	if (!CocosDenshion::SimpleAudioEngine::getInstance()->isBackgroundMusicPlaying())
+		CocosDenshion::SimpleAudioEngine::getInstance()->playBackgroundMusic("sounds/music_menu.ogg", true);
 
 	if (!PlayerPrefs::getInstance().isTutorialFinished(2))
 	{
@@ -214,6 +240,10 @@ void MenuScene::buttonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget::TouchE
 		if (sender == _exitButton)
 		{
 			Director::getInstance()->end();
+		}
+		if (sender == _leaderboardButton)
+		{
+			//show leaderboard
 		}
 		if (sender == _settingButton)
 		{
@@ -255,7 +285,8 @@ void MenuScene::buttonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget::TouchE
 		}
 		if (node == _settingLayout->getChildByName("info"))
 		{
-
+			auto infoPopup = _background->getChildByName("InfoPopup");
+			infoPopup->setVisible(true);
 		}
 		if (node == _settingLayout->getChildByName("credits"))
 		{
