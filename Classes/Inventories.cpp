@@ -99,7 +99,7 @@ void Inventories::initialize(const std::string& data)
 		float value = c["value"].GetFloat();
 		Kitchen kitchen(type, name, value);
 		_allKitchens.push_back(std::make_shared<Kitchen>(kitchen));
-	}	
+	}
 
 	auto powerupsArr = doc["powerups"].GetArray();
 	for (auto& c : powerupsArr)

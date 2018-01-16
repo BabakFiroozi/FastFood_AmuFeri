@@ -22,7 +22,7 @@ enum class PowerupTypes
 	RichCustomer,
 	HeadLight,
 	CaptainCook,
-	BellClock,
+	CookAssist,
 
 	Count
 };
