@@ -6,7 +6,6 @@
 #include "Inventories.h"
 #include "GameUser.h"
 #include "SimpleAudioEngine.h"
-#include "InAppBilling.h"
 
 USING_NS_CC;
 using namespace cocos2d::ui;
@@ -268,8 +267,6 @@ void MenuScene::buttonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget::TouchE
 					runAction(Sequence::createWithTwoActions(DelayTime::create(.5f), CallFunc::create([=]() {_settingLayout->setVisible(false); })));
 				}
 			}
-
-			InAppBilling::getInstance().launchPurchaseFlow("CoinPack_1", 10001);
 		}
 
 

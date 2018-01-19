@@ -7,6 +7,7 @@
 #include "GameUser.h"
 #include "PlayerPrefs.h"
 #include "SimpleAudioEngine.h"
+#include "InAppBilling.h"
 
 
 USING_NS_CC;
@@ -577,6 +578,11 @@ void ShopScene::buyButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget::Tou
 				//show some message
 				showMessage(GameChoice::getInstance().getString("TEXT_NOT_ENOUGH_MONEY"));
 			}
+		}
+
+		if (shopData.shopType == ShopTypes::Coin)
+		{
+			InAppBilling::getInstance().launchPurchaseFlow("CoinPack_1", 10001);
 		}
 
 		updateCoinsText();
