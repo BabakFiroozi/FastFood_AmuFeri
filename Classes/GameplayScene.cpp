@@ -292,8 +292,9 @@ void GameplayScene::cookAssistButtonCallback(cocos2d::Ref* sender, cocos2d::ui::
 				dish->setEnabled(true);
 		}, _recipeFoodsVec.size() * .2f + .1f, "_isCookAssistUsing_to_false");
 
-		for (auto needFood : _recipeFoodsVec)
+		for (int index = _recipeFoodIndex; index < _recipeFoodsVec.size(); index++)
 		{
+			FoodTypes needFood = _recipeFoodsVec.at(index);
 			scheduleOnce([=](float dt) {
 				Button* rightDish = nullptr;
 				for (auto dish : _dishesVec)
@@ -775,6 +776,7 @@ void GameplayScene::onExit()
 {
 	Layer::onExit();
 	PlayerPrefs::getInstance().saveFoods();
+	PlayerPrefs::getInstance().saveAddedPowerups();
 }
 
 void GameplayScene::pauseButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget::TouchEventType eventType)
@@ -1375,13 +1377,13 @@ void GameplayScene::playHumanSound()
 			}
 
 			quoteSprite->runAction(Sequence::create(
-				DelayTime::create(.2f), CallFunc::create([=]() {quoteSprite->getChildren().at(0)->setVisible(true); }),
+				DelayTime::create(.3f), CallFunc::create([=]() {quoteSprite->getChildren().at(0)->setVisible(true); }),
 				DelayTime::create(.2f), CallFunc::create([=]() {quoteSprite->getChildren().at(1)->setVisible(true); }),
 				DelayTime::create(.2f), CallFunc::create([=]() {quoteSprite->getChildren().at(2)->setVisible(true); }),
 				nullptr));
 
 			quoteSprite->setScale(.2f);
-			quoteSprite->runAction(Sequence::create(ScaleTo::create(.1f, 1), DelayTime::create(1.2f), RemoveSelf::create(), nullptr));
+			quoteSprite->runAction(Sequence::create(ScaleTo::create(.1f, 1), DelayTime::create(1.5f), RemoveSelf::create(), nullptr));
 		}
 	}
 }

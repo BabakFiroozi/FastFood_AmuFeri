@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.ferferegame.amouferi"
+    package="com.ferferegame.amuferi"
     android:installLocation="auto">
 
     <uses-feature android:glEsVersion="0x00020000" />
@@ -26,8 +26,35 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=
+                "com.tapligh.sdk.ADView.ADView"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden|uiMode"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
+        <receiver android:name="com.tapligh.sdk.ADView.ADsReceiver">
+            <intent-filter android:priority="999">
+                <action android:name="android.intent.action.PACKAGE_INSTALL" />
+                <action android:name="android.intent.action.PACKAGE_ADDED" />
+                <action android:name="android.intent.action.PACKAGE_REMOVED" />
+                <data android:scheme="package" />
+            </intent-filter>
+        </receiver>
+
     </application>
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- VERY IMPORTANT! Don't forget this permission, or in-app billing won't work. -->
+    <uses-permission android:name="com.farsitel.bazaar.permission.PAY_THROUGH_BAZAAR" />
+    <!--<uses-permission android:name="ir.mservices.market.BILLING" />-->
+    <!--<uses-permission android:name="com.yaramobile.bazinamastore.vending.BILLING" />-->
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="18" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="18" />
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     
 </manifest>

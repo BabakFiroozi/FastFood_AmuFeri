@@ -42,10 +42,10 @@ public class AppActivity extends Cocos2dxActivity {
         }
         // DO OTHER INITIALIZATION BELOW
 
-        /**
         InAppBillingWrapper.setActivity(this);
         InAppBillingWrapper.startSetup();
-         */
+
+        //TaplighWrapper.create(this, "token");
     }
 
 }

@@ -1,9 +1,9 @@
-/**
+
 package org.cocos2dx.cpp;
 
-import com.android.trivialdrive.util.IabHelper;
-import com.android.trivialdrive.util.IabResult;
-import com.android.trivialdrive.util.Purchase;
+import com.example.android.trivialdrivesample.util.bazinama.IabHelper;
+import com.example.android.trivialdrivesample.util.bazinama.IabResult;
+import com.example.android.trivialdrivesample.util.bazinama.Purchase;
 
 import android.app.AlertDialog;
 import android.util.Log;
@@ -42,8 +42,9 @@ public class InAppBillingWrapper {
 	
 	public static void startSetup()
 	{
-		String base64EncodedPublicKey = "CONSTRUCT_YOUR_KEY_AND_PLACE_IT_HERE";
+		String base64EncodedPublicKey = "MIHNMA0GCSqGSIb3DQEBAQUAA4G7ADCBtwKBrwC8EJTLDY384J0tBMdX2RoXv5QX+BjknkKv2alQkbtb3bZhL4VtRedfaq6+CB1N01goxvO8z/quMhL2kLTHWQo5DvhWW4unAANM94Gf2+0mOgl9llRbu1rklWLOunsEWhaWd9GWaAuk7GPYL2AMFDENeliIOrngSZzhGj3rZynhpWV1aGWl0QzXH2UynZKm1Ysi0X7qAJLIVlOWqd+Inzt35F4cITguPKF5shtakXUCAwEAAQ==";
 
+		mHelper.StoreName = IabHelper.StoreNames.Bazaar;
         mHelper = new IabHelper(_activity, base64EncodedPublicKey);
 
         // enable debug logging (for a production application, you should set this to false).
@@ -65,6 +66,8 @@ public class InAppBillingWrapper {
                 // Have we been disposed of in the meantime? If so, quit.
                 if (mHelper == null) return;
 
+				BazinamaAcLeWrapper.setIabHelper(mHelper);
+
                 // IAB is fully set up. Now, let's get an inventory of stuff we own.
                 Log.d(TAG, "Setup successful. Querying inventory.");
                 //mHelper.queryInventoryAsync(mGotInventoryListener);
@@ -75,9 +78,15 @@ public class InAppBillingWrapper {
 	public static void launchPurchaseFlow(String sku, int req)
 	{
 		String payload = "";
-		
-		mHelper.launchPurchaseFlow(_activity, sku, req,
-                mPurchaseFinishedListener, payload);
+
+		try{
+			mHelper.launchPurchaseFlow(_activity, sku, req,
+					mPurchaseFinishedListener, payload);
+		}
+		catch(IabHelper.IabAsyncInProgressException e){
+			e.printStackTrace();
+		}
+
 	}
 	
 	
@@ -135,4 +144,3 @@ public class InAppBillingWrapper {
     }; 
 
 }
-*/
