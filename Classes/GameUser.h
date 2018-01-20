@@ -6,7 +6,7 @@
 class GameUser
 {
 public:
-	const int Max_Coin = 99999;
+	const int Max_Coin = 999999;
 
 	GameUser()
 	{

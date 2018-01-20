@@ -4,9 +4,8 @@
 #include "ShopScene.h"
 #include "PlayerPrefs.h"
 #include "Inventories.h"
-#include "GameUser.h"
 #include "SimpleAudioEngine.h"
-#include "Tapligh.h"
+#include "BazinamaAcLe.h"
 
 USING_NS_CC;
 using namespace cocos2d::ui;
@@ -21,8 +20,6 @@ MenuScene::~MenuScene()
 
 bool MenuScene::init(ValueMap& initData)
 {
-    Tapligh::getInstance().showAd("Unit-Code");
-
 	if (!Layer::init())
 		return false;
 
@@ -246,6 +243,7 @@ void MenuScene::buttonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget::TouchE
 		if (sender == _leaderboardButton)
 		{
 			//show leaderboard
+			BazinamaAcLe::getInstance().openLeaderBoard("pkgName", "scoeId", "timeScope");
 		}
 		if (sender == _settingButton)
 		{

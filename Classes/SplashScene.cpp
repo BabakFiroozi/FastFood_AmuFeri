@@ -94,7 +94,11 @@ void SplashScene::onEnter()
 	CocosDenshion::SimpleAudioEngine::getInstance()->setEffectsVolume(on ? GameChoice::getInstance().getEffectVolume() : 0);
 
 	scheduleOnce(CC_SCHEDULE_SELECTOR(SplashScene::showLogo), _duration);
-	scheduleOnce(CC_SCHEDULE_SELECTOR(SplashScene::goMenu), _duration + 2);
+	scheduleOnce(CC_SCHEDULE_SELECTOR(SplashScene::goMenu), _duration + 3);
+}
+
+void SplashScene::onExit() {
+    Tapligh::getInstance().showAd("Unit-Code");
 }
 
 void SplashScene::goMenu(float dt)

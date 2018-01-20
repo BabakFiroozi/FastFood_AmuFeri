@@ -9,10 +9,6 @@ JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_InAppBillingWrapper_onIabPurchaseFi
 {
 }
 
-JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_InAppBillingWrapper_onIabPurchaseFinishedFailure(JNIEnv* env, jobject obj, jstring sku)
-{
-}
-
 JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_InAppBillingWrapper_onConsumeFinishedSuccess(JNIEnv* env, jobject obj, jstring sku)
 {
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
@@ -39,11 +35,6 @@ JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_InAppBillingWrapper_onConsumeFinish
 
 #endif
 }
-
-JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_InAppBillingWrapper_onConsumeFinishedFailure(JNIEnv* env, jobject obj, jstring sku)
-{
-}
-
 
 InAppBilling::InAppBilling()
 {

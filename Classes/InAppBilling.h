@@ -11,10 +11,8 @@ extern "C" {
 #endif
 
 	JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_InAppBillingWrapper_onIabPurchaseFinishedSuccess(JNIEnv*, jobject, jstring);
-	JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_InAppBillingWrapper_onIabPurchaseFinishedFailure(JNIEnv*, jobject, jstring);
-	
+
 	JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_InAppBillingWrapper_onConsumeFinishedSuccess(JNIEnv*, jobject, jstring);
-	JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_InAppBillingWrapper_onConsumeFinishedFailure(JNIEnv*, jobject, jstring);
 
 #ifdef __cplusplus
 }

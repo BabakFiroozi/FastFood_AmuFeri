@@ -26,6 +26,7 @@ public:
 protected:
 	bool init() override;
 	void onEnter() override;
+	void onExit() override;
 
 private:
 	void goMenu(float dt);
