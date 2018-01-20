@@ -1,5 +1,7 @@
 #include "BazinamaAcLe.h"
 
+USING_NS_CC;
+
 JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_BazinamaAcLeWrapper_achievement(JNIEnv* env, jobject obj, jstring data)
 {
 }

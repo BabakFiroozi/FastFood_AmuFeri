@@ -6,6 +6,7 @@
 #include "GameUser.h"
 #include "SimpleAudioEngine.h"
 #include "GameChoice.h"
+#include "Tapligh.h"
 
 #if(CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
 #include "ui/UIVideoPlayer.h"
@@ -25,6 +26,8 @@ SplashScene::~SplashScene()
 
 bool SplashScene::init()
 {
+	Tapligh::getInstance().loadAd("Unit-Code");
+
 	if (!LayerColor::initWithColor(Color4B::BLACK))
 		return false;
 

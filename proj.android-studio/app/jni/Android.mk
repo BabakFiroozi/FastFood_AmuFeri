@@ -20,10 +20,12 @@ LOCAL_SRC_FILES := $(LOCAL_PATH)/hellocpp/main.cpp \
                    $(LOCAL_PATH)/../../../Classes/GameplayScene.cpp \
                    $(LOCAL_PATH)/../../../Classes/ShopScene.cpp \
                    $(LOCAL_PATH)/../../../Classes/MenuScene.cpp \
-                   $(LOCAL_PATH)/../../../Classes/InAppBilling.cpp \
                    $(LOCAL_PATH)/../../../Classes/PlayerPrefs.cpp \
                    $(LOCAL_PATH)/../../../Classes/Inventories.cpp \
-                   $(LOCAL_PATH)/../../../Classes/StandbyLayout.cpp
+                   $(LOCAL_PATH)/../../../Classes/StandbyLayout.cpp \
+                   $(LOCAL_PATH)/../../../Classes/InAppBilling.cpp \
+                   $(LOCAL_PATH)/../../../Classes/BazinamaAcLe.cpp \
+                   $(LOCAL_PATH)/../../../Classes/Tapligh.cpp
 
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/../../../Classes
 

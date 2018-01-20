@@ -1,5 +1,7 @@
 #include "Tapligh.h"
 
+USING_NS_CC;
+
 JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_TaplighWrapper_onAdReadyNative(JNIEnv* env, jobject obj, jstring token)
 {
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)

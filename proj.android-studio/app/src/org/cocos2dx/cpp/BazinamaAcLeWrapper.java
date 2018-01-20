@@ -1,6 +1,6 @@
 package org.cocos2dx.cpp;
 
-import com.example.android.trivialdrivesample.util.bazinama.IabHelper;
+import com.example.android.trivialdrivesample.util.IabHelper;
 import android.os.RemoteException;
 import android.util.Log;
 
@@ -34,7 +34,8 @@ public final class BazinamaAcLeWrapper {
 	
 	public static String unlockUserAchievement(String packageName, String achievementId)
 	{
-		final String userAchievement = mHelper.unlockUserAchievement(packageName, achievementId);
+		String userAchievement = "";
+		userAchievement = mHelper.unlockUserAchievement(packageName, achievementId);
 		//message to cpp
 		return userAchievement;
 	}

@@ -1,9 +1,9 @@
 
 package org.cocos2dx.cpp;
 
-import com.example.android.trivialdrivesample.util.bazinama.IabHelper;
-import com.example.android.trivialdrivesample.util.bazinama.IabResult;
-import com.example.android.trivialdrivesample.util.bazinama.Purchase;
+import com.example.android.trivialdrivesample.util.IabHelper;
+import com.example.android.trivialdrivesample.util.IabResult;
+import com.example.android.trivialdrivesample.util.Purchase;
 
 import android.app.AlertDialog;
 import android.util.Log;
@@ -42,9 +42,9 @@ public class InAppBillingWrapper {
 	
 	public static void startSetup()
 	{
-		String base64EncodedPublicKey = "MIHNMA0GCSqGSIb3DQEBAQUAA4G7ADCBtwKBrwC8EJTLDY384J0tBMdX2RoXv5QX+BjknkKv2alQkbtb3bZhL4VtRedfaq6+CB1N01goxvO8z/quMhL2kLTHWQo5DvhWW4unAANM94Gf2+0mOgl9llRbu1rklWLOunsEWhaWd9GWaAuk7GPYL2AMFDENeliIOrngSZzhGj3rZynhpWV1aGWl0QzXH2UynZKm1Ysi0X7qAJLIVlOWqd+Inzt35F4cITguPKF5shtakXUCAwEAAQ==";
+		String base64EncodedPublicKey = "MIHNMA0GCSqGSIb3DQEBAQUAA4G7ADCBtwKBrwDU8L4rPgshDKNDmivKyA0hcTlKQ+UYvHAK4TQljTofR+KgIVa7tml7Zx1d1DANjFBYSvrZGgJuCCb2j5jER/LLd9u9GcOm50/DzJZxvwhKkYSi/syDGL58WjPbpkcaWx5YEajHrMDT8wJs9DyXQYawtBvTKgTmzkaH4u8m0fRuCdfL0swVPx5XExWTmF8XpNnOYY+6P5f43xpdA4xVeSjCTT631VDZy1n4D9mytscCAwEAAQ==";
 
-		mHelper.StoreName = IabHelper.StoreNames.Bazaar;
+		IabHelper.StoreName = IabHelper.StoreNames.Bazaar;
         mHelper = new IabHelper(_activity, base64EncodedPublicKey);
 
         // enable debug logging (for a production application, you should set this to false).

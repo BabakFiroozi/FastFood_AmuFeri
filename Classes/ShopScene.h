@@ -69,6 +69,8 @@ private:
 
 	void showMessage(const std::string& msg);
 
+	void purchaseResultCallback(int amount);
+
 	ShopTypes _defaultShopType;
 
 	cocos2d::Vect _visibleOrigin;

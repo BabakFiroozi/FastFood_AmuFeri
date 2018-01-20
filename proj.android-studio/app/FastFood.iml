@@ -390,6 +390,7 @@
     </content>
     <orderEntry type="jdk" jdkName="Android API 14 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" exported="" name="__local_jars__:H.\MyJobProjects\FastFood\FastFood_cocos\proj.android-studio\app\libs\Tapligh-library-V215.jar:unspecified@jar" level="project" />
     <orderEntry type="module" module-name="libcocos2dx" exported="" />
   </component>
 </module>

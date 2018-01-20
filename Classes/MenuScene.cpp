@@ -6,6 +6,7 @@
 #include "Inventories.h"
 #include "GameUser.h"
 #include "SimpleAudioEngine.h"
+#include "Tapligh.h"
 
 USING_NS_CC;
 using namespace cocos2d::ui;
@@ -20,6 +21,8 @@ MenuScene::~MenuScene()
 
 bool MenuScene::init(ValueMap& initData)
 {
+    Tapligh::getInstance().showAd("Unit-Code");
+
 	if (!Layer::init())
 		return false;
 

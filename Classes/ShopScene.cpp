@@ -145,7 +145,17 @@ bool ShopScene::init(ValueMap& initData)
 	infoImage->addChild(infoTextImage);
 	infoTextImage->setPosition(infoImage->getContentSize() / 2);
 
+    InAppBilling::getInstance().setPurchaseResultCallback(CC_CALLBACK_1(ShopScene::purchaseResultCallback, this));
+
 	return true;
+}
+
+void ShopScene::purchaseResultCallback(int amount)
+{
+    GameUser::getInstance().addCoin(amount);
+    auto infoImage = static_cast<ImageView*>(_shopInfoPage->getChildren().at(0)->getChildren().at(0));
+    infoImage->loadTexture("gui/thanksShop.png");
+    _shopInfoPage->setVisible(true);
 }
 
 void ShopScene::onEnter()
@@ -582,7 +592,9 @@ void ShopScene::buyButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget::Tou
 
 		if (shopData.shopType == ShopTypes::Coin)
 		{
-			InAppBilling::getInstance().launchPurchaseFlow("CoinPack_1", 10001);
+			std::string skuName = StringUtils::format("CoinPack_%d",  shopData.itemNumber + 1);
+			int orderId = random(1, 100000);
+			InAppBilling::getInstance().launchPurchaseFlow(skuName.c_str(), orderId);
 		}
 
 		updateCoinsText();
