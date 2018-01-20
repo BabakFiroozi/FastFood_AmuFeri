@@ -56,7 +56,7 @@ protected:
 	void onExit() override;
 
 private:
-
+    void onKeyReleasedCallback(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
 	void buttonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget::TouchEventType eventType);
 	void buyButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget::TouchEventType eventType);
 	void tabButtonCallback(cocos2d::ui::RadioButton* sender, cocos2d::ui::RadioButton::EventType eventType);

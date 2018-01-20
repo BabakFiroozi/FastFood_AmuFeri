@@ -31,6 +31,10 @@ bool ShopScene::init(ValueMap& initData)
 	_visibleOrigin = Director::getInstance()->getVisibleOrigin();
 	_visibleSize = Director::getInstance()->getVisibleSize();
 
+    auto listener = EventListenerKeyboard::create();
+    listener->onKeyReleased = CC_CALLBACK_2(ShopScene::onKeyReleasedCallback, this);
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+
 	auto background = Layout::create();
 	addChild(background);
 	background->setContentSize(_visibleSize);
@@ -150,12 +154,22 @@ bool ShopScene::init(ValueMap& initData)
 	return true;
 }
 
+void ShopScene::onKeyReleasedCallback(EventKeyboard::KeyCode keyCode, Event* event)
+{
+    if (keyCode == EventKeyboard::KeyCode::KEY_ESCAPE)
+    {
+        if (_shopInfoPage != nullptr)
+            _shopInfoPage->setVisible(false);
+    }
+}
+
 void ShopScene::purchaseResultCallback(int amount)
 {
     GameUser::getInstance().addCoin(amount);
     auto infoImage = static_cast<ImageView*>(_shopInfoPage->getChildren().at(0)->getChildren().at(0));
-    infoImage->loadTexture("gui/thanksShop.png");
     _shopInfoPage->setVisible(true);
+	infoImage->loadTexture("gui/thanksShop.png");
+    updateCoinsText();
 }
 
 void ShopScene::onEnter()

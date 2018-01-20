@@ -23,7 +23,10 @@ THE SOFTWARE.
 ****************************************************************************/
 package org.cocos2dx.cpp;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+
 import org.cocos2dx.lib.Cocos2dxActivity;
 
 public class AppActivity extends Cocos2dxActivity {
@@ -48,4 +51,20 @@ public class AppActivity extends Cocos2dxActivity {
         TaplighWrapper.create(this, "6C6DC51D1BDF307F1FCA4F9970FD42");
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //super.onActivityResult(requestCode, resultCode, data);
+
+        if (InAppBillingWrapper.getmHelper() == null) return;
+
+        // Pass on the activity result to the helper for handling
+        if (!InAppBillingWrapper.getmHelper().handleActivityResult(requestCode, resultCode, data)) {
+            // not handled, so handle it ourselves (here's where you'd
+            // perform any handling of activity results not related to in-app
+            // billing...
+            super.onActivityResult(requestCode, resultCode, data);
+        } else {
+            Log.d(InAppBillingWrapper.TAG, "onActivityResult handled by IABUtil.");
+        }
+    }
 }

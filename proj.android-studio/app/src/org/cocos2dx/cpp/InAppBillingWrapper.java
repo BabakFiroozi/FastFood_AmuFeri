@@ -11,10 +11,8 @@ import android.util.Log;
 public class InAppBillingWrapper {
 	
 	public static native void onIabPurchaseFinishedSuccess(String sku);
-	public static native void onIabPurchaseFinishedFailure(String sku);
 	public static native void onConsumeFinishedSuccess(String sku);
-	public static native void onConsumeFinishedFailure(String sku);
-	
+
 	// Debug tag, for logging
     static final String TAG = "FastFood";
 	
@@ -39,6 +37,11 @@ public class InAppBillingWrapper {
 	{
 		_activity = act;	
 	}
+
+	public static IabHelper getmHelper()
+    {
+        return mHelper;
+    }
 	
 	public static void startSetup()
 	{
@@ -79,6 +82,9 @@ public class InAppBillingWrapper {
 	{
 		String payload = "";
 
+//        mHelper.launchPurchaseFlow(_activity, sku, req,
+//                mPurchaseFinishedListener, payload);
+
 		try{
 			mHelper.launchPurchaseFlow(_activity, sku, req,
 					mPurchaseFinishedListener, payload);
@@ -86,7 +92,6 @@ public class InAppBillingWrapper {
 		catch(IabHelper.IabAsyncInProgressException e){
 			e.printStackTrace();
 		}
-
 	}
 	
 	
@@ -99,20 +104,21 @@ public class InAppBillingWrapper {
             if (mHelper == null) return;
 
             if (result.isFailure()) {
-                complain("Error purchasing: " + result); 
-                onIabPurchaseFinishedFailure(purchase.getSku());
+                complain("Error purchasing: " + result);
                 return;
             }          
            
-        	onIabPurchaseFinishedSuccess(purchase.getSku());    
-        	onConsumeFinishedSuccess(purchase.getSku());
+        	onIabPurchaseFinishedSuccess(purchase.getSku());
 
             Log.d(TAG, "Purchase successful.");
 
-            if (purchase.getSku().equals(purchase.getSku())) {
-                // bought 1/4 tank of gas. So consume it.
-                Log.d(TAG, "Purchase is gas. Starting gas consumption.");
-                //mHelper.consumeAsync(purchase, mConsumeFinishedListener);
+//            mHelper.consumeAsync(purchase, mConsumeFinishedListener);
+
+            try{
+                mHelper.consumeAsync(purchase, mConsumeFinishedListener);
+            }
+            catch(IabHelper.IabAsyncInProgressException e){
+                e.printStackTrace();
             }
         }
     };
@@ -135,7 +141,6 @@ public class InAppBillingWrapper {
                 onConsumeFinishedSuccess(purchase.getSku());
             }
             else {
-            	onConsumeFinishedFailure(purchase.getSku());
                 complain("Error while consuming: " + result);
             }
             
