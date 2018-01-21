@@ -26,7 +26,7 @@ SplashScene::~SplashScene()
 
 bool SplashScene::init()
 {
-	Tapligh::getInstance().loadAd("Unit-Code");
+	Tapligh::getInstance().loadAd("6C6DC51D1BDF307F1FCA4F9970FD42");
 
 	if (!LayerColor::initWithColor(Color4B::BLACK))
 		return false;
@@ -97,12 +97,14 @@ void SplashScene::onEnter()
 	scheduleOnce(CC_SCHEDULE_SELECTOR(SplashScene::goMenu), _duration + 3);
 }
 
-void SplashScene::onExit() {
-    Tapligh::getInstance().showAd("Unit-Code");
+void SplashScene::onExit()
+{
+    Layer::onExit();
 }
 
 void SplashScene::goMenu(float dt)
 {
+    Tapligh::getInstance().showAd("6C6DC51D1BDF307F1FCA4F9970FD42");
 	auto scene = TransitionFade::create(.5f, MenuScene::createSceneData());
 	Director::getInstance()->replaceScene(scene);
 }

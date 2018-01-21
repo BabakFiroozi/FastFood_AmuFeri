@@ -48,7 +48,7 @@ public class AppActivity extends Cocos2dxActivity {
         InAppBillingWrapper.setActivity(this);
         InAppBillingWrapper.startSetup();
 
-        TaplighWrapper.create(this, "6C6DC51D1BDF307F1FCA4F9970FD42");
+        TaplighWrapper.create(this, "Z3HZQDB9CEJGKGGBBBIGMO57MKEYDW");
     }
 
     @Override
