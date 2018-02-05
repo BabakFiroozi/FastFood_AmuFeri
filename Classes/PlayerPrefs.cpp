@@ -155,3 +155,27 @@ void PlayerPrefs::finishTutrial(int part) const
 	std::string key = "tutorialFinished" + StringUtils::toString(part);
 	UserDefault::getInstance()->setBoolForKey(key.c_str(), true);
 }
+
+void PlayerPrefs::joinTelegram() const
+{
+	const char* key = "telegramJoined";
+	UserDefault::getInstance()->setBoolForKey(key, true);
+}
+
+bool PlayerPrefs::isTelegramJoined() const
+{
+	const char* key = "telegramJoined";
+	return UserDefault::getInstance()->getBoolForKey(key, false);
+}
+
+void PlayerPrefs::followInstageram() const
+{
+	const char* key = "instageramFollowed";
+	UserDefault::getInstance()->setBoolForKey(key, true);
+}
+
+bool PlayerPrefs::isInstageramFollowed() const
+{
+	const char* key = "instageramFollowed";
+	return UserDefault::getInstance()->getBoolForKey(key, false);
+}

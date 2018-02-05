@@ -5,10 +5,14 @@
 #include "PlayerPrefs.h"
 #include "GameUser.h"
 #include "SimpleAudioEngine.h"
+#include "BazinamaAcLe.h"
+#include "Tapligh.h"
 
 
 USING_NS_CC;
 using namespace cocos2d::ui;
+
+bool GameplayScene::s_AdLoadedInGame = false;
 
 GameplayScene::GameplayScene()
 {
@@ -88,7 +92,8 @@ bool GameplayScene::init(cocos2d::ValueMap& initData)
 	const float buttonsPosY = -220;
 	const float buttonsScale = 1.3f;
 
-	auto pauseText = Text::create(GameChoice::getInstance().getString("TEXT_GAME_PAUSE"), GameChoice::getInstance().getFontName(), 100);
+	std::string pauseTextStr = GameChoice::getInstance().getString("TEXT_GAME_PAUSE") + Inventories::getInstance().getKitchenByType((KitchenTypes)(kitchenNumber - 1))->getName();
+	auto pauseText = Text::create(pauseTextStr, GameChoice::getInstance().getFontName(), 40);
 	pauseText->setName("pauseText");
 	pauseBackg->addChild(pauseText);
 	pauseText->setPosition(pauseBackg->getContentSize() / 2 + Size(0, 50));
@@ -171,7 +176,7 @@ void GameplayScene::onEnter()
 {
 	Layer::onEnter();
 
-	CocosDenshion::SimpleAudioEngine::getInstance()->playBackgroundMusic("sounds/music_game.ogg", true);
+	CocosDenshion::SimpleAudioEngine::getInstance()->playBackgroundMusic("sounds/music_game.ogg", true);	
 
 	scheduleUpdate();
 }
@@ -334,18 +339,19 @@ void GameplayScene::dishButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget
 
 		bool rightFood = selFood == needFood;
 
-		auto food = FoodFactory::getInstance().getFood(needFood);
-		if (food->getCount() <= 0)
-		{
-			onFoodFinished(needFood);
-			return;
-		}
-
 		if (_forceTutDishButton != nullptr && _forceTutDishButton != button)
 			return;
 
 		if (rightFood)
 		{
+			auto food = FoodFactory::getInstance().getFood(needFood);
+			int foodCount = food->getCount();
+			if (foodCount <= 0)
+			{
+				onFoodFinished(needFood);
+				return;
+			}
+
 			auto foodSprite = Sprite::create(makeIconPath(food->getType(), food->getIconPath(), _burger->getChildrenCount() == 0));
 			Vec2 pos = Vec2::ZERO;
 			if (_burger->getChildrenCount() > 0)
@@ -618,11 +624,38 @@ void GameplayScene::startGame()
 	}, 4, "Idle_First");
 
 	goTutorialStep();
+
+	//Ad
+	Tapligh::getInstance().setOnAdReadyFuncCallback([=](const std::string& token) {
+        s_AdLoadedInGame = true;
+		_adTried = false;
+	});
+	Tapligh::getInstance().setOnAdResultFuncCallback([=](int result, const std::string& token) {
+		if (result == (int)Tapligh::ADResult::adViewCompletely)
+		{
+			_clockTimer = _initClockTime;
+		}
+	});
+    s_AdLoadedInGame = false;
+	Tapligh::getInstance().loadAd(Tapligh::UNIT_CODE_2);
 }
 
 void GameplayScene::update(float delta)
 {
 	Layer::update(delta);
+
+	if (_adLayout != nullptr)
+	{
+		auto timeBarImage = static_cast<LoadingBar*>(_adLayout->getChildren().at(0)->getChildByName("adTimeBar"));
+		timeBarImage->setPercent(timeBarImage->getPercent() + 100 / GameChoice::getInstance().getTryWithAdTime() * delta);
+		if (timeBarImage->getPercent() >= 100)
+		{
+            _adTried = true;
+			_adLayout->removeFromParent();
+			_adLayout = nullptr;
+		}
+		return;
+	}
 
 	if (_gameStarted && !_isGameOver && _foodFinishedLayout == nullptr)
 	{
@@ -659,6 +692,68 @@ void GameplayScene::update(float delta)
 
 void GameplayScene::gameOver()
 {
+	if (s_AdLoadedInGame && !_adTried)
+	{
+		_adLayout = Layout::create();
+		addChild(_adLayout);
+		_adLayout->setContentSize(_visibleSize);
+		_adLayout->setSwallowTouches(true);
+		_adLayout->setTouchEnabled(true);
+		_adLayout->setBackGroundColorType(Layout::BackGroundColorType::SOLID);
+		_adLayout->setBackGroundColor(Color3B::BLACK);
+		_adLayout->setBackGroundColorOpacity(50);
+
+		auto backg = ImageView::create("gui/pauseScreen/pauseBackg.png");
+		_adLayout->addChild(backg);
+		backg->setPosition(Size(_adLayout->getContentSize().width / 2, _adLayout->getContentSize().height - 500));
+
+		auto titleText = Text::create(GameChoice::getInstance().getString("TEXT_AD_RETRY"), GameChoice::getInstance().getFontName(), 70);
+		backg->addChild(titleText);
+		titleText->setPosition(backg->getContentSize() / 2 + Size(0, 200));
+		titleText->enableOutline(Color4B::GRAY, 1);
+
+		auto messageText = Text::create(GameChoice::getInstance().getString("TEXT_SEE_VIDEO"), GameChoice::getInstance().getFontName(), 50);
+		backg->addChild(messageText);
+		messageText->setPosition(backg->getContentSize() / 2 + Size(0, -20));
+		messageText->enableOutline(Color4B::GRAY, 1);
+
+		auto adButton = Button::create("gui/videoAdButton.png");
+		backg->addChild(adButton);
+		adButton->setPosition(backg->getContentSize() / 2 + Size(0, -150));
+		adButton->addTouchEventListener([=](Ref* sender, Widget::TouchEventType eventType) {
+			if (eventType == Widget::TouchEventType::ENDED)
+			{
+				Tapligh::getInstance().showAd(Tapligh::UNIT_CODE_2);
+				_adLayout->setVisible(false);
+                _adTried = true;
+			}
+		});
+		adButton->runAction(RepeatForever::create(Sequence::createWithTwoActions(ScaleTo::create(.2f, 1.1f), ScaleTo::create(.2f, 1.0f))));
+
+		auto timeBoxImage = ImageView::create("dishes/comboBar_frame.png");
+		backg->addChild(timeBoxImage);
+		timeBoxImage->setPosition(backg->getContentSize() / 2 + Size(0, 70));
+		auto timeBarImage = LoadingBar::create("dishes/comboBar_bar.png");
+		timeBarImage->setName("adTimeBar");
+		backg->addChild(timeBarImage);
+		timeBarImage->setPosition(timeBoxImage->getPosition());
+		timeBarImage->setPercent(0);
+
+        auto closeButton = Button::create("gui/closeButton.png");
+        backg->addChild(closeButton);
+        closeButton->setPosition(backg->getContentSize() - Size(30, 30));
+        closeButton->addTouchEventListener([=](Ref* sender, Widget::TouchEventType eventType){
+            if(eventType == Widget::TouchEventType::ENDED)
+            {
+                _adTried = true;
+                _adLayout->removeFromParent();
+                _adLayout = nullptr;
+            }
+        });
+
+		return;
+	}
+
 	_isGameOver = true;
 	showPausePage(true, true);
 }
@@ -746,10 +841,9 @@ void GameplayScene::packBurger(float dt)
 		auto adjunctButton = _hudLayout->getChildByName("Adjunct");
 		if (adjunctButton != nullptr)
 		{
-			if (adjunctButton->getPositionX() > _hudLayout->getContentSize().width / 2)
-				adjunctButton->runAction(Sequence::create(EaseSineIn::create(MoveBy::create(.2f, Vect(400, 0))), RemoveSelf::create(), nullptr));
-			else
-				adjunctButton->runAction(Sequence::create(EaseSineIn::create(MoveBy::create(.2f, Vect(-400, 0))), RemoveSelf::create(), nullptr));
+			bool adjunctIsRight = adjunctButton->getPositionX() > _hudLayout->getContentSize().width / 2;
+				adjunctButton->runAction(Sequence::create(DelayTime::create(.2f), EaseSineIn::create(
+					MoveBy::create(.2f, Vect(adjunctIsRight ? 400 : -400, 0))), RemoveSelf::create(), nullptr));
 		}
 	}, packBurgerTime, "PackingBurgerFinished");
 
@@ -767,6 +861,9 @@ void GameplayScene::packBurger(float dt)
 			if (_clockDecerementRate > 1.5f)
 				_clockDecerementRate = 1.5f;
 		}
+
+		BazinamaAcLe::getInstance().submitScore("packageName", "scoreId", _burgersCount);
+		BazinamaAcLe::getInstance().submitScore("packageName", "scoreId", PlayerPrefs::getInstance().getSandwitchTotal());
 	}
 
 	return;
@@ -799,7 +896,7 @@ void GameplayScene::pauseButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widge
 		{
 			CocosDenshion::SimpleAudioEngine::getInstance()->stopBackgroundMusic();
 			Director::getInstance()->resume();
-			auto scene = TransitionFlipX::create(.5f, ShopScene::createSceneData(ShopTypes::Food));
+			auto scene = TransitionFade::create(.5f, ShopScene::createSceneData(ShopTypes::Food));
 			Director::getInstance()->replaceScene(scene);
 		}
 
@@ -819,7 +916,7 @@ void GameplayScene::pauseButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widge
 		{
 			CocosDenshion::SimpleAudioEngine::getInstance()->stopBackgroundMusic();
 			Director::getInstance()->resume();
-			auto scene = TransitionTurnOffTiles::create(.7f, MenuScene::createSceneData());
+			auto scene = TransitionFade::create(.5f, MenuScene::createSceneData());
 			Director::getInstance()->replaceScene(scene);
 		}
 	}
@@ -1109,6 +1206,8 @@ void GameplayScene::createAdjunct()
 
 void GameplayScene::giveCoinWithEffect(int coin, const Vect& pos, float scale, bool forAdjunct)
 {
+	coin /= 50;
+
 	auto coinFunc = [=]() {
 		_coinsCount += coin;
 		GameUser::getInstance().addCoin(coin);

@@ -7,9 +7,11 @@
 #include "SimpleAudioEngine.h"
 #include "GameChoice.h"
 #include "Tapligh.h"
+#include "Firebase.h"
 
 #if(CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
 #include "ui/UIVideoPlayer.h"
+
 #endif
 
 
@@ -26,7 +28,7 @@ SplashScene::~SplashScene()
 
 bool SplashScene::init()
 {
-	Tapligh::getInstance().loadAd("6C6DC51D1BDF307F1FCA4F9970FD42");
+	Tapligh::getInstance().loadAd(Tapligh::UNIT_CODE_1);
 
 	if (!LayerColor::initWithColor(Color4B::BLACK))
 		return false;
@@ -95,6 +97,8 @@ void SplashScene::onEnter()
 
 	scheduleOnce(CC_SCHEDULE_SELECTOR(SplashScene::showLogo), _duration);
 	scheduleOnce(CC_SCHEDULE_SELECTOR(SplashScene::goMenu), _duration + 3);
+
+	Firebase::getInstance().logEvent("testLog1, testLog1", "1, 2");
 }
 
 void SplashScene::onExit()
@@ -104,7 +108,7 @@ void SplashScene::onExit()
 
 void SplashScene::goMenu(float dt)
 {
-    Tapligh::getInstance().showAd("6C6DC51D1BDF307F1FCA4F9970FD42");
+    Tapligh::getInstance().showAd(Tapligh::UNIT_CODE_1);
 	auto scene = TransitionFade::create(.5f, MenuScene::createSceneData());
 	Director::getInstance()->replaceScene(scene);
 }

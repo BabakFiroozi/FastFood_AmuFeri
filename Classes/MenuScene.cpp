@@ -6,6 +6,7 @@
 #include "Inventories.h"
 #include "SimpleAudioEngine.h"
 #include "BazinamaAcLe.h"
+#include "Tapligh.h"
 
 USING_NS_CC;
 using namespace cocos2d::ui;
@@ -84,6 +85,7 @@ bool MenuScene::init(ValueMap& initData)
 	_background->addChild(_leaderboardButton);
 	_leaderboardButton->setPosition(Vect(backgSize.width / 2, _leaderboardButton->getContentSize().height / 2));
 	_leaderboardButton->addTouchEventListener(CC_CALLBACK_2(MenuScene::buttonCallback, this));
+	_leaderboardButton->setVisible(false);
 
 	_settingButton = Button::create("gui/menu/settingButton.png");
 	_background->addChild(_settingButton, 2);
@@ -211,6 +213,7 @@ void MenuScene::onEnter()
 		image->setScale(1.5f);
 		image->runAction(RepeatForever::create(Sequence::createWithTwoActions(MoveBy::create(.5f, Vect(0, 20)), MoveBy::create(.5f, Vect(0, -20)))));
 	}
+
 }
 
 void MenuScene::update(float dt)
@@ -233,7 +236,7 @@ void MenuScene::buttonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget::TouchE
 
 		if (sender == _playButton)
 		{
-			auto scene = TransitionFadeDown::create(1, GameplayScene::createSceneData(1));
+			auto scene = TransitionFade::create(1, GameplayScene::createSceneData(1));
 			Director::getInstance()->replaceScene(scene);
 		}
 		if (sender == _exitButton)

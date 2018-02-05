@@ -124,3 +124,39 @@ int GameChoice::getShopItem(int index)
 	int item = _shopItems[index];
 	return item;
 }
+
+int GameChoice::getTaplighReward() const
+{
+	int n = _document["taplighVideoReward"].GetInt();
+	return n;
+}
+
+int GameChoice::getTelegramReaward() const
+{
+	int n = _document["telegramReward"].GetInt();
+	return n;
+}
+
+int GameChoice::getInstageramReaward() const
+{
+	int n = _document["instageramReward"].GetInt();
+	return n;
+}
+
+std::string GameChoice::getTelegramUrl() const
+{
+	std::string url = _document["telegramUrl"].GetString();
+	return url;
+}
+
+std::string GameChoice::getInstageramUrl() const
+{
+	std::string url = _document["instageramUrl"].GetString();
+	return url;
+}
+
+int GameChoice::getTryWithAdTime() const
+{
+	int n = _document["tryWithAdTime"].GetInt();
+	return n;
+}

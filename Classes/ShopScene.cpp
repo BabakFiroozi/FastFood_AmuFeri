@@ -8,6 +8,7 @@
 #include "PlayerPrefs.h"
 #include "SimpleAudioEngine.h"
 #include "InAppBilling.h"
+#include "Tapligh.h"
 
 
 USING_NS_CC;
@@ -166,9 +167,9 @@ void ShopScene::onKeyReleasedCallback(EventKeyboard::KeyCode keyCode, Event* eve
 void ShopScene::purchaseResultCallback(int amount)
 {
     GameUser::getInstance().addCoin(amount);
-    auto infoImage = static_cast<ImageView*>(_shopInfoPage->getChildren().at(0)->getChildren().at(0));
-    _shopInfoPage->setVisible(true);
-	infoImage->loadTexture("gui/thanksShop.png");
+	//_shopInfoPage->setVisible(true);
+	//auto infoImage = static_cast<ImageView*>(_shopInfoPage->getChildren().at(0)->getChildren().at(0));
+	//infoImage->loadTexture("gui/thanksShop.png");
     updateCoinsText();
 }
 
@@ -180,6 +181,17 @@ void ShopScene::onEnter()
 		CocosDenshion::SimpleAudioEngine::getInstance()->playBackgroundMusic("sounds/music_menu.ogg", true);
 
 	showTab(_defaultShopType);
+
+	Tapligh::getInstance().loadAd(Tapligh::UNIT_CODE_2);
+
+	Tapligh::getInstance().setOnAdResultFuncCallback([=](int result, const std::string& token) {
+		if (result == (int)Tapligh::ADResult::adViewCompletely)
+		{
+			GameUser::getInstance().addCoin(GameChoice::getInstance().getTaplighReward());
+			updateCoinsText();
+			Tapligh::getInstance().loadAd(Tapligh::UNIT_CODE_2);
+		}
+	});
 }
 
 void ShopScene::update(float dt)
@@ -533,6 +545,13 @@ void ShopScene::showTab(ShopTypes shopType)
 				std::string tomanStr = GameChoice::getInstance().getString("TEXT_TOUMAN") + " " + priceText->getString();
 				priceText->setString(tomanStr);
 				priceText->setPositionX(priceText->getPositionX() + 120);
+
+				if (itemNumber > 6)
+				{
+					priceText->setVisible(false);
+					buyText->setString(shopName);
+					nameText->setVisible(false);
+				}
 			}
 
 			_shopDataMap[buyButton] = ShopData(shopType, itemNumber - 1, shopPrice);
@@ -606,9 +625,38 @@ void ShopScene::buyButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget::Tou
 
 		if (shopData.shopType == ShopTypes::Coin)
 		{
-			std::string skuName = StringUtils::format("CoinPack_%d",  shopData.itemNumber + 1);
-			int orderId = random(1, 100000);
-			InAppBilling::getInstance().launchPurchaseFlow(skuName.c_str(), orderId);
+			if (shopData.itemNumber <= 5)
+			{
+				std::string skuName = StringUtils::format("CoinPack_%d",  shopData.itemNumber + 1);
+				int orderId = random(1, 100000);
+				InAppBilling::getInstance().launchPurchaseFlow(skuName.c_str(), orderId);
+			}
+			else
+			{
+				if (shopData.itemNumber == 6) //tapligh
+				{
+					Tapligh::getInstance().showAd(Tapligh::UNIT_CODE_2);
+				}
+				if (shopData.itemNumber == 7) //telegram
+				{
+					Application::getInstance()->openURL(GameChoice::getInstance().getTelegramUrl());
+					if (PlayerPrefs::getInstance().isTelegramJoined() == false)
+					{
+						GameUser::getInstance().addCoin(GameChoice::getInstance().getTelegramReaward());
+						PlayerPrefs::getInstance().joinTelegram();
+					}
+
+				}
+				if (shopData.itemNumber == 8) //instageram
+				{
+					Application::getInstance()->openURL(GameChoice::getInstance().getInstageramUrl());
+					if (PlayerPrefs::getInstance().isInstageramFollowed() == false)
+					{
+						GameUser::getInstance().addCoin(GameChoice::getInstance().getInstageramReaward());
+						PlayerPrefs::getInstance().followInstageram();
+					}
+				}
+			}
 		}
 
 		updateCoinsText();

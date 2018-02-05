@@ -97,38 +97,56 @@
     {
       "name": "",
       "price": 1000,
-      "amount": 100,
+      "amount": 900,
 	  "desc": "¾§w#Sz¶#¾Ä"
     },
     {
       "name": "",
       "price": 2000,
-      "amount": 500,
+      "amount": 2500,
 	  "desc": "¾§w#¾vÃ¨#¾Ä"
     },
     {
       "name": "",
       "price": 3000,
-      "amount": 1000,
+      "amount": 5000,
 	  "desc": "¾§w#¾L•]#¾Ä"
     },
     {
       "name": "",
       "price": 5000,
-      "amount": 10000,
+      "amount": 12000,
 	  "desc": "tI¹§wH#¾TvM#k¹a"
     },
     {
       "name": "",
       "price": 10000,
-      "amount": 20000,
+      "amount": 32000,
 	  "desc": "tI¹§wH#¾L•]#¾Ä"
     },
     {
       "name": "",
       "price": 20000,
-      "amount": 100000,
+      "amount": 99000,
 	  "desc": "tI¹§wH#»#¾§w#Â±¨"
+    },
+    {
+      "name": "¸¨#I{IµU",
+      "price": 0,
+      "amount": 500,
+	  "desc": "kÄoÃ«M#¾§w#»#kÃ¹ÃLM#˜Ã±PU#Á¼ÄkÄ»"
+    },
+    {
+      "name": "¼{#¼…–",
+      "price": 0,
+      "amount": 200,
+	  "desc": "kÄ¼{#I¶#³Ho«±U#ÏIºI¨#¼…–"
+    },
+    {
+      "name": "¸¨#ÏILºj",
+      "price": 0,
+      "amount": 200,
+	  "desc": "kÃ¹¨#ÏILºj#³Ho¬ITv¹ÄH#nj#Hn#I¶"
     }
   ],
   "kitchen": [
@@ -139,7 +157,7 @@
 	  "desc": "´¨k¶Anj#,o¿{#J¼¹]"
     },
     {
-      "name": "qQ#ªw#¸ve",
+      "name": "Â¹Ã¶p KÃw ¸ve",
       "price": 50000,
       "amount": 1,
 	  "desc": "ˆw¼T¶#k¶Anj#,o¿{#ˆw»"

@@ -27,6 +27,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
+//import com.onesignal.OneSignal;
+
 import org.cocos2dx.lib.Cocos2dxActivity;
 
 public class AppActivity extends Cocos2dxActivity {
@@ -49,6 +51,14 @@ public class AppActivity extends Cocos2dxActivity {
         InAppBillingWrapper.startSetup();
 
         TaplighWrapper.create(this, "Z3HZQDB9CEJGKGGBBBIGMO57MKEYDW");
+
+        FirebaseWrapper.create(this);
+
+//        OneSignal.startInit(this)
+//                .inFocusDisplaying(OneSignal.OSInFocusDisplayOption.Notification)
+//                .unsubscribeWhenNotificationsAreDisabled(true)
+//                .init();
+
     }
 
     @Override

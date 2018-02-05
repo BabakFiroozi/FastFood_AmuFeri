@@ -17,9 +17,18 @@
 	"rateUrl": "https://cafebazaar.ir/app/com.iust.tablemath",
 	
 	"credtisList":["ÁkMI–#·I§{H#:ÁpIM#bHoŠ", "Áp»oÃÎ#¦MIM#:uÄ¼º#¾¶IºoM", "ÁkÃ¶H#³Iw#:SvÃUnA"],
+	
+	"taplighVideoReward": 200,
+	"telegramReward": 200,
+	"instageramReward": 200,
+	
+	"telegramUrl": "https://telegram.me/Ferferegame",
+	"instageramUrl": "https://www.instagram.com/ferferegame/",
 
+	"tryWithAdTime": 8,
+	
 	"TEXT_NOT_ENOUGH_MONEY": "SvÃº#ÂÎI¨#Iµ{#Ï¼Q",
-	"TEXT_GAME_PAUSE": "ÁpIM#œ¤¼U",
+	"TEXT_GAME_PAUSE": "½k¹M#yTwj#",
 	"TEXT_CUSTOMER_WATING": "!ohM#½oÊT¹¶#ÁoTz¶",
 	"TEXT_FOODS": "ÂÄHmš#jH¼¶",
 	"TEXT_POWERUPS": "IÀ#Rnk¤",
@@ -34,6 +43,9 @@
 	"TEXT_TUT_FINISH": "kÄjo¨#³¼µU#»n#Â{p¼¶A#ÁpIM#Iµ{",
 	"TEXT_POWERUPS_ADDED": "ÁnHj#¾¨#ÂÄIÀ#Rnk¤",
 	"TEXT_LOW_FOODS": "¸zÃ¶#³¼µU#·nHj#IÀHmš#¸ÄH",
+	"TEXT_AD_RETRY": "½nIM»j#uºI{",
+	"TEXT_SEE_VIDEO": "IÃM#¾¶HjH#pH#¸ÃLM#¼ÄkÄ»",
+	"TEXT_SEE_VIDEO_GET_POWER": "oÃ«M#Rnk¤#¸ÃLM#¼ÄkÄ»",
 	
 	"TEXT_CREDITS": "·I¬kºpIw",
 	

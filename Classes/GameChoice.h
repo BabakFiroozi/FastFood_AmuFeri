@@ -40,6 +40,15 @@ public:
 	void updateShopItems(const std::vector<int>& vec);
 	int getShopItem(int index);
 
+	int getTaplighReward() const;
+	int getTelegramReaward() const;
+	int getInstageramReaward() const;
+
+	std::string getTelegramUrl() const;
+	std::string getInstageramUrl() const;
+
+	int getTryWithAdTime() const;
+
 private:
 	rapidjson::Document _document;
 

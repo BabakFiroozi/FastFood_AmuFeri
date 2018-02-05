@@ -1,0 +1,45 @@
+{
+  "project_info": {
+    "project_number": "183022558239",
+    "firebase_url": "https://fir-amuferi.firebaseio.com",
+    "project_id": "firebase-amuferi",
+    "storage_bucket": "firebase-amuferi.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:183022558239:android:f0b0d523fab95bfe",
+        "android_client_info": {
+          "package_name": "com.ferferegame.amuferi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "183022558239-a7jnedi88i7b9o6fe9raog50r8v0ib2i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCHAiLDW7DGCLGY2Jv0YN3NeSMOwkRw3gA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 2,
+          "analytics_property": {
+            "tracking_id": "UA-110999651-2"
+          }
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

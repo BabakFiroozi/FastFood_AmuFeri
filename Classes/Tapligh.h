@@ -18,9 +18,18 @@ extern "C" {
 #endif
 
 
+
 class Tapligh
 {
 public:
+
+	enum class ADResult {
+		noInternetAccess, badTokenUsed, noAdReady, internalError, adAvailable, adViewCompletely, adClicked, adImageClosed, adVideoClosedAfterFulView, adVideoClosedOnView
+	};
+
+	static const char* UNIT_CODE_1;
+	static const char* UNIT_CODE_2;
+
 	Tapligh();
 	~Tapligh();
 
@@ -31,6 +40,7 @@ public:
 
 	typedef std::function<void(const std::string&)> OnAdReadyFuncCallback;
 	typedef std::function<void(int, const std::string&)> OnAdResultCallback;
+	typedef std::function<void(const std::string&)> OnAdRewardCallback;
 
 	void setOnAdReadyFuncCallback(const OnAdReadyFuncCallback& callback);
 	void callOnAdReadyFuncCallback(const std::string& s);
@@ -38,9 +48,13 @@ public:
 	void setOnAdResultFuncCallback(const OnAdResultCallback& callback);
 	void callOnAdResultFuncCallback(int result, const std::string& token);
 
+	void setOnAdRewardFuncCallback(const OnAdRewardCallback& callback);
+	void callOnAdRewardFuncCallback(const std::string& reward);
+
 private:
 
 	OnAdReadyFuncCallback _onAdReadyFuncCallback;
 	OnAdResultCallback _onAdResultFuncCallback;
+	OnAdRewardCallback _onAdRewardFuncCallback;
 };
 

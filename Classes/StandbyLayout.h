@@ -26,7 +26,6 @@ protected:
 
 private:
 	void buttonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget::TouchEventType eventType);
-
 	cocos2d::Vect _visibleOrigin;
 	cocos2d::Size _visibleSize;
 

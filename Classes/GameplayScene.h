@@ -11,6 +11,8 @@
 class GameplayScene : public cocos2d::Layer
 {
 public:
+	static bool s_AdLoadedInGame;
+
 	GameplayScene();
 	virtual ~GameplayScene();
 
@@ -111,8 +113,12 @@ private:
 
 	cocos2d::ui::Button* _forceTutDishButton = nullptr;
 
+	cocos2d::ui::Layout* _adLayout = nullptr;
+
 	bool _togglePlaySound;
 	int _playSoundCounter = -1;
+
+	bool _adTried = false;
 };
 
 #endif //__GAMEPLAY_SCENE_H__

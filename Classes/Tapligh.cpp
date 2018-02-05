@@ -25,7 +25,14 @@ JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_TaplighWrapper_onAdResultNative(JNI
 
 JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_TaplighWrapper_onRewardReadyNative(JNIEnv* env, jobject obj, jstring reward)
 {
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+	std::string reward_ = JniHelper::jstring2string(reward);
+	Tapligh::getInstance().callOnAdRewardFuncCallback(reward_);
+#endif
 }
+
+const char* Tapligh::UNIT_CODE_1 = "6C6DC51D1BDF307F1FCA4F9970FD42";
+const char* Tapligh::UNIT_CODE_2 = "7A5162E36C381A890806C1AAA71A03";
 
 Tapligh::Tapligh()
 {
@@ -95,4 +102,15 @@ void Tapligh::callOnAdResultFuncCallback(int result, const std::string& token)
 {
 	if (_onAdResultFuncCallback != nullptr)
 		_onAdResultFuncCallback(result, token);
+}
+
+void Tapligh::setOnAdRewardFuncCallback(const OnAdRewardCallback& callback)
+{
+	_onAdRewardFuncCallback = callback;
+}
+
+void Tapligh::callOnAdRewardFuncCallback(const std::string& reward)
+{
+	if (_onAdRewardFuncCallback != nullptr)
+		_onAdRewardFuncCallback(reward);
 }

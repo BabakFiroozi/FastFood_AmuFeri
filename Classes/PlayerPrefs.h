@@ -41,6 +41,12 @@ public:
 	bool isTutorialFinished(int part) const;
 	void finishTutrial(int part) const;
 
+	void joinTelegram() const;
+	bool isTelegramJoined() const;
+
+	void followInstageram() const;
+	bool isInstageramFollowed() const;
+
 private:
 };
 
