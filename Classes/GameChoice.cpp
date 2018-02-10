@@ -24,6 +24,8 @@ void GameChoice::initialize()
 
 std::string GameChoice::getString(const std::string& key) const
 {
+	if(!_document.HasMember(key.c_str()))
+		return " ";
 	std::string str = _document[key.c_str()].GetString();
 	return str;
 }
@@ -34,23 +36,23 @@ std::string GameChoice::getFontName(bool eng /*= false*/) const
 	return name;
 }
 
-int GameChoice::getTapsellVideoReward()
-{
-	int n = _document["tapsellVideoReward"].GetInt();
-	return n;
-}
-
-int GameChoice::getTapsellCheckVideoInterval()
-{
-	int n = _document["tapsellCheckVideoInterval"].GetInt();
-	return n;
-}
-
-int GameChoice::getTapsellVideoAvailableTime()
-{
-	int n = _document["tapsellVideoAvailableTime"].GetInt();
-	return n;
-}
+//int GameChoice::getTapsellVideoReward()
+//{
+//	int n = _document["tapsellVideoReward"].GetInt();
+//	return n;
+//}
+//
+//int GameChoice::getTapsellCheckVideoInterval()
+//{
+//	int n = _document["tapsellCheckVideoInterval"].GetInt();
+//	return n;
+//}
+//
+//int GameChoice::getTapsellVideoAvailableTime()
+//{
+//	int n = _document["tapsellVideoAvailableTime"].GetInt();
+//	return n;
+//}
 
 float GameChoice::getInitClockTime()
 {
@@ -92,15 +94,6 @@ std::string GameChoice::getRateUrl() const
 {
 	std::string url = _document["rateUrl"].GetString();
 	return url;
-}
-
-std::string GameChoice::getTutorialText(int num) const
-{
-	auto arr = _document["tutorial_paths"].GetArray();
-	if (num > arr.Size() - 1)
-		return "";
-	std::string text = arr[num].GetString();
-	return text;
 }
 
 std::vector<std::string> GameChoice::getCredits() const

@@ -240,7 +240,7 @@ void GameplayScene::createHud()
 
 	auto clockBack = ImageView::create("dishes/clockBack.png");
 	_hudLayout->addChild(clockBack);
-	clockBack->setPosition(Vec2(_visibleSize.width / 2, _visibleSize.height - 730));
+	clockBack->setPosition(Vec2(_visibleSize.width / 2, _visibleSize.height - 680));
 
 	auto clockBar = LoadingBar::create("dishes/clockBar.png");
 	clockBack->addChild(clockBar);
@@ -254,20 +254,20 @@ void GameplayScene::createHud()
 
 	clockBack->setScale(.8f);
 
-	auto comboBarFrame = ImageView::create("dishes/comboBar_frame.png");
-	comboBarFrame->setAnchorPoint(Point(0, .5f));
-	_hudLayout->addChild(comboBarFrame);
-	comboBarFrame->setPosition(Vec2(_visibleSize.width / 2 - comboBarFrame->getContentSize().width / 2 + 40, _visibleSize.height - 680));
+	auto comboBarBack = ImageView::create("dishes/comboBar_frame.png");
+	comboBarBack->setAnchorPoint(Point(0, .5f));
+	_hudLayout->addChild(comboBarBack);
+	comboBarBack->setPosition(clockBack->getPosition() + Vect(52, 50));
 
 	_comboBar = LoadingBar::create("dishes/comboBar_bar.png", 50);
-	comboBarFrame->addChild(_comboBar);
-	_comboBar->setPosition(comboBarFrame->getContentSize() / 2);
+	comboBarBack->addChild(_comboBar);
+	_comboBar->setPosition(comboBarBack->getContentSize() / 2);
 
 	auto headLightIcon = ImageView::create("gui/shop/powerups/headLight.png");
-	comboBarFrame->addChild(headLightIcon);
+	comboBarBack->addChild(headLightIcon);
 	headLightIcon->setPosition(_comboBar->getPosition() + Vect(0, 50));
 	headLightIcon->runAction(RepeatForever::create(Sequence::createWithTwoActions(ScaleTo::create(.2f, 1.2f), ScaleTo::create(.2f, 1.0f))));
-	comboBarFrame->setVisible(false);
+	comboBarBack->setVisible(false);
 
 	_cookAssistButton = Button::create("gui/shop/powerups/cookAssist.png");
 	_hudLayout->addChild(_cookAssistButton);

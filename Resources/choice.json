@@ -54,5 +54,11 @@
 	"TEXT_SELECT": "JIhTºH",
 	"TEXT_ACTIVE": "ÏI•Î",
 	"SHOP_PURCHASE_SUCCEEDED": "Iµ{ kÄoi pH ·¼¹µ¶",
-	"VIDEO_AD_SHOWED_SUCCEEDED": "Iµ{ ÁI{IµU pH ·¼¹µ¶"
+	"VIDEO_AD_SHOWED_SUCCEEDED": "Iµ{ ÁI{IµU pH ·¼¹µ¶",
+	
+	
+	"pregmaeplay_start": "آماده ای؟",
+	"gameplay_resume_videoback": "بعد از دیدن ویدیو به بازی برگزده",
+	
+	"tutorial_gameplay_finish_tutorial_dialog": "شما آموزش را تمام کردی"
 }

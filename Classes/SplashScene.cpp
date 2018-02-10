@@ -7,7 +7,7 @@
 #include "SimpleAudioEngine.h"
 #include "GameChoice.h"
 #include "Tapligh.h"
-#include "Firebase.h"
+#include "Analytics.h"
 
 #if(CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
 #include "ui/UIVideoPlayer.h"
@@ -98,7 +98,8 @@ void SplashScene::onEnter()
 	scheduleOnce(CC_SCHEDULE_SELECTOR(SplashScene::showLogo), _duration);
 	scheduleOnce(CC_SCHEDULE_SELECTOR(SplashScene::goMenu), _duration + 3);
 
-	Firebase::getInstance().logEvent("testLog1, testLog1", "1, 2");
+	Analytics::getInstance().logEvent("app_start");
+	Analytics::getInstance().logEvent("app_open");
 }
 
 void SplashScene::onExit()

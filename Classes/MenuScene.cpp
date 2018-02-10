@@ -7,6 +7,7 @@
 #include "SimpleAudioEngine.h"
 #include "BazinamaAcLe.h"
 #include "Tapligh.h"
+#include "Analytics.h"
 
 USING_NS_CC;
 using namespace cocos2d::ui;
@@ -72,7 +73,7 @@ bool MenuScene::init(ValueMap& initData)
 
 	_playButton = Button::create("gui/menu/start.png");
 	_background->addChild(_playButton);
-	_playButton->setPosition(Vect(backgSize.width / 2, backgSize.height - 950));
+	_playButton->setPosition(Vect(backgSize.width / 2, 400));
 	_playButton->addTouchEventListener(CC_CALLBACK_2(MenuScene::buttonCallback, this));
 	_playButton->setScale(1.2f);
 
@@ -101,7 +102,7 @@ bool MenuScene::init(ValueMap& initData)
 	_shopButton->addChild(shopBadge);
 	shopBadge->setPosition(_shopButton->getContentSize() / 2 + Size(0, 5));
 
-	_shopButton->setVisible(PlayerPrefs::getInstance().getSandwitchTotal() > 0);
+	_shopButton->setVisible(PlayerPrefs::getInstance().isTutorialFinished(1));
 
 	auto seq = Sequence::createWithTwoActions(ScaleTo::create(.25f, 1.1f), ScaleTo::create(.25f, 1));
 	shopBadge->runAction(RepeatForever::create(seq));
@@ -195,6 +196,8 @@ bool MenuScene::init(ValueMap& initData)
 
 	creditsPopup->setVisible(false);
 
+	Analytics::getInstance().logEvent("loading_main_menu");
+
 	return true;
 }
 
@@ -205,15 +208,14 @@ void MenuScene::onEnter()
 	if (!CocosDenshion::SimpleAudioEngine::getInstance()->isBackgroundMusicPlaying())
 		CocosDenshion::SimpleAudioEngine::getInstance()->playBackgroundMusic("sounds/music_menu.ogg", true);
 
-	if (!PlayerPrefs::getInstance().isTutorialFinished(2))
+	if (PlayerPrefs::getInstance().isTutorialFinished(1) && !PlayerPrefs::getInstance().isTutorialFinished(2))
 	{
 		auto image = ImageView::create("tut/store.png");
 		_background->addChild(image);
-		image->setPosition(_background->getContentSize() / 2 + Size(0, 400));
+		image->setPosition(_shopButton->getPosition() + Vect(0, -200));
 		image->setScale(1.5f);
 		image->runAction(RepeatForever::create(Sequence::createWithTwoActions(MoveBy::create(.5f, Vect(0, 20)), MoveBy::create(.5f, Vect(0, -20)))));
 	}
-
 }
 
 void MenuScene::update(float dt)
@@ -231,7 +233,7 @@ void MenuScene::buttonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget::TouchE
 			Director::getInstance()->replaceScene(scene);
 			PlayerPrefs::getInstance().finishTutrial(2);
 		}
-		if (!PlayerPrefs::getInstance().isTutorialFinished(2))
+		if (PlayerPrefs::getInstance().isTutorialFinished(1) && !PlayerPrefs::getInstance().isTutorialFinished(2))
 			return;
 
 		if (sender == _playButton)

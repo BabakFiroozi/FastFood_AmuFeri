@@ -56,8 +56,8 @@ bool ShopScene::init(ValueMap& initData)
 	shopBackg->setPosition(Vect(_visibleSize.width / 2, _visibleSize.height - 690));
 
 	auto shopHeader = ImageView::create("gui/shop/shop_header.png");
-	shopBackg->addChild(shopHeader);
-	shopHeader->setPosition(Vect(_visibleSize.width / 2 - 100, _visibleSize.height - 220));
+	background->addChild(shopHeader);
+	shopHeader->setPosition(Vect(_visibleSize.width / 2 - 100, _visibleSize.height - shopHeader->getContentSize().height / 2));
 
 	_headerText = Text::create(GameChoice::getInstance().getString("TEXT_FOODS"), GameChoice::getInstance().getFontName(), 68);
 	shopHeader->addChild(_headerText);

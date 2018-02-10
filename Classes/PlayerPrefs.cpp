@@ -143,7 +143,7 @@ int PlayerPrefs::getSandwitchTotal() const
 bool PlayerPrefs::isTutorialFinished(int part) const
 {
 	if (part > 1 && !isTutorialFinished(part - 1))
-		return true;
+		return false;
 	std::string key = "tutorialFinished" + StringUtils::toString(part);
 	return UserDefault::getInstance()->getBoolForKey(key.c_str(), false);
 }

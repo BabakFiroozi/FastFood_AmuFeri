@@ -18,10 +18,9 @@ public:
 	std::string getFontName(bool eng = false) const;
 	std::string getString(const std::string& key) const;
 
-	int getTapsellVideoReward();
-
-	int getTapsellCheckVideoInterval();
-	int getTapsellVideoAvailableTime();
+//	int getTapsellVideoReward();
+//	int getTapsellCheckVideoInterval();
+//	int getTapsellVideoAvailableTime();
 
 	float getInitClockTime();
 	float getRightFoodTime();
@@ -32,8 +31,6 @@ public:
 	float getEffectVolume() const;
 
 	std::string getRateUrl() const;
-
-	std::string getTutorialText(int num) const;
 
 	std::vector<std::string> getCredits() const;
 

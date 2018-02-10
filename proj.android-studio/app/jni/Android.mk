@@ -26,7 +26,7 @@ LOCAL_SRC_FILES := $(LOCAL_PATH)/hellocpp/main.cpp \
                    $(LOCAL_PATH)/../../../Classes/InAppBilling.cpp \
                    $(LOCAL_PATH)/../../../Classes/BazinamaAcLe.cpp \
                    $(LOCAL_PATH)/../../../Classes/Tapligh.cpp \
-                   $(LOCAL_PATH)/../../../Classes/Firebase.cpp
+                   $(LOCAL_PATH)/../../../Classes/Analytics.cpp
 
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/../../../Classes
 

@@ -20,10 +20,10 @@ public class FirebaseWrapper {
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(act);
     }
 
-    public static void logEvent(String keys, String values)
+    public static void logEvent(String name, String keys, String values)
     {
-        String[] keysArr = null;
-        String[] valuesArr = null;
+        String[] keysArr;
+        String[] valuesArr;
         try{
             keysArr = keys.split(", ");
             valuesArr = values.split(", ");
@@ -36,7 +36,7 @@ public class FirebaseWrapper {
                 params.putString(key, val);
             }
 
-            mFirebaseAnalytics.logEvent("share_image", params);
+            mFirebaseAnalytics.logEvent(name, null);
         }
         catch(PatternSyntaxException e){
             e.printStackTrace();

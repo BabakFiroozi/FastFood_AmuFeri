@@ -10,15 +10,16 @@
 #include "platform/android/jni/JniHelper.h"
 #include "jni.h"
 
-class Firebase
+class Analytics
 {
 public:
-    Firebase();
-    ~Firebase();
+    Analytics();
+    ~Analytics();
 
-    static Firebase& getInstance();
+    static Analytics& getInstance();
 
-    void logEvent(const char* keys, const char* values);
+    void logEvent(const char* name, const char* keys, const char* values);
+    void logEvent(const std::string& name);
 
 };
 
