@@ -534,6 +534,13 @@ void ShopScene::showTab(ShopTypes shopType)
 						auto infoImage = static_cast<ImageView*>(_shopInfoPage->getChildren().at(0)->getChildren().at(0));
 						infoImage->loadTexture(StringUtils::format("gui/shop/powerups/info_%d.png", itemNumber));
 						_shopInfoPage->setVisible(true);
+
+						std::string eventName = "";
+						if (powerupType == PowerupTypes::RichCustomer) eventName = "shop_power_rich_info";
+						if (powerupType == PowerupTypes::HeadLight) eventName = "shop_power_time_info";
+						if (powerupType == PowerupTypes::CaptainCook) eventName = "shop_power_masterchef_info";
+						if (powerupType == PowerupTypes::CookAssist) eventName = "shop_power_chefhelp_info";
+						Analytics::getInstance().logEvent(eventName);
 					}
 				});
 
