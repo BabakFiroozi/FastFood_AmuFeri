@@ -61,6 +61,8 @@ private:
 	void playCookSound();
 	void playHumanSound();
 
+	void showMessage(const std::string& msg);
+
 	cocos2d::Size _visibleSize;
 	cocos2d::Vect _visibleOrigin;
 
@@ -119,6 +121,8 @@ private:
 	int _playSoundCounter = -1;
 
 	bool _adTried = false;
+
+	cocos2d::ui::ImageView* _messagePopup = nullptr;
 };
 
 #endif //__GAMEPLAY_SCENE_H__

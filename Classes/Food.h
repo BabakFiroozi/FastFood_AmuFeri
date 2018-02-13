@@ -47,7 +47,7 @@ public:
 	int getCount() const;
 	int getInitCount() const;
 	void consume(int c);
-	int getPrice() const;
+	int getPrice(int count = 0) const;
 	int getHeight() const;
 	void charge(int c);
 

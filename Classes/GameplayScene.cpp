@@ -7,6 +7,7 @@
 #include "SimpleAudioEngine.h"
 #include "BazinamaAcLe.h"
 #include "Tapligh.h"
+#include "Analytics.h"
 
 
 USING_NS_CC;
@@ -169,6 +170,17 @@ bool GameplayScene::init(cocos2d::ValueMap& initData)
 	_pauseLayout->setVisible(false);
 	//
 
+
+	_messagePopup = ImageView::create("gui/shop/messagePopup.png");
+	addChild(_messagePopup, 100);
+	_messagePopup->setPosition(Vect(_visibleSize.width / 2, _visibleSize.height - _messagePopup->getContentSize().height / 2));
+	auto messageText = Text::create("", GameChoice::getInstance().getFontName(), 60);
+	_messagePopup->addChild(messageText);
+	messageText->setPosition(_messagePopup->getContentSize() / 2);
+	_messagePopup->setPositionY(_messagePopup->getPositionY() + 300);
+	messageText->setTextColor(Color4B::WHITE);
+	messageText->enableOutline(Color4B::GRAY, 3);
+
 	return true;
 }
 
@@ -315,6 +327,8 @@ void GameplayScene::cookAssistButtonCallback(cocos2d::Ref* sender, cocos2d::ui::
 			}, ++iter * .2f, "CookAssistFood" + StringUtils::toString(iter));
 		}	
 
+		Analytics::getInstance().logEvent("gameplay_power_chephelp");
+
 		Inventories::getInstance().decPowerup(PowerupTypes::CookAssist);
 		button->setVisible(false);
 	}
@@ -342,8 +356,14 @@ void GameplayScene::dishButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget
 		if (_forceTutDishButton != nullptr && _forceTutDishButton != button)
 			return;
 
+		std::string eventName = StringUtils::format("gameplay_slot_%d", _dishesVec.getIndex(button) + 1);
+		Analytics::getInstance().logEvent(eventName);
+
 		if (rightFood)
 		{
+			Analytics::getInstance().logEvent("gameplay_correct_slot");
+
+
 			auto food = FoodFactory::getInstance().getFood(needFood);
 			int foodCount = food->getCount();
 			if (foodCount <= 0)
@@ -390,6 +410,8 @@ void GameplayScene::dishButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget
 						_comboBar->getParent()->setVisible(true);
 						_comboBar->setPercent(100);
 						Inventories::getInstance().decPowerup(PowerupTypes::HeadLight);
+
+						Analytics::getInstance().logEvent("gameplay_power_time");
 					}
 				}
 			}
@@ -417,6 +439,9 @@ void GameplayScene::dishButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget
 		}
 		else//wrong food
 		{
+			Analytics::getInstance().logEvent("gameplay_wrong_slot");
+
+
 			playCookAnimation("loss", false);
 
 			if (!_isHeadLightActive)
@@ -615,6 +640,8 @@ void GameplayScene::createRecipeAndDishes()
 
 void GameplayScene::startGame()
 {
+	Analytics::getInstance().logEvent("pregmaeplay_start");
+
 	_clockTimer = _initClockTime;
 	if (!PlayerPrefs::getInstance().isTutorialFinished(1))
 		_clockTimer -= _initClockTime / 2;
@@ -657,6 +684,8 @@ void GameplayScene::update(float delta)
 		return;
 	}
 
+	_coinText->setString(StringUtils::format("%d*", GameUser::getInstance().getCoin()));
+
 	if (_gameStarted && !_isGameOver && _foodFinishedLayout == nullptr)
 	{
 		if (!_burgerIsPacking || _isHeadLightActive)
@@ -678,8 +707,6 @@ void GameplayScene::update(float delta)
 
 		float barPercent = _clockTimer / _initClockTime * 100;
 		_clockBar->setPercent(barPercent);
-
-		_coinText->setString(StringUtils::format("%d*", GameUser::getInstance().getCoin()));
 
 		if (_clockTimer <= 0)
 		{
@@ -723,6 +750,8 @@ void GameplayScene::gameOver()
 		adButton->addTouchEventListener([=](Ref* sender, Widget::TouchEventType eventType) {
 			if (eventType == Widget::TouchEventType::ENDED)
 			{
+				Analytics::getInstance().logEvent("gameplay_resume_video");
+
 				Tapligh::getInstance().showAd(Tapligh::UNIT_CODE_2);
 				_adLayout->setVisible(false);
                 _adTried = true;
@@ -745,6 +774,8 @@ void GameplayScene::gameOver()
         closeButton->addTouchEventListener([=](Ref* sender, Widget::TouchEventType eventType){
             if(eventType == Widget::TouchEventType::ENDED)
             {
+				Analytics::getInstance().logEvent("gameplay_resume_close");
+
                 _adTried = true;
                 _adLayout->removeFromParent();
                 _adLayout = nullptr;
@@ -794,6 +825,9 @@ void GameplayScene::packBurger(float dt)
 
 		if (Inventories::getInstance().hasPowerup(PowerupTypes::CaptainCook))
 		{
+			Analytics::getInstance().logEvent("gameplay_power_masterchef");
+
+
 			Inventories::getInstance().decPowerup(PowerupTypes::CaptainCook);
 			auto powerup = Inventories::getInstance().getPowerupByType(PowerupTypes::CaptainCook);
 			coin += random(powerup->getValue() / 2, powerup->getValue());
@@ -889,11 +923,15 @@ void GameplayScene::pauseButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widge
 
 		if (buttonName == "pause")
 		{
+			Analytics::getInstance().logEvent("gameplay_pause");
+
 			showPausePage(true, false);
 		}
 
 		if (buttonName == "shop")
 		{
+			Analytics::getInstance().logEvent("result_go_to_shop");
+
 			CocosDenshion::SimpleAudioEngine::getInstance()->stopBackgroundMusic();
 			Director::getInstance()->resume();
 			auto scene = TransitionFade::create(.5f, ShopScene::createSceneData(ShopTypes::Food));
@@ -902,6 +940,8 @@ void GameplayScene::pauseButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widge
 
 		if (buttonName == "retry")
 		{
+			Analytics::getInstance().logEvent("result_replay");
+
 			Director::getInstance()->resume();
 			auto scene = TransitionFade::create(.5f, GameplayScene::createSceneData(_sceneNumber));
 			Director::getInstance()->replaceScene(scene);
@@ -914,6 +954,8 @@ void GameplayScene::pauseButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widge
 
 		if (buttonName == "menu")
 		{
+			Analytics::getInstance().logEvent("result_go_to_menu");
+
 			CocosDenshion::SimpleAudioEngine::getInstance()->stopBackgroundMusic();
 			Director::getInstance()->resume();
 			auto scene = TransitionFade::create(.5f, MenuScene::createSceneData());
@@ -971,6 +1013,9 @@ void GameplayScene::showPausePage(bool show, bool gameOver)
 		Director::getInstance()->pause();
 	else
 		Director::getInstance()->resume();
+
+	if(gameOver)
+		Analytics::getInstance().logEvent("result_game_complete");
 }
 
 std::string GameplayScene::makeIconPath(const FoodTypes foodType, const std::string& iconPath, bool cond)
@@ -1055,6 +1100,8 @@ void GameplayScene::onFoodFinished(FoodTypes foodType)
 {
 	auto food = FoodFactory::getInstance().getFood(foodType);
 
+	Analytics::getInstance().logEvent("gameplay_popup_open");
+
 	_foodFinishedLayout = Layout::create();
 	_foodFinishedLayout->setContentSize(_visibleSize);
 	_foodFinishedLayout->setTouchEnabled(true);
@@ -1073,7 +1120,7 @@ void GameplayScene::onFoodFinished(FoodTypes foodType)
 	auto warning = ImageView::create("gui/gameover/warning.png");
 	popupBackg->addChild(warning);
 	Size backgSize = popupBackg->getContentSize();
-	warning->setPosition(Size(backgSize.width / 2, backgSize.height + 80));
+	warning->setPosition(Size(backgSize.width / 2, backgSize.height + 70));
 	warning->runAction(RepeatForever::create(Sequence::createWithTwoActions(ScaleTo::create(.2f, 1.1f), ScaleTo::create(.2f, 1.0f))));
 
 	auto foodImage = ImageView::create(food->getIconPath());
@@ -1095,6 +1142,8 @@ void GameplayScene::onFoodFinished(FoodTypes foodType)
 	message->setPosition(backgSize / 2 + Size(0, -20));
 	message->enableOutline(Color4B::GRAY, 2);
 
+	const int charge_count = 5;
+
 
 	auto button = Button::create("gui/shop/entrepot_add.png");
 	button->setScale(1.2f);
@@ -1103,15 +1152,27 @@ void GameplayScene::onFoodFinished(FoodTypes foodType)
 	button->addTouchEventListener([=](Ref* sender, Widget::TouchEventType eventType) {
 		if (eventType == Widget::TouchEventType::ENDED)
 		{
-			FoodFactory::getInstance().chargeFood(food->getType(), 5);
-			for (auto dish : _dishesVec)
+			int addPrice = food->getPrice(charge_count) * 2;
+			if (addPrice <= GameUser::getInstance().getCoin())
 			{
-				if ((FoodTypes)dish->getTag() == foodType)
+				Analytics::getInstance().logEvent("gameplay_popup_buy");
+
+				FoodFactory::getInstance().chargeFood(food->getType(), charge_count);
+				GameUser::getInstance().addCoin(-addPrice);
+				
+				for (auto dish : _dishesVec)
 				{
-					auto foodCountLabel = static_cast<Label*>(dish->getChildByName("FoodsCount"));
-					foodCountLabel->setString(StringUtils::toString(food->getCount()));
-					foodCountLabel->setTextColor(Color4B::ORANGE);
+					if ((FoodTypes)dish->getTag() == foodType)
+					{
+						auto foodCountLabel = static_cast<Label*>(dish->getChildByName("FoodsCount"));
+						foodCountLabel->setString(StringUtils::toString(food->getCount()));
+						foodCountLabel->setTextColor(Color4B::ORANGE);
+					}
 				}
+			}
+			else
+			{
+				showMessage(GameChoice::getInstance().getString("TEXT_NOT_ENOUGH_MONEY"));
 			}
 		}
 	});
@@ -1132,7 +1193,7 @@ void GameplayScene::onFoodFinished(FoodTypes foodType)
 	popupBackg->addChild(coin);
 	coin->setPosition(button->getPosition() + Size(60, 95));
 
-	auto price = Text::create(StringUtils::toString(food->getPrice()), fontName, fontSize);
+	auto price = Text::create(StringUtils::toString(food->getPrice(charge_count) * 2), fontName, fontSize);
 	coin->addChild(price);
 	price->setPosition(coin->getContentSize() / 2 + Size(-50, 15));
 	price->setTextHorizontalAlignment(TextHAlignment::RIGHT);
@@ -1146,6 +1207,8 @@ void GameplayScene::onFoodFinished(FoodTypes foodType)
 	close->addTouchEventListener([=](Ref* sender, Widget::TouchEventType eventType) {
 		if (eventType == Widget::TouchEventType::ENDED)
 		{
+			Analytics::getInstance().logEvent("gameplay_popup_close");
+
 			_foodFinishedLayout->removeFromParent();
 			_foodFinishedLayout = nullptr;
 		}
@@ -1198,6 +1261,8 @@ void GameplayScene::createAdjunct()
 	button->addTouchEventListener([=](Ref* sender, Widget::TouchEventType eventType) {
 		if (eventType == Widget::TouchEventType::BEGAN)
 		{
+			Analytics::getInstance().logEvent("gameplay_power_rich");
+
 			giveCoinWithEffect(worth * 5, button->getPosition(), .8f, true);
 			button->removeFromParent();
 		}
@@ -1252,7 +1317,10 @@ void GameplayScene::goTutorialStep()
 	{
 		_forceTutDishButton = nullptr;
 		PlayerPrefs::getInstance().finishTutrial(1);
+		Analytics::getInstance().logEvent("tutorial_part_1_finished");
 	}
+
+	Analytics::getInstance().logEvent(StringUtils::format("tutorial_part_1_step%d", _tutorialStep));
 
 	_hudLayout->removeChildByName("TutHand");
 
@@ -1485,4 +1553,25 @@ void GameplayScene::playHumanSound()
 			quoteSprite->runAction(Sequence::create(ScaleTo::create(.1f, 1), DelayTime::create(1.5f), RemoveSelf::create(), nullptr));
 		}
 	}
+}
+
+void GameplayScene::showMessage(const std::string& msg)
+{
+	if (_messagePopup == nullptr)
+		return;
+
+	const int actTag = 1020;
+	auto act = _messagePopup->getActionByTag(actTag);
+	if (act != nullptr && !act->isDone())
+		return;
+
+	auto text = static_cast<Text*>(_messagePopup->getChildren().at(0));
+	text->setString(msg);
+
+	auto seq = Sequence::create(
+		MoveBy::create(.5f, Vect(0, -300)),
+		DelayTime::create(1),
+		MoveBy::create(.5f, Vect(0, 300)), nullptr);
+	seq->setTag(actTag);
+	_messagePopup->runAction(seq);
 }

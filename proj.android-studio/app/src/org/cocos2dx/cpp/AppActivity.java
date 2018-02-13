@@ -52,7 +52,7 @@ public class AppActivity extends Cocos2dxActivity {
 
         TaplighWrapper.create(this, "Z3HZQDB9CEJGKGGBBBIGMO57MKEYDW");
 
-        FirebaseWrapper.create(this);
+        AnalyticsWrapper.create(this);
 
 //        OneSignal.startInit(this)
 //                .inFocusDisplaying(OneSignal.OSInFocusDisplayOption.Notification)

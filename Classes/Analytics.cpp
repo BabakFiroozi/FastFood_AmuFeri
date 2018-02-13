@@ -21,30 +21,29 @@ Analytics& Analytics::getInstance()
     return instance;
 }
 
-void Analytics::logEvent(const char *name, const char *keys, const char *values)
+void Analytics::logEvent(const char *name, const char *value)
 {
 #if(CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
 
     JniMethodInfo mInfo;
-    if (JniHelper::getStaticMethodInfo(mInfo, "org/cocos2dx/cpp/FirebaseWrapper", "logEvent", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V"))
+    if (JniHelper::getStaticMethodInfo(mInfo, "org/cocos2dx/cpp/AnalyticsWrapper", "logEvent", "(Ljava/lang/String;Ljava/lang/String;)V"))
     {
         jstring name_ = mInfo.env->NewStringUTF(name);
-        jstring keys_ = mInfo.env->NewStringUTF(keys);
-        jstring values_ = mInfo.env->NewStringUTF(values);
+        jstring value_ = mInfo.env->NewStringUTF(value);
 
-        mInfo.env->CallStaticVoidMethod(mInfo.classID, mInfo.methodID, name_, keys_, values_);
+        mInfo.env->CallStaticVoidMethod(mInfo.classID, mInfo.methodID, name_, value_);
         mInfo.env->DeleteLocalRef(name_);
-        mInfo.env->DeleteLocalRef(keys_);
-        mInfo.env->DeleteLocalRef(values_);
+        mInfo.env->DeleteLocalRef(value_);
         mInfo.env->DeleteLocalRef(mInfo.classID);
     }
 
 #endif
 }
 
-void Analytics::logEvent(const std::string& name) {
+void Analytics::logEvent(const std::string& name, const std::string& val) {
 
-    logEvent(name.c_str(), "", "");
+    std::string eventName = "Game:Info:" + name;
+    logEvent(eventName.c_str(), val.c_str());
 }
 
 

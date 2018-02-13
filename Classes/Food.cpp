@@ -61,9 +61,12 @@ int Food::getInitCount() const
 	return _initCount;
 }
 
-int Food::getPrice() const
+int Food::getPrice(int count) const
 {
-	return _price;
+	if (count == 0)
+		return _price;
+	else
+		return _price / _initCount * count;
 }
 
 int Food::getHeight() const

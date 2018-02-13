@@ -191,9 +191,9 @@ bool StandbyLayout::init(ValueMap& initData)
 			countText->enableOutline(Color4B::GRAY);
 			countText->setTextColor(Color4B::YELLOW);
 
-			auto nameText = Text::create(food->getName(), GameChoice::getInstance().getFontName(), 30);
+			auto nameText = Text::create(food->getName(), GameChoice::getInstance().getFontName(), 40);
 			backg->addChild(nameText);
-			nameText->setPosition(foodImage->getPosition() + Vect(0, 60));
+			nameText->setPosition(foodImage->getPosition() + Vect(0, 65));
 			nameText->enableOutline(Color4B::GRAY);
 		}
 	}
@@ -210,6 +210,7 @@ bool StandbyLayout::init(ValueMap& initData)
 
 	if (_pagesVec.size() > 1)
 	{
+		readyButton->setVisible(false);
 		auto nextButton = Button::create("gui/nextButton.png");
 		addChild(nextButton);
 		nextButton->setPosition(getContentSize() / 2 + Size(0, -380));

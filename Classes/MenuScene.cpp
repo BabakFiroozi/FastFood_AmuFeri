@@ -229,20 +229,28 @@ void MenuScene::buttonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget::TouchE
 	{
 		if (sender == _shopButton)
 		{
+			Analytics::getInstance().logEvent("menu_shop");
+
 			auto scene = TransitionSlideInR::create(.5f, ShopScene::createSceneData(ShopTypes::Food));
 			Director::getInstance()->replaceScene(scene);
 			PlayerPrefs::getInstance().finishTutrial(2);
+
+			Analytics::getInstance().logEvent("tutorial_part_2_finished");
 		}
 		if (PlayerPrefs::getInstance().isTutorialFinished(1) && !PlayerPrefs::getInstance().isTutorialFinished(2))
 			return;
 
 		if (sender == _playButton)
 		{
+			Analytics::getInstance().logEvent("menu_play");
+
 			auto scene = TransitionFade::create(1, GameplayScene::createSceneData(1));
 			Director::getInstance()->replaceScene(scene);
 		}
 		if (sender == _exitButton)
 		{
+			Analytics::getInstance().logEvent("menu_exit");
+
 			Director::getInstance()->end();
 		}
 		if (sender == _leaderboardButton)
@@ -252,17 +260,20 @@ void MenuScene::buttonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget::TouchE
 		}
 		if (sender == _settingButton)
 		{
+			Analytics::getInstance().logEvent("menu_setting");
+
 			const int actionTag = 1001;
 			auto act = _settingButton->getActionByTag(actionTag);
 			if (act == nullptr || act->isDone())
 			{
-				if (!_settingLayout->isVisible())
+				if (!_settingLayout->isVisible())//show
 				{
 					act = RotateBy::create(.5f, 180);
 					act->setTag(actionTag);
 					_settingButton->runAction(act);
 					_settingLayout->setVisible(true);
 					_settingLayout->runAction(MoveBy::create(.5f, Vect(0, 600)));
+					Analytics::getInstance().logEvent("setting_info_open");
 				}
 				else
 				{
@@ -285,6 +296,10 @@ void MenuScene::buttonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget::TouchE
 			CocosDenshion::SimpleAudioEngine::getInstance()->setBackgroundMusicVolume(on ? GameChoice::getInstance().getMusicVolume() : 0);
 			CocosDenshion::SimpleAudioEngine::getInstance()->setEffectsVolume(on ? GameChoice::getInstance().getEffectVolume() : 0);
 			
+			if (on)
+				Analytics::getInstance().logEvent("setting_music_on");
+			else
+				Analytics::getInstance().logEvent("setting_music_off");
 		}
 		if (node == _settingLayout->getChildByName("info"))
 		{
@@ -295,6 +310,7 @@ void MenuScene::buttonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget::TouchE
 		{
 			auto creditsPopup = _background->getChildByName("CreditsPopup");
 			creditsPopup->setVisible(true);
+			Analytics::getInstance().logEvent("setting_creators");
 		}
 	}
 }

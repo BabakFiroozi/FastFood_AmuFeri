@@ -18,8 +18,8 @@ public:
 
     static Analytics& getInstance();
 
-    void logEvent(const char* name, const char* keys, const char* values);
-    void logEvent(const std::string& name);
+    void logEvent(const char* name, const char* value);
+    void logEvent(const std::string& name, const std::string& val = "");
 
 };
 

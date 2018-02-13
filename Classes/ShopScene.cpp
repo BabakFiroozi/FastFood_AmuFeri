@@ -9,6 +9,7 @@
 #include "SimpleAudioEngine.h"
 #include "InAppBilling.h"
 #include "Tapligh.h"
+#include "Analytics.h"
 
 
 USING_NS_CC;
@@ -205,6 +206,7 @@ void ShopScene::buttonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget::TouchE
 	{
 		if (sender == _backButton)
 		{
+			std::string eventName = StringUtils::format("shop_back");
 			auto scene = TransitionSlideInL::create(.5f, MenuScene::createSceneData());
 			Director::getInstance()->replaceScene(scene);
 		}
@@ -577,6 +579,25 @@ void ShopScene::buyButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget::Tou
 				updateListScrollPos();
 				showTab(ShopTypes::Food);
 				GameUser::getInstance().addCoin(-price);
+
+				std::string eventName = "";
+				if (foodType == FoodTypes::Bread) eventName = "shop_food_bread";
+				if (foodType == FoodTypes::SauceRed) eventName = "shop_food_ketchup";
+				if (foodType == FoodTypes::SauceWhite) eventName = "shop_food_whitesauce";
+				if (foodType == FoodTypes::Meat) eventName = "shop_food_meat";
+				if (foodType == FoodTypes::Cucumber_Salty) eventName = "shop_food_pickles";
+				if (foodType == FoodTypes::Onion) eventName = "shop_food_onion";
+				if (foodType == FoodTypes::Steak) eventName = "shop_food_steak";
+				if (foodType == FoodTypes::Lettuce) eventName = "shop_food_lettuce";
+				if (foodType == FoodTypes::CheeseGoda) eventName = "shop_food_gouda";
+				if (foodType == FoodTypes::FishFillet) eventName = "shop_food_fish";
+				if (foodType == FoodTypes::Tomato) eventName = "shop_food_tomato";
+				if (foodType == FoodTypes::Ham_Meat) eventName = "shop_food_ham";
+				if (foodType == FoodTypes::Tomato) eventName = "shop_food_tomato";
+				if (foodType == FoodTypes::Egg_Half) eventName = "shop_food_egg";
+				if (foodType == FoodTypes::Cucumber) eventName = "shop_food_cucumber";
+				if (foodType == FoodTypes::Parsley) eventName = "shop_food_parsley";
+				Analytics::getInstance().logEvent(eventName);
 			}
 			else
 			{
@@ -597,6 +618,12 @@ void ShopScene::buyButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget::Tou
 				GameUser::getInstance().setCurrentKitchen(kitchenType);
 				updateListScrollPos();
 				showTab(ShopTypes::Kitchen);
+
+				std::string eventName = "";
+				if (kitchenType == KitchenTypes::Kitchen_1) eventName = "shop_store_1";
+				if (kitchenType == KitchenTypes::Kitchen_2) eventName = "shop_store_2";
+				if (kitchenType == KitchenTypes::Kitchen_3) eventName = "shop_store_3";
+				Analytics::getInstance().logEvent(eventName);
 			}
 			else
 			{
@@ -615,6 +642,13 @@ void ShopScene::buyButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget::Tou
 				updateListScrollPos();
 				showTab(ShopTypes::Powerup);
 				GameUser::getInstance().addCoin(-price);
+
+				std::string eventName = "";
+				if (powerupType == PowerupTypes::RichCustomer) eventName = "shop_power_rich_buy";
+				if (powerupType == PowerupTypes::HeadLight) eventName = "shop_power_time_buy";
+				if (powerupType == PowerupTypes::CaptainCook) eventName = "shop_power_masterchef_buy";
+				if (powerupType == PowerupTypes::CookAssist) eventName = "shop_power_chefhelp_buy";
+				Analytics::getInstance().logEvent(eventName);
 			}
 			else
 			{
@@ -630,12 +664,17 @@ void ShopScene::buyButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget::Tou
 				std::string skuName = StringUtils::format("CoinPack_%d",  shopData.itemNumber + 1);
 				int orderId = random(1, 100000);
 				InAppBilling::getInstance().launchPurchaseFlow(skuName.c_str(), orderId);
+
+				std::string eventName = StringUtils::format("shop_money_%d", shopData.itemNumber + 1);
+				Analytics::getInstance().logEvent(eventName);
 			}
 			else
 			{
 				if (shopData.itemNumber == 6) //tapligh
 				{
 					Tapligh::getInstance().showAd(Tapligh::UNIT_CODE_2);
+
+					Analytics::getInstance().logEvent("gameplay_resume_videoback");
 				}
 				if (shopData.itemNumber == 7) //telegram
 				{
@@ -646,6 +685,7 @@ void ShopScene::buyButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget::Tou
 						PlayerPrefs::getInstance().joinTelegram();
 					}
 
+					Analytics::getInstance().logEvent("shop_money_telegram");
 				}
 				if (shopData.itemNumber == 8) //instageram
 				{
@@ -655,9 +695,12 @@ void ShopScene::buyButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget::Tou
 						GameUser::getInstance().addCoin(GameChoice::getInstance().getInstageramReaward());
 						PlayerPrefs::getInstance().followInstageram();
 					}
+
+					Analytics::getInstance().logEvent("shop_money_instagram");
 				}
 			}
 		}
+
 
 		updateCoinsText();
 	}
