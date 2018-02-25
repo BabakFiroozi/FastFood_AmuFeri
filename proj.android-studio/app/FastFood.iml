@@ -391,18 +391,41 @@
     </content>
     <orderEntry type="jdk" jdkName="Android API 26 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" name="com.google.android.gms:play-services-basement-10.2.1" level="project" />
-    <orderEntry type="library" exported="" name="com.android.support:support-v4-24.0.0" level="project" />
     <orderEntry type="library" exported="" name="__local_jars__:H.\MyJobProjects\FastFood\FastFood_cocos\proj.android-studio\app\libs\Tapligh-library-V215.jar:unspecified@jar" level="project" />
+    <orderEntry type="library" exported="" name="com.android.support:support-media-compat-26.1.0" level="project" />
     <orderEntry type="library" exported="" name="__local_jars__:H.\MyJobProjects\FastFood\FastFood_cocos\proj.android-studio\app\libs\gameanalytics.jar:unspecified@jar" level="project" />
-    <orderEntry type="library" exported="" name="com.google.android.gms:play-services-tasks-10.2.1" level="project" />
-    <orderEntry type="library" exported="" name="com.android.support:support-annotations:24.0.0@jar" level="project" />
-    <orderEntry type="library" exported="" name="com.google.firebase:firebase-common-10.2.1" level="project" />
-    <orderEntry type="library" exported="" name="com.google.firebase:firebase-analytics-impl-10.2.1" level="project" />
-    <orderEntry type="library" exported="" name="com.google.firebase:firebase-core-10.2.1" level="project" />
-    <orderEntry type="library" exported="" name="com.google.firebase:firebase-iid-10.2.1" level="project" />
-    <orderEntry type="library" exported="" name="com.google.firebase:firebase-analytics-10.2.1" level="project" />
-    <orderEntry type="library" exported="" name="com.google.android.gms:play-services-base-10.2.1" level="project" />
+    <orderEntry type="library" exported="" name="com.google.firebase:firebase-iid-11.8.0" level="project" />
+    <orderEntry type="library" exported="" name="com.google.android.gms:play-services-gcm-license-11.8.0" level="project" />
+    <orderEntry type="library" exported="" name="com.google.firebase:firebase-iid-license-11.8.0" level="project" />
+    <orderEntry type="library" exported="" name="android.arch.lifecycle:common:1.0.0@jar" level="project" />
+    <orderEntry type="library" exported="" name="com.google.android.gms:play-services-base-license-11.8.0" level="project" />
+    <orderEntry type="library" exported="" name="com.android.support:support-fragment-26.1.0" level="project" />
+    <orderEntry type="library" exported="" name="android.arch.lifecycle:runtime-1.0.0" level="project" />
+    <orderEntry type="library" exported="" name="com.google.android.gms:play-services-basement-license-11.8.0" level="project" />
+    <orderEntry type="library" exported="" name="com.google.android.gms:play-services-iid-11.8.0" level="project" />
+    <orderEntry type="library" exported="" name="com.android.support:support-annotations:26.1.0@jar" level="project" />
+    <orderEntry type="library" exported="" name="com.android.support:support-core-utils-26.1.0" level="project" />
+    <orderEntry type="library" exported="" name="com.google.firebase:firebase-analytics-11.8.0" level="project" />
+    <orderEntry type="library" exported="" name="com.android.support:support-core-ui-26.1.0" level="project" />
+    <orderEntry type="library" exported="" name="com.google.android.gms:play-services-iid-license-11.8.0" level="project" />
+    <orderEntry type="library" exported="" name="com.android.support:support-compat-26.1.0" level="project" />
+    <orderEntry type="library" exported="" name="com.google.android.gms:play-services-basement-11.8.0" level="project" />
+    <orderEntry type="library" exported="" name="android.arch.core:common:1.0.0@jar" level="project" />
+    <orderEntry type="library" exported="" name="com.google.firebase:firebase-common-11.8.0" level="project" />
+    <orderEntry type="library" exported="" name="com.android.support:customtabs-26.1.0" level="project" />
+    <orderEntry type="library" exported="" name="com.google.android.gms:play-services-tasks-11.8.0" level="project" />
+    <orderEntry type="library" exported="" name="com.google.firebase:firebase-common-license-11.8.0" level="project" />
+    <orderEntry type="library" exported="" name="com.google.firebase:firebase-core-11.8.0" level="project" />
+    <orderEntry type="library" exported="" name="com.android.support:support-v4-26.1.0" level="project" />
+    <orderEntry type="library" exported="" name="com.google.android.gms:play-services-location-license-11.8.0" level="project" />
+    <orderEntry type="library" exported="" name="com.google.android.gms:play-services-location-11.8.0" level="project" />
+    <orderEntry type="library" exported="" name="com.google.android.gms:play-services-gcm-11.8.0" level="project" />
+    <orderEntry type="library" exported="" name="com.google.android.gms:play-services-base-11.8.0" level="project" />
+    <orderEntry type="library" exported="" name="com.google.firebase:firebase-analytics-license-11.8.0" level="project" />
+    <orderEntry type="library" exported="" name="com.onesignal:OneSignal-3.8.1" level="project" />
+    <orderEntry type="library" exported="" name="com.google.firebase:firebase-analytics-impl-11.8.0" level="project" />
+    <orderEntry type="library" exported="" name="com.google.firebase:firebase-analytics-impl-license-11.8.0" level="project" />
+    <orderEntry type="library" exported="" name="com.google.android.gms:play-services-tasks-license-11.8.0" level="project" />
     <orderEntry type="module" module-name="libcocos2dx" exported="" />
   </component>
 </module>
