@@ -316,7 +316,7 @@ public class IabHelper {
             }
         };
 
-        // change intent action name and package name with com.yaramobile.bazinamastore
+        // change intent action name and package name for any store you want
         Intent serviceIntent = null;
 
         if(StoreName == StoreNames.Bazaar)
@@ -331,10 +331,14 @@ public class IabHelper {
         }
         if(StoreName == StoreNames.Myket)
         {
-            serviceIntent = new Intent("com.yaramobile.bazinamastore.billing.InAppBillingService.BIND");
-            serviceIntent.setPackage("com.yaramobile.bazinamastore");
+            serviceIntent = new Intent("ir.mservices.market.InAppBillingService.BIND");
+            serviceIntent.setPackage("ir.mservices.market");
         }
-
+        if(StoreName == StoreNames.IranApps)
+        {
+            serviceIntent = new Intent("ir.tgbs.iranapps.billing.InAppBillingService.BIND");
+            serviceIntent.setPackage("ir.tgbs.android.iranapp");
+        }
 
 
         List<ResolveInfo> intentServices = mContext.getPackageManager()

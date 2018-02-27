@@ -26,7 +26,7 @@ void BazinamaAcLe::getUserAchievements(const char* pkgName)
 #if(CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
 
 	JniMethodInfo mInfo;
-	if (JniHelper::getStaticMethodInfo(mInfo, "org/cocos2dx/cpp/BazinamaAcLeWrapper", "getUserAchievements", "(Ljava/lang/String;)V"))
+	if (JniHelper::getStaticMethodInfo(mInfo, "org/cocos2dx/cpp/InAppBillingWrapper", "getUserAchievements", "(Ljava/lang/String;)V"))
 	{
 		jstring pkgName_ = mInfo.env->NewStringUTF(pkgName);
 
@@ -43,7 +43,7 @@ void BazinamaAcLe::unlockUserAchievements(const char* pkgName, const char* achie
 #if(CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
 
 	JniMethodInfo mInfo;
-	if (JniHelper::getStaticMethodInfo(mInfo, "org/cocos2dx/cpp/BazinamaAcLeWrapper", "unlockUserAchievement", "(Ljava/lang/String;Ljava/lang/String;)V"))
+	if (JniHelper::getStaticMethodInfo(mInfo, "org/cocos2dx/cpp/InAppBillingWrapper", "unlockUserAchievement", "(Ljava/lang/String;Ljava/lang/String;)V"))
 	{
 		jstring pkgName_ = mInfo.env->NewStringUTF(pkgName);
 		jstring achievementId_ = mInfo.env->NewStringUTF(achievementId);
@@ -62,7 +62,7 @@ void BazinamaAcLe::incrementAchievement(const char* pkgName, const char* achieve
 #if(CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
 
 	JniMethodInfo mInfo;
-	if (JniHelper::getStaticMethodInfo(mInfo, "org/cocos2dx/cpp/BazinamaAcLeWrapper", "incrementAchievement", "(Ljava/lang/String;Ljava/lang/String;I)V"))
+	if (JniHelper::getStaticMethodInfo(mInfo, "org/cocos2dx/cpp/InAppBillingWrapper", "incrementAchievement", "(Ljava/lang/String;Ljava/lang/String;I)V"))
 	{
 		jstring pkgName_ = mInfo.env->NewStringUTF(pkgName);
 		jstring achievementId_ = mInfo.env->NewStringUTF(achievementId);
@@ -82,11 +82,11 @@ void BazinamaAcLe::submitScore(const char* pkgName, const char* scoreId, int sco
 #if(CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
 
 	JniMethodInfo mInfo;
-	if (JniHelper::getStaticMethodInfo(mInfo, "org/cocos2dx/cpp/BazinamaAcLeWrapper", "submitScore", "(Ljava/lang/String;Ljava/lang/String;I)V"))
+	if (JniHelper::getStaticMethodInfo(mInfo, "org/cocos2dx/cpp/InAppBillingWrapper", "submitScore", "(Ljava/lang/String;Ljava/lang/String;I)V"))
 	{
 		jstring pkgName_ = mInfo.env->NewStringUTF(pkgName);
 		jstring scoreId_ = mInfo.env->NewStringUTF(scoreId);
-		jint scoreValue_ = scoreValue;
+		jint scoreValue_ = (jint)scoreValue;
 
 		mInfo.env->CallStaticVoidMethod(mInfo.classID, mInfo.methodID, pkgName_, scoreId_, scoreValue_);
 		mInfo.env->DeleteLocalRef(pkgName_);
@@ -102,7 +102,7 @@ void BazinamaAcLe::openLeaderBoard(const char* pkgName, const char* scoreId, con
 #if(CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
 
 	JniMethodInfo mInfo;
-	if (JniHelper::getStaticMethodInfo(mInfo, "org/cocos2dx/cpp/BazinamaAcLeWrapper", "openLeaderBoard", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V"))
+	if (JniHelper::getStaticMethodInfo(mInfo, "org/cocos2dx/cpp/InAppBillingWrapper", "openLeaderBoard", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V"))
 	{
 		jstring pkgName_ = mInfo.env->NewStringUTF(pkgName);
 		jstring scoreId_ = mInfo.env->NewStringUTF(scoreId);

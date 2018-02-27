@@ -787,6 +787,8 @@ void GameplayScene::gameOver()
 
 	_isGameOver = true;
 	showPausePage(true, true);
+
+    BazinamaAcLe::getInstance().submitScore("com.ferferegame.amuferi", "16", _burgersCount);
 }
 
 void GameplayScene::packBurger(float dt)
@@ -895,9 +897,6 @@ void GameplayScene::packBurger(float dt)
 			if (_clockDecerementRate > 1.5f)
 				_clockDecerementRate = 1.5f;
 		}
-
-		BazinamaAcLe::getInstance().submitScore("packageName", "scoreId", _burgersCount);
-		BazinamaAcLe::getInstance().submitScore("packageName", "scoreId", PlayerPrefs::getInstance().getSandwitchTotal());
 	}
 
 	return;
@@ -956,7 +955,11 @@ void GameplayScene::pauseButtonCallback(cocos2d::Ref* sender, cocos2d::ui::Widge
 		{
 			Analytics::getInstance().logEvent("result_go_to_menu");
 
-			CocosDenshion::SimpleAudioEngine::getInstance()->stopBackgroundMusic();
+            if(_isGameOver)
+                BazinamaAcLe::getInstance().submitScore("com.ferferegame.amuferi", "17", PlayerPrefs::getInstance().getSandwitchTotal());
+
+
+            CocosDenshion::SimpleAudioEngine::getInstance()->stopBackgroundMusic();
 			Director::getInstance()->resume();
 			auto scene = TransitionFade::create(.5f, MenuScene::createSceneData());
 			Director::getInstance()->replaceScene(scene);

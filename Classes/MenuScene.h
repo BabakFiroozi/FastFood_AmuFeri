@@ -32,10 +32,10 @@ private:
 	cocos2d::Size _visibleSize;
 
 	cocos2d::ui::Button* _playButton;
-	cocos2d::ui::Button* _soundButton;
 	cocos2d::ui::Button* _settingButton;
 	cocos2d::ui::Button* _exitButton;
 	cocos2d::ui::Button* _leaderboardButton;
+	cocos2d::ui::Button* _leaderboardButton2;
 
 	cocos2d::ui::Button* _shopButton;
 

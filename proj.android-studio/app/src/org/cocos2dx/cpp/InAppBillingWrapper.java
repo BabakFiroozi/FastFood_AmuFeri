@@ -6,6 +6,7 @@ import com.example.android.trivialdrivesample.util.IabResult;
 import com.example.android.trivialdrivesample.util.Purchase;
 
 import android.app.AlertDialog;
+import android.os.RemoteException;
 import android.util.Log;
 
 public class InAppBillingWrapper {
@@ -45,9 +46,19 @@ public class InAppBillingWrapper {
 	
 	public static void startSetup()
 	{
-		String base64EncodedPublicKey = "MIHNMA0GCSqGSIb3DQEBAQUAA4G7ADCBtwKBrwDU8L4rPgshDKNDmivKyA0hcTlKQ+UYvHAK4TQljTofR+KgIVa7tml7Zx1d1DANjFBYSvrZGgJuCCb2j5jER/LLd9u9GcOm50/DzJZxvwhKkYSi/syDGL58WjPbpkcaWx5YEajHrMDT8wJs9DyXQYawtBvTKgTmzkaH4u8m0fRuCdfL0swVPx5XExWTmF8XpNnOYY+6P5f43xpdA4xVeSjCTT631VDZy1n4D9mytscCAwEAAQ==";
 
-		IabHelper.StoreName = IabHelper.StoreNames.Bazaar;
+        IabHelper.StoreName = IabHelper.StoreNames.IranApps;
+
+        //cafebazar
+        //String base64EncodedPublicKey = "MIHNMA0GCSqGSIb3DQEBAQUAA4G7ADCBtwKBrwDU8L4rPgshDKNDmivKyA0hcTlKQ+UYvHAK4TQljTofR+KgIVa7tml7Zx1d1DANjFBYSvrZGgJuCCb2j5jER/LLd9u9GcOm50/DzJZxvwhKkYSi/syDGL58WjPbpkcaWx5YEajHrMDT8wJs9DyXQYawtBvTKgTmzkaH4u8m0fRuCdfL0swVPx5XExWTmF8XpNnOYY+6P5f43xpdA4xVeSjCTT631VDZy1n4D9mytscCAwEAAQ==";
+
+        //bazinama
+        String base64EncodedPublicKey = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC41J6c/nPGD1woc4Uy3SQsZd4DmgobhpUeH55Jq6UqOytja/rstV0AMBv3ci8T8jYQLXI8ncdVdgPHmuuy03txHu4fQdk6oNRSE2sss6FHc1p1dI/OH/dad+ZoWf9JT3RWLQDqjhmg8isQ0Gc3KWhnkUlXpqAznLRKpR3iG+vqmQIDAQAB";
+
+        //myket
+        //String base64EncodedPublicKey = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC41J6c/nPGD1woc4Uy3SQsZd4DmgobhpUeH55Jq6UqOytja/rstV0AMBv3ci8T8jYQLXI8ncdVdgPHmuuy03txHu4fQdk6oNRSE2sss6FHc1p1dI/OH/dad+ZoWf9JT3RWLQDqjhmg8isQ0Gc3KWhnkUlXpqAznLRKpR3iG+vqmQIDAQAB";
+
+
         mHelper = new IabHelper(_activity, base64EncodedPublicKey);
 
         // enable debug logging (for a production application, you should set this to false).
@@ -69,7 +80,6 @@ public class InAppBillingWrapper {
                 // Have we been disposed of in the meantime? If so, quit.
                 if (mHelper == null) return;
 
-				BazinamaAcLeWrapper.setIabHelper(mHelper);
 
                 // IAB is fully set up. Now, let's get an inventory of stuff we own.
                 Log.d(TAG, "Setup successful. Querying inventory.");
@@ -146,6 +156,75 @@ public class InAppBillingWrapper {
             
             Log.d(TAG, "End consumption flow.");
         }
-    }; 
+    };
 
+
+    //Bazinama...........
+    public static String getUserAchievements(String packageName)
+    {
+        if(mHelper.StoreName != IabHelper.StoreNames.Bazinama)
+            return "";
+
+        String userAchievements = "";
+		try {
+			userAchievements = mHelper.getUserAchievements(packageName);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        //message to cpp
+        return userAchievements;
+    }
+
+    public static String unlockUserAchievement(String packageName, String achievementId)
+    {
+        if(mHelper.StoreName != IabHelper.StoreNames.Bazinama)
+            return "";
+
+        String userAchievement = "";
+        userAchievement = mHelper.unlockUserAchievement(packageName, achievementId);
+        //message to cpp
+        return userAchievement;
+    }
+
+    public static void incrementAchievement(String packageName, String achievementId, int step)
+    {
+        if(mHelper.StoreName != IabHelper.StoreNames.Bazinama)
+            return;
+
+        mHelper.incrementAchievement(packageName, achievementId, step);
+
+        //message to cpp
+    }
+
+    public static void submitScore(String packageName, String scoreId, int scoreValue)
+    {
+        if(mHelper.StoreName != IabHelper.StoreNames.Bazinama)
+            return;
+
+        try{
+            mHelper.submitScore(packageName, scoreId, scoreValue);
+        }
+        catch(RemoteException e){
+            e.printStackTrace();
+        }
+
+        //message to cpp
+    }
+
+    public static void openLeaderBoard(String packageName, String scoreId, String timeScope)
+    {
+        if(mHelper.StoreName != IabHelper.StoreNames.Bazinama)
+            return;
+
+        try{
+            mHelper.openLeaderBoard(packageName, scoreId, timeScope);
+        }
+        catch(RemoteException e){
+            e.printStackTrace();
+        }
+
+        //message to cpp
+    }
+    //Bazinama...........
 }

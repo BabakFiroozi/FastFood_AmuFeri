@@ -84,9 +84,15 @@ bool MenuScene::init(ValueMap& initData)
 
 	_leaderboardButton = Button::create("gui/menu/leaderboardButton.png");
 	_background->addChild(_leaderboardButton);
-	_leaderboardButton->setPosition(Vect(backgSize.width / 2, _leaderboardButton->getContentSize().height / 2));
+	_leaderboardButton->setPosition(Vect(backgSize.width / 2 - _leaderboardButton->getContentSize().width / 2, _leaderboardButton->getContentSize().height / 2));
 	_leaderboardButton->addTouchEventListener(CC_CALLBACK_2(MenuScene::buttonCallback, this));
 	_leaderboardButton->setVisible(false);
+
+	_leaderboardButton2 = Button::create("gui/menu/leaderboardButton2.png");
+	_background->addChild(_leaderboardButton2);
+	_leaderboardButton2->setPosition(Vect(backgSize.width / 2 + _leaderboardButton2->getContentSize().width / 2, _leaderboardButton2->getContentSize().height / 2));
+	_leaderboardButton2->addTouchEventListener(CC_CALLBACK_2(MenuScene::buttonCallback, this));
+	_leaderboardButton2->setVisible(false);
 
 	_settingButton = Button::create("gui/menu/settingButton.png");
 	_background->addChild(_settingButton, 2);
@@ -256,7 +262,12 @@ void MenuScene::buttonCallback(cocos2d::Ref* sender, cocos2d::ui::Widget::TouchE
 		if (sender == _leaderboardButton)
 		{
 			//show leaderboard
-			BazinamaAcLe::getInstance().openLeaderBoard("pkgName", "scoeId", "timeScope");
+			BazinamaAcLe::getInstance().openLeaderBoard("com.ferferegame.amuferi", "16", "ALL");
+		}
+		if (sender == _leaderboardButton2)
+		{
+			//show leaderboard
+			BazinamaAcLe::getInstance().openLeaderBoard("com.ferferegame.amuferi", "17", "ALL");
 		}
 		if (sender == _settingButton)
 		{
