@@ -72,7 +72,8 @@ bool ShopScene::init(ValueMap& initData)
 	{
 		auto tabButton = RadioButton::create("gui/shop/tabButton.png", "gui/shop/tabButtonSel.png");
 		tabButtonGroup->addRadioButton(tabButton);
-		tabButton->setPosition(Vect(125 + i * 164, shopBackg->getContentSize().height + tabButton->getContentSize().height / 2));
+		//tabButton->setPosition(Vect(125 + i * 164, shopBackg->getContentSize().height + tabButton->getContentSize().height / 2));
+        tabButton->setPosition(Vect(tabButton->getContentSize().width / 2 + 125 + i * 164, shopBackg->getContentSize().height + tabButton->getContentSize().height / 2)); //bazik
 		shopBackg->addChild(tabButton);
 
 		auto ShopIcon = ImageView::create(StringUtils::format("gui/shop/shop__%d.png", i + 1));
@@ -86,6 +87,7 @@ bool ShopScene::init(ValueMap& initData)
 		if (i == 1) tabButton->setName("kitchen");
 		if (i == 2) tabButton->setName("powerup");
 		if (i == 3) tabButton->setName("coin");
+        if (i == 3) tabButton->setVisible(false);//bazik
 	}
 	tabButtonGroup->setSelectedButton(0);
 
@@ -561,6 +563,8 @@ void ShopScene::showTab(ShopTypes shopType)
 					buyText->setString(shopName);
 					nameText->setVisible(false);
 				}
+
+                shopLayout->setVisible(false);
 			}
 
 			_shopDataMap[buyButton] = ShopData(shopType, itemNumber - 1, shopPrice);

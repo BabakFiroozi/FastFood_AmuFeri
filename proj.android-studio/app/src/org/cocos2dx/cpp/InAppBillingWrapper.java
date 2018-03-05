@@ -47,7 +47,9 @@ public class InAppBillingWrapper {
 	public static void startSetup()
 	{
 
-        IabHelper.StoreName = IabHelper.StoreNames.IranApps;
+        IabHelper.StoreName = IabHelper.StoreNames.Bazik;
+        if(IabHelper.StoreName == IabHelper.StoreNames.Bazik)
+            return;
 
         //cafebazar
         //String base64EncodedPublicKey = "MIHNMA0GCSqGSIb3DQEBAQUAA4G7ADCBtwKBrwDU8L4rPgshDKNDmivKyA0hcTlKQ+UYvHAK4TQljTofR+KgIVa7tml7Zx1d1DANjFBYSvrZGgJuCCb2j5jER/LLd9u9GcOm50/DzJZxvwhKkYSi/syDGL58WjPbpkcaWx5YEajHrMDT8wJs9DyXQYawtBvTKgTmzkaH4u8m0fRuCdfL0swVPx5XExWTmF8XpNnOYY+6P5f43xpdA4xVeSjCTT631VDZy1n4D9mytscCAwEAAQ==";

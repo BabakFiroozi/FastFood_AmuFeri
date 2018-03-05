@@ -34,6 +34,9 @@ public:
 		_coin += c;
 		if (_coin > Max_Coin)
 			_coin = Max_Coin;
+
+		if(_coin <= 0)
+			_coin = 1000;
 	}
 
 	const std::string& getName() const
