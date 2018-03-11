@@ -269,7 +269,7 @@ void GameplayScene::createHud()
 	auto comboBarBack = ImageView::create("dishes/comboBar_frame.png");
 	comboBarBack->setAnchorPoint(Point(0, .5f));
 	_hudLayout->addChild(comboBarBack);
-	comboBarBack->setPosition(clockBack->getPosition() + Vect(52, 50));
+	comboBarBack->setPosition(clockBack->getPosition() + Vect(-comboBarBack->getContentSize().width / 2 + 30, 50));
 
 	_comboBar = LoadingBar::create("dishes/comboBar_bar.png", 50);
 	comboBarBack->addChild(_comboBar);
@@ -658,7 +658,7 @@ void GameplayScene::startGame()
 		_adTried = false;
 	});
 	Tapligh::getInstance().setOnAdResultFuncCallback([=](int result, const std::string& token) {
-		if (result == (int)Tapligh::ADResult::adViewCompletely)
+		if (result == (int)Tapligh::ADResult::adVideoClosedAfterFulView)
 		{
 			_clockTimer = _initClockTime;
 		}

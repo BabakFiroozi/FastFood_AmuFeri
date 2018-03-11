@@ -25,8 +25,8 @@ android {
         applicationId "com.ferferegame.amuferi"
         minSdkVersion PROP_MIN_SDK_VERSION
         targetSdkVersion 26
-        versionCode 5
-        versionName "1.02"
+        versionCode 6
+        versionName "1.03"
 
         externalNativeBuild {
             ndkBuild {
